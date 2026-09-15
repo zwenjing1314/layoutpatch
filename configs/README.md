@@ -15,3 +15,9 @@
 
 状态标记：working（可改）/ frozen（锁定，改动需新版本）/ deprecated（禁用）。
 每个 config 首次使用前必须在本文件登记一行状态；冲突以小论文规范 `docs/PAPER_SPEC.md` 为准。
+
+## 状态表（M2 起登记）
+
+| config | 状态 | 说明 |
+| --- | --- | --- |
+| `configs/datasets/mmdocir.yaml` | working | MMDocIR evaluation 数据集主配置，环境变量已改为 `LAYOUTPATCH_*` |

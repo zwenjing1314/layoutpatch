@@ -7,8 +7,12 @@ from pathlib import Path
 from layoutpatch.config import Settings, get_settings
 
 
+def data_root(settings: Settings | None = None) -> Path:
+    return _resolve(settings).data_root.resolve()
+
+
 def processed_dir(settings: Settings | None = None) -> Path:
-    return _resolve(settings).data_root / "processed"
+    return data_root(settings) / "processed"
 
 
 def artifacts_dir(settings: Settings | None = None) -> Path:

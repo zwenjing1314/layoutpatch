@@ -19,4 +19,5 @@
 - `tests/test_gpu_marker.py` 改为函数内 `pytest.importorskip("torch")`，基础环境（无 ColPali extra）下测试收集不再失败。
 - `docs/THESIS_SPEC.md` 由占位替换为大论文研究路线全文（来源旧仓库 `THESIS_RESEARCH_ROUTE_DRAFT.md`，适配 `PAPER_SPEC.md` 引用）。
 - `src/layoutpatch/cli.py` 补 `@app.callback()`，修复 typer 0.27 单命令折叠导致 `uv run lp version` 被当成多余参数的问题。
-- `uv.lock` 首次生成（`uv sync --dev`，224 个包），`uv run lp version` 与 `./tasks.ps1 check`（ruff + 5 个 pytest）已验证通过。
+- `uv.lock` 首次生成（`uv sync --dev`，224 个包），`uv run lp version` 与 `./tasks.ps1 check`（ruff + 12 个 pytest）已验证通过。
+- M2 数据准备落地：`src/layoutpatch/{schemas,io,paths}.py` 迁移、`src/layoutpatch/datasets/adapters.py`（仅 demo/mmdocir 主线，不含中文年报）、`lp prepare` 命令、`tasks.ps1 mmdocir-prepare`、`configs/datasets/mmdocir.yaml`、`tests/test_schemas_io.py` + `tests/datasets/test_adapters.py`；全量 prepare 对数 313/20395/170338/1658 已验证。

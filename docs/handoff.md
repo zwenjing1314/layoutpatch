@@ -5,13 +5,13 @@
 
 ## 当前 Phase 与 Gate 状态
 
-- 当前所处阶段：**M1 已完成（环境与规范），下一步 M2（数据准备：adapters + prepare 对数）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
-- 已完成的 Phase：M0（根目录骨架）+ M1（`uv sync --dev` 落盘 `uv.lock`；`uv run lp version` 通过；`./tasks.ps1 check` ruff+5 pytest 全绿；git init 首个 commit `88a47ce`；两份 SSOT 已覆盖）。
+- 当前所处阶段：**M2 数据准备已完成，下一步 M3（Phase 1A 复验：检索管线 + ColPali + 页级评测）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
+- 已完成的 Phase：M0（根目录骨架）+ M1（`uv sync --dev` 落盘 `uv.lock`；`uv run lp version` 通过；`./tasks.ps1 check` 全绿；git init 首个 commit；两份 SSOT 已覆盖）+ M2（adapters 迁移 + `lp prepare` + 全量对数 313/20395/170338/1658 验证通过）。
 - 下一个 Gate：
 
 ```text
-M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首个 commit + 单一 skill（layoutpatch-research）引用正确 + `docs/PAPER_SPEC.md` 从占位替换为小论文执行规范
-下一步任务：M1 清单逐项执行（docs/MIGRATION_BATCHES.md）
+M2 通过条件：lp prepare 实现 + tasks.ps1 mmdocir-prepare 注册 + 全量对数 313/20395/170338/1658 + check 全绿（ruff + 12 pytest）
+下一步任务：M3（docs/MIGRATION_BATCHES.md 批次 3）：复制 retrieval/pipeline、scoring、colpali、evaluation/metrics、cli retrieve/evaluate，实现 full 复验 R@5≈0.839
 阻塞问题：无（旧仓库保持只读，不做修改）
 ```
 
@@ -23,23 +23,23 @@ M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首
 
 ## 配置与分支状态
 
-- 当前分支：未 init（M1 第一步 `git init` + 首个 commit 包含全部骨架）
-- 未提交改动：全仓库均为 M0 新文件，待 git 管理
-- 工作中 config：无（configs/ 下只有 README，首批 yaml 在 M2 复制）
-- 最近 commit：无
+- 当前分支：`master`，M2 改动待提交（`lp prepare` + adapters + configs + 数据测试）
+- 未提交改动：M2 新增/修改文件（见上），`data/` 产物不进 git
+- 工作中 config：`configs/datasets/mmdocir.yaml`（working）
+- 最近 commit：`e270c54`（M1 规范同步）
 
 ## 未解决问题
 
-1. 本仓库 `.cursor/rules/` 与唯一 skill 已就位（旧引用已清理），剩余工作是执行 `uv sync` + `check` + `git init`。
-2. `docs/THESIS_SPEC.md` 仍是占位文件，后续用旧仓库大论文规范全文覆盖（`docs/PAPER_SPEC.md` 已于 2026-09-15 覆盖为小论文执行规范）。
-3. 数据目录布局待 M2 核对（`LAYOUTPATCH_DATA_ROOT` 环境变量在 `.env` 中设置）。
+1. `.env` 尚未创建：全量 prepare 本次用临时环境变量指向旧仓库 raw 数据；日常使用需复制 `.env.example` 为 `.env` 并设置 `LAYOUTPATCH_MMDOCIR_EVALUATION_ROOT`（或把官方 raw 文件放进本仓库 `data/raw/mmdocir_evaluation/`）。
+2. `test_data_splits.py` 未搬运：它依赖旧仓库 `retrieval.pipeline.apply_data_split` 与 `evaluation.pipeline`，等 M3 检索/评测管线落地后再补。
+3. 页图已还原到本仓库 `data/interim/mmdocir_evaluation/page_images/`（约 8GB，不进 git），ColPali 编码阶段直接复用。
 
 ## 下一步（给新会话的指令）
 
 ```text
-1. 执行 docs/MIGRATION_BATCHES.md 的 M1 批：uv sync --dev → lp version → tasks.ps1 check → git init → 修正 .cursor 引用 → 覆盖 PAPER_SPEC 占位。
-2. M1 验收后进入 M2：复制 datasets/adapters 与配置，实现 lp prepare 并跑 prepare 对数 313/20395/170338/1658。
-3. M2 复制 ColPali 与 embedding cache，实现 lp retrieve/evaluate，跑 full 复验 R@5≈0.839，登记 registry。
+1. M1 收尾确认：uv sync --dev → lp version → tasks.ps1 check → git init → 覆盖 THESIS_SPEC 占位（已完成）。
+2. M2 数据准备：复制 datasets/adapters 与配置，实现 lp prepare 并跑 prepare 对数 313/20395/170338/1658（已完成：对数验证通过，见上）。
+3. M3 复制 ColPali 与 embedding cache，实现 lp retrieve/evaluate，跑 full 复验 R@5≈0.839，登记 registry。
 ```
 
 ## 更新记录
@@ -49,3 +49,4 @@ M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首
 | 2026-06-16 | M0 骨架完成：根目录 12 个条目、src 包结构、tests（参考官方 repro：conftest + markers + smoke）、docs 七篇、configs/experiments 占位、MIGRATION 重写为 M0-M6 批次清单 |
 | 2026-09-15 | 第一优先级修复完成：删重复旧 skill、修正 rules 旧引用与 30 号 glob、修正 handoff/index 的 MIGRATION 引用、PAPER_SPEC 覆盖为小论文全文、GPU 测试改为函数内 importorskip；依赖保持完整未拆分 |
 | 2026-09-15 | M1 完成：`uv sync --dev` 落盘 `uv.lock`、`uv run lp version` 通过、`./tasks.ps1 check` 全绿、git 首个 commit、覆盖 `THESIS_SPEC.md`；`cli.py` 补 callback 修复 typer 单命令折叠 |
+| 2026-09-15 | M2 完成：adapters（demo/mmdocir）+ `lp prepare` + `tasks.ps1 mmdocir-prepare` + `configs/datasets/mmdocir.yaml` 落地；ruff + 12 pytest 全绿；全量对数 313/20395/170338/1658 验证通过（raw 经临时变量指向旧仓库，产物在本仓库 `data/`） |

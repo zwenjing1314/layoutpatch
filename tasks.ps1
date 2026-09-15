@@ -6,8 +6,9 @@
 #   ./tasks.ps1 mmdocir-smoke
 #   ./tasks.ps1 mmdocir-colpali-full
 #
-# Status: scaffold. Only `check` and `help` are implemented; experiment tasks
-# are registered here as commands land in docs/02-commands.md (RULE #2/#3).
+# Status: check + mmdocir-prepare implemented; smoke/full retrieval land in batch M3.
+# mmdocir-prepare reads MMDocIR raw files via LAYOUTPATCH_DATA_ROOT (default ./data).
+# ColPali pages/layouts parquet files are ~4GB; keep them out of git (see .gitignore).
 
 param(
   [Parameter(Position=0)]
@@ -68,7 +69,7 @@ switch ($Task) {
   "help" {
     Write-Host "tasks:"
     Write-Host "  check                 ruff + pytest (quality gate, no GPU needed)"
-    Write-Host "  mmdocir-prepare       build MMDocIR parquet tables (NOT REGISTERED YET)"
+    Write-Host "  mmdocir-prepare       build MMDocIR parquet tables (needs raw data, see docs/01-quickstart.md)"
     Write-Host "  mmdocir-smoke         ColPali smoke retrieval (NOT REGISTERED YET)"
     Write-Host "  mmdocir-colpali-full  ColPali full page baseline (NOT REGISTERED YET)"
     Write-Host "usage: ./tasks.ps1 <task>"
@@ -83,7 +84,11 @@ switch ($Task) {
     Write-Host "check: all green"
   }
   "mmdocir-prepare" {
-    throw "not implemented yet: register lp prepare in cli.py first (Phase M1)"
+    Show-ExpHeader -ExpId "M2-prepare" -Config "configs/datasets/mmdocir.yaml" `
+      -Dataset "MMDocIR evaluation (raw)" -Output "data/processed/mmdocir_evaluation/"
+    Write-Host "RUN: uv run lp prepare --dataset mmdocir"
+    & uv run lp prepare --dataset mmdocir
+    if ($LASTEXITCODE -ne 0) { throw "lp prepare failed" }
   }
   "mmdocir-smoke" {
     throw "not implemented yet: register lp retrieve in cli.py first (Phase M2)"

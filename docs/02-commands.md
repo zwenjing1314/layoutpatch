@@ -25,7 +25,7 @@ uv run lp version
 - 输出：`layoutpatch 0.1.0`
 - 检查：环境搭建后第一条验证命令（不需要 GPU / 数据 / 网络）
 
-## mmdocir-prepare（未实现，Phase M1 登记）
+## mmdocir-prepare（已实现，批次 M2）
 
 ```powershell
 ./tasks.ps1 mmdocir-prepare
