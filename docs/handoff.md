@@ -5,8 +5,8 @@
 
 ## 当前 Phase 与 Gate 状态
 
-- 当前所处阶段：**M0 骨架已完成，下一步 M1（环境与规范）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
-- 已完成的 Phase：M0（根目录骨架：pyproject/tasks/src/tests/docs/configs/experiments，全部占位或最小可用）。
+- 当前所处阶段：**M1 已完成（环境与规范），下一步 M2（数据准备：adapters + prepare 对数）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
+- 已完成的 Phase：M0（根目录骨架）+ M1（`uv sync --dev` 落盘 `uv.lock`；`uv run lp version` 通过；`./tasks.ps1 check` ruff+5 pytest 全绿；git init 首个 commit `88a47ce`；两份 SSOT 已覆盖）。
 - 下一个 Gate：
 
 ```text
@@ -48,3 +48,4 @@ M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首
 | --- | --- |
 | 2026-06-16 | M0 骨架完成：根目录 12 个条目、src 包结构、tests（参考官方 repro：conftest + markers + smoke）、docs 七篇、configs/experiments 占位、MIGRATION 重写为 M0-M6 批次清单 |
 | 2026-09-15 | 第一优先级修复完成：删重复旧 skill、修正 rules 旧引用与 30 号 glob、修正 handoff/index 的 MIGRATION 引用、PAPER_SPEC 覆盖为小论文全文、GPU 测试改为函数内 importorskip；依赖保持完整未拆分 |
+| 2026-09-15 | M1 完成：`uv sync --dev` 落盘 `uv.lock`、`uv run lp version` 通过、`./tasks.ps1 check` 全绿、git 首个 commit、覆盖 `THESIS_SPEC.md`；`cli.py` 补 callback 修复 typer 单命令折叠 |

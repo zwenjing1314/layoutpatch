@@ -22,8 +22,8 @@
 
 ## 现行研究
 
-- `docs/THESIS_SPEC.md`（placeholder）：大论文边界——M1 用旧仓全文覆盖
-- `docs/PAPER_SPEC.md`（placeholder）：小论文执行——M1 用旧仓全文覆盖
+- `docs/THESIS_SPEC.md`（stable）：大论文边界——2026-09-15 已用旧仓全文覆盖
+- `docs/PAPER_SPEC.md`（stable）：小论文执行——2026-09-15 已用旧仓全文覆盖
 - `docs/handoff.md`（working）：当前批次、阻塞问题、下一步指令
 - `docs/MIGRATION_BATCHES.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）
 
@@ -44,5 +44,5 @@
 ## 迁移状态
 
 - 本项目由 `mmdoc-evidence-rag` 迁移而来，执行清单 `docs/MIGRATION_BATCHES.md`。
-- 当前进度：M0 完成；旧仓保持只读。
+- 当前进度：M0 完成，M1 环境+规范已完成（uv.lock 落盘、`check` 三绿、首个 commit、两份 SSOT 已覆盖）；旧仓保持只读。
 - M2 验收（R@5 复验通过）后本文件 Status 改 `stable`。
