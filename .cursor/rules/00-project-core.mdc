@@ -1,0 +1,47 @@
+---
+description: 全仓开发的强制规范入口：环境唯一（uv）、命令唯一（tasks.ps1）、轻量根目录、SSOT 文档体系、实验登记。任何会话、任何任务都必须遵守。修改代码/配置/文档/跑实验前必读本条。
+globs:
+alwaysApply: true
+---
+
+# 项目铁律（Always）
+
+本仓库是视觉文档检索研究项目（mmdoc-evidence-rag）。完整规范在 `docs/PROJECT_RULES.md`，本条只是执行摘要；两者冲突以 `docs/PROJECT_RULES.md` 为准。
+
+## 必须做
+
+1. **环境唯一**：只用 uv 管理的 `.venv`（`pyproject.toml + uv.lock + .python-version` 锁定）。禁止 conda、`.venv-colpali`、手动 `pip install`。
+2. **命令唯一**：实验只通过 `./tasks.ps1 <task>` 启动（Windows PowerShell）。裸 `uv run ...` 只允许出现在 `tasks.ps1` 内部和 `docs/02-commands.md` 的"底层等价（备查）"段。新实验形态必须新增 task，不临时拼命令。
+3. **先登记后使用**：新 task 先在 `docs/02-commands.md` 按固定四段格式（命令/输入/输出/检查）登记；新 config 在 `configs/README.md` 登记状态（working/frozen/deprecated）。
+4. **实验五件套**：正式 run 必须产出 `config.json + run_info.json + metrics.json + predictions.parquet + summary.md`，写入 `runs/retrieval/<config_name>/<timestamp>/`，并在 `experiments/registry.csv` 登记 + 按 `experiments/templates/experiment-record.md` 写详情页。
+5. **结果引用可溯源**：引用任何数字必须给完整 timestamp run 目录路径和 `metrics.json` 原文，不许只说"提升了 X%"。smoke 结果永不进论文。
+6. **合入门槛**：`./tasks.ps1 check`（ruff + pytest）三绿才能合 `main`；提交信息用 `<type>(<scope>): <subject>`（feat/fix/docs/exp/chore）。
+7. **变更同步**：用户可见变更写 `CHANGELOG.md`；SSOT 文档变更同步 `docs/00-index.md` 状态行。
+8. **语言底线（不可被消息语言覆盖）**：无论用户消息用中文、英文还是混排，面向用户的回复一律中文。唯一例外：用户在当前对话中明确要求改用其他语言。细则见 `.cursor/rules/01-communication.mdc`。
+
+> 讲解深度、结尾「操作步骤」清单格式见 `.cursor/rules/01-communication.mdc`；引入新依赖/新工具/新模型前必须先征得同意，见 `.cursor/rules/02-tech-approval.mdc`。这两条与上面的铁律同等强制。
+
+## 禁止做
+
+1. 禁止 `runs/`、`data/`、`artifacts/` 进 git。
+2. 禁止新建流水账文件：`*_change_log.md`、`current_*results*.md`、`*progress*.md`、`*_v2_final*.md`。
+3. 禁止新增根目录顶层文件/目录（白名单见 `docs/PROJECT_RULES.md` 2.1 节）；能放进 `src/ configs/ docs/ experiments/` 的必须放进去。
+4. 禁止绕过 Phase Gate：1A 没完成不跑 1B；1B 没有 A/B/C/D 统计不跑 1C；1C 三基线没完成不训练新网络。
+5. 禁止用 `--limit-docs` 写入 full 数据目录；run 目录不可变，重跑生成新 timestamp。
+6. 禁止在 test 集调参；按 test 改参必须回 dev 开新版本。
+7. 禁止在文档或代码注释里另立指标口径、另写长命令、另立研究方向（SSOT 唯一出处原则）。
+
+## SSOT 地图（同一信息只有一个出处）
+
+| 要查什么 | 去哪 | 要改什么 | 同步哪 |
+| --- | --- | --- | --- |
+| 命令怎么跑 | `docs/02-commands.md` | 新 task | `docs/02-commands.md` + CHANGELOG |
+| 环境怎么配 | `docs/01-quickstart.md` | 依赖版本 | `pyproject.toml` + `docs/01-quickstart.md` + CHANGELOG |
+| 研究方向/Gate | `docs/10-small-paper/plan.md` | 方向变更 | `plan.md` + `00-index.md` |
+| 评测口径 | `docs/10-small-paper/protocol.md` | 口径变更 | `protocol.md` + CHANGELOG |
+| 实验结果 | `experiments/registry.csv` + 记录页 | 新实验 | registry + 详情页 |
+| 全仓导航 | `docs/00-index.md` | 新 SSOT | `00-index.md` 状态行 |
+
+## 开工顺序
+
+接任务后先读：本条 → `docs/00-index.md` → 相关领域 SSOT → 再看代码。不许只凭文件名猜项目结构，不许在没读 SSOT 的情况下动手。

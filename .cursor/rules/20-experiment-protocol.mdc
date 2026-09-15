@@ -1,0 +1,47 @@
+---
+description: 实验、评测与数据规范：Phase 1A-2 每步做什么、指标定义、A/B/C/D 分类、公平比较、MMDocIR 数据规模与划分铁律。当任务是跑实验、写评测代码、准备数据、分析结果时加载本条。
+alwaysApply: false
+---
+
+# 实验与评测规范
+
+本条摘自小论文规范（`docs/SMALL_PAPER_DEV_SPEC.md`）第 7-9 节和协议 SSOT（`docs/10-small-paper/protocol.md`）；数字定义冲突以后者为准。
+
+## 各阶段做什么
+
+- **1A 页级 baseline**：BM25 / 文本 dense / Hybrid / ColPali。登记条件：query 数对上 1658、五件套齐全、registry 登记。现状：`configs/experiments/mmdocir__phase1a__*.yaml` 是新命名草稿，旧 `mmdocir_colpali.yaml` 仍在用，切换前先验证。
+- **1B 缺口诊断**：无训练统计。输出 A/B/C/D 四类 + 分层 + 10 成功/10 失败可视化 + 每类归因。
+- **1C 无训练基线**：四条线（原始 ColPali / Snappy 式传播 / 固定 IoU-coverage 聚合 / 动态显著分组）。Snappy 的坐标映射（PaliGemma 448、G=32、s=14、OCR 框缩放到模型坐标）必须先审计。动态分组不许叫"RegionRAG 复现"。
+- **Phase 2 训练**：前提是 1B/1C 完成。顺序：冻 ColPali 只训新模块 → dev 稳定 → 必要时 LoRA → 配置冻结后跑一次 test。
+
+## 命中定义（预先声明，dev/test 一致）
+
+- 页面命中：gold 页在 Top-K 内（K 预先声明）。
+- 区域命中：预测框与 gold 框 IoU ≥ 0.5。
+- 候选框只能来自 OCR/Layout 解析结果；gold 只用于评测。
+- 多框覆盖必须归一化；无布局 gold 的 query（MMDocIR 1658 中约 60 个）不进区域分母。
+
+## 指标清单
+
+页级：Recall@1/5/10、MRR、nDCG@5/10。区域级：Region Recall@1/5、Region MRR、IoU Hit@0.5（主指标）、Text Recall/F1（辅指标，防 IoU 误杀；中文按字、英文按词、小写去空格；IoU 未命中但 Text-Recall≥0.8 单独成组人工抽查 ≥20 例；预测框面积超页面 50% 的 Text 分数置零防刷分）。A/B/C/D 分解。效率：向量数、索引大小、离线编码/融合时间、在线延迟、Top-K 重排时间、峰值显存。
+
+## 数据铁律
+
+- MMDocIR evaluation：313 文档 / 20395 页 / 170338 节点 / 1658 query / 布局精确 gold 1598。页面与布局指标分开报。
+- MMDocIR evaluation gold 只做最终评测，不能同时当训练监督。训练候选是 MMDocIR train（6878 文档），用前必须先审标签构造规则。
+- ViDoRe V2 只做页级泛化补充；ViDoRe V3 不做区域评测。
+- 所有方法必须用相同 query、页面集合、split、评测脚本；不许把不同 query 子集或不同 top-k 放同一张表。
+
+## 必做消融
+
+无 OCR、无布局 bias、无区域类型、无坐标、hard/soft mask、三种 overlap 定义（inter/patch、inter/region、IoU）、无 Gate、无蒸馏、不同 K、OCR 噪声扰动（验证 Gate 自动关小）、背景 token 处理、seed 记录。效率表必须与 LFRAG/ColParse 的 k+1 次编码行同表对比。
+
+## 1C 生死判定的定量口径（数字定义在大论文规范第 11.2 节，冲突以它为准）
+
+- 进 Phase 2：B 类占比 ≥ 10%（1598 有布局 gold query、IoU≥0.5、Top-K 同 1B config）且 Snappy 最好聚合只消掉 ≤ 50% 的 B 类，dev/test 趋势一致。
+- 转收缩：不满足 → 按大论文规范第 11.3 节有序收缩（B1 效率对比 / B2 失败分类学 / B3 跨页表格需另立项）。
+- agent 只准备决策材料（B 类占比、Snappy 消解率、直方图），选择由学生与导师确认。
+
+## 即停条件（出现任一条不进下一步）
+
+坐标映射审计不过（机器门限或人工抽查任一不过）、BBox 系统性错位、区域标签无法可靠构造、只涨 test 不涨 dev、页级掉分且区域不涨、复杂融合不如固定 IoU 聚合、训练成本超 3080Ti 12GB、1C 定量判定不满足进 Phase 2 条件。

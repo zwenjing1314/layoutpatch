@@ -1,0 +1,57 @@
+---
+description: 融合模块的网络结构与技术细节：TextLayoutEncoder、W 权重、稀疏局部融合、门控、坐标审计、评分与损失。当任务是实现或修改 layout_fusion 等检索模块时加载本条。
+globs: src/mmdocrag/**/*.py, configs/experiments/*.yaml
+alwaysApply: false
+---
+
+# 融合模块结构与技术细节
+
+本条摘自小论文规范（`docs/SMALL_PAPER_DEV_SPEC.md`）第 5-6 节；实现前先读原文对应节，冲突以原文为准。
+
+## 张量形状约定
+
+- `P`：N=1024 patch，D=128，由 ColPali 视觉编码器输出。
+- `T`：M 个布局节点，M 按页动态变化，必须 mask padding。
+- `W`：N×M 非负权重，行归一化；tie-break 规则预先声明。
+- `gate`：标量/向量，sigmoid，线性层零初始化（bias b0=-3），训练起点退化为原版 ColPali。
+
+## 节点编码
+
+```text
+t_j = TextLayoutEncoder(ocr_text_j, bbox_j, type_j)
+```
+
+轻量实现：文本投影 + 正弦 2D 坐标编码（LayoutLMv3 式归一化坐标）+ 类型嵌入（含 UNK）。OCR 特征必须过投影层，不许因维度相同而直接相加。不引入大型 LayoutLM/UDOP。
+
+## 对应权重 W（三选一，dev 定一种，数学定义见小论文规范 5.3 节）
+
+```text
+W^(cover) = Area(Pi ∩ Rj) / Area(Pi)；W^(fill) = Area(Pi ∩ Rj) / Area(Rj)；W^(iou) = Area(Pi ∩ Rj) / Area(Pi ∪ Rj)
+行归一化只在非空行：W_ij = W_ij / Σ_k W_ik；分母为 0 的行为空 patch，走兜底。
+多框覆盖同一 patch 按行归一化分摊；spatial_bias = log(W_ij + eps)；TopK tie 按下标稳定排序。
+```
+
+空 patch（全页留白、W 行全零）必须有兜底：跳过融合保留原 P，或可学习背景 token，二选一 dev 冻结。
+
+## 稀疏局部融合（前向）
+
+```text
+N(i) = TopKRegions(patch_i, overlap_or_distance)
+delta_i = LocalCrossAttention(p_i, {t_j | j in N(i)}, spatial_bias)
+p_i' = p_i + gate_i * residual(delta_i)
+```
+
+要求：softmax 前将非 N(i) 与 padding 位置置 -inf（禁止事后置零）；MLP 固定为 Linear(D→2D)→GELU→Linear(2D→D)→LayerNorm，末层全零初始化；K、邻域规则、空处理 dev 冻结。目标是输出 `P_fused`（patch 数不变），继续走 MaxSim。
+
+接口边界：`P_fused` 只用于检索排序与区域打分，不作为任何生成模型的输入；生成阶段输入永远是原始页面图像 + 框坐标。
+
+## 评分与损失
+
+- 页级：MaxSim。
+- 区域级：`s_patch = max maxsim score of patch overlapping region`，Snappy 式 `rel = ΣIoU·score / ΣIoU`，三聚合（max/mean/IoU加权）dev 对比。
+- 页面与融合分数融合前必须先归一化，权重 dev 定或预先固定。
+- 损失：`L = λ_page·L_page + λ_region·L_region + λ_distill·L_distill`，权重 dev 定。
+
+## 坐标审计（Phase 1 前置硬 Gate）
+
+PaliGemma 默认 448×448、32×32 网格；OCR 框是原图绝对像素。审计分为机器门限 + 人工抽查：自动记录越界率、面积误差、W 全零比例和 OCR 覆盖率并写 `audit.json`；agent 生成 ≥20 页叠图，人确认表格/栏边界。机器或人工任一不通过即停工。

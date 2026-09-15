@@ -1,0 +1,110 @@
+[project]
+name = "layoutpatch"
+version = "0.1.0"
+description = "Layout-constrained document-side patch fusion for evidence region retrieval over ColPali representations."
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "accelerate",
+  "datasets",
+  "duckdb",
+  "faiss-cpu",
+  "huggingface-hub",
+  "loguru",
+  "numpy",
+  "opencv-python",
+  "openpyxl",
+  "pandas",
+  "pdfplumber",
+  "pillow",
+  "polars",
+  "pyarrow",
+  "pydantic>=2",
+  "pydantic-settings",
+  "pymupdf",
+  "python-dotenv",
+  "pyyaml",
+  "rank-bm25",
+  "ranx",
+  "rich",
+  "scikit-learn",
+  "scipy",
+  "sentence-transformers",
+  "tokenizers",
+  "tqdm",
+  "transformers",
+  "typer",
+]
+
+[project.optional-dependencies]
+# Install on the CUDA evaluation machine before running ColPali retrieval.
+colpali = [
+  "colpali-engine>=0.3.0",
+  "torch==2.13.0",
+  "torchvision==0.28.0",
+]
+
+[dependency-groups]
+dev = [
+  "ipykernel",
+  "jupyterlab",
+  "mypy",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "ruff",
+]
+
+[tool.uv]
+package = true
+
+# Windows GPU installation for the ColPali extra. The explicit index keeps
+# regular uv syncs on PyPI while ensuring the ColPali environment gets CUDA
+# wheels instead of the CPU-only PyPI builds.
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu130", marker = "sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cu130", marker = "sys_platform == 'win32'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[project.scripts]
+lp = "layoutpatch.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/layoutpatch"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-q"
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "gpu: marks tests that require a CUDA device",
+]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+strict = false

@@ -1,0 +1,56 @@
+---
+description: 研究边界与论文表述规范：小论文/大论文的 Phase Gate、创新点措辞红线、文献对照结论、硬约束 C1-C3。当任务是设计实验、写论文内容、表述创新点、决定研究方向时加载本条。
+alwaysApply: false
+---
+
+# 研究边界与创新表述
+
+本条是大论文规范（`docs/THESIS_RESEARCH_ROUTE_DRAFT.md`）和小论文规范（`docs/SMALL_PAPER_DEV_SPEC.md`）的执行摘要；细节和方法细节以这两份文档为准。
+
+## 当前主线（一句话）
+
+在 ColPali 视觉 patch 表示上，用 OCR 文本 + BBox + 区域类型构建布局节点，通过 patch 与布局区域的稀疏局部对应关系学习文档侧融合表示 `P_fused`，改善页内证据区域定位。
+
+## 三条硬约束（违反即方案错误）
+
+- C1 不裁剪区域子图、不重复运行视觉编码器（0 次额外视觉编码）；
+- C2 保持 late-interaction / MaxSim 接口，patch 数量不变（N=1024）；
+- C3 文档侧 query-independent：`P_fused` 离线算好，所有 query 共用。
+
+## Phase Gate（不许跳步）
+
+```text
+Phase 1A 页级 baseline 完成（EXP-002 已登记，1658 query 核验）
+  → Phase 1B A/B/C/D 缺口诊断 + 按类型/面积/OCR密度分层 + 10成功/10失败可视化
+  → Phase 1C 三类无训练基线（原始 ColPali / Snappy 式传播 / 固定 IoU 聚合 / 动态显著分组）
+  → Phase 2 只有缺口稳定且规则方法不足才训练融合模块
+```
+
+## 创新措辞红线
+
+允许的表述："本文设计并实现一种布局约束的稀疏文档侧 patch 融合方法，在不裁剪页面和重复视觉编码的条件下，利用 OCR/Layout 区域信息学习增强的视觉 patch 表示，并在页面检索和证据区域定位任务上进行系统评估。"
+
+- 禁用词：首次、首个、填补空白、完全没有工作做过、坚不可摧。
+- Gate、残差、零初始化、IoU 映射、坐标编码、不重复编码——这些是工程设计，不许单列为创新点。
+- 创新成立六条检查项（一条不满足不写进贡献）：有可训练参数、有独立训练数据、非测试集调参、有明确对照（Snappy/RegionRAG/ColParse/ColMate）、三指标同报（页级+区域+效率）、证明不是"加 OCR 就有效"。
+
+## 与 8 篇文献的一句话区分（写 related work 用）
+
+- Snappy：推理期分分数不改表征；我们离线改表征，它是 Phase 1C 最强基线。
+- Beyond Bag-of-Patches：GPT-5 全局描述 + global token，不用 OCR/BBox；我们坐标级局部融合 + 页内区域评估。
+- ColMate：空间只在预训练 loss 的 Bj pooling；我们是前向显式融合层。
+- RegionRAG：训练期区域监督 + 在线 BFS 组框出 crop；我们不改生成输入粒度、保持 patch 网格。
+- LFRAG / ColParse：k+1 次视觉编码换布局/存储；我们 0 次额外编码。
+- Argus：query-conditioned 在线 D(q)；我们 query-independent 离线，这是部署 trade-off。
+- MM-Matryoshka：压缩正交，可组合。
+
+## 已核实事实（不许用二手错误说法）
+
+- Beyond 用 GPT-5 生成描述子属实（附录 7.2/7.3）；RegionRAG 用 BFS 组框属实（算法 S1）。
+- 门控残差：Argus 有，ColMate 无，不能混说。
+- ViDoRe V3 是页级 NDCG@10，不能当区域评测；区域评测用 MMDocIR 布局 gold + IoU Hit。
+- Snappy 失败案例 85% 是 OCR 天花板（无重叠框），必须进 Limitation。
+
+## 三指标同报
+
+页级（Recall/MRR/nDCG）+ 区域级（Region Recall/MRR/IoU Hit@0.5）+ 效率（向量数/索引/延迟/显存）。只涨一处不算成。已知代价（Discussion 必须承认）：不能随 query 动态变、多主题 patch 污染、OCR 污染。
