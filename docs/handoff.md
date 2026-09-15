@@ -10,7 +10,8 @@
 - 下一个 Gate：
 
 ```text
-M2 通过条件：lp prepare 实现 + tasks.ps1 mmdocir-prepare 注册 + 全量对数 313/20395/170338/1658 + check 全绿（ruff + 12 pytest）
+M2 通过条件：lp prepare 实现 + tasks.ps1 mmdocir-prepare 注册 + 全量对数 313/20395/170338/1658 + check 全绿（ruff + 15 pytest，含 M2.5 的 3 个 region_labels 测试）
+M2.5 通过条件：region_labels.parquet 2638 行（2523 matched + 115 unmapped，覆盖全部 1658 query）+ 四表对数未动 + ruff 全绿
 下一步任务：M3（docs/MIGRATION_BATCHES.md 批次 3）：复制 retrieval/pipeline、scoring、colpali、evaluation/metrics、cli retrieve/evaluate，实现 full 复验 R@5≈0.839
 阻塞问题：无（旧仓库保持只读，不做修改）
 ```
@@ -23,10 +24,10 @@ M2 通过条件：lp prepare 实现 + tasks.ps1 mmdocir-prepare 注册 + 全量�
 
 ## 配置与分支状态
 
-- 当前分支：`master`，M2 改动待提交（`lp prepare` + adapters + configs + 数据测试）
-- 未提交改动：M2 新增/修改文件（见上），`data/` 产物不进 git
+- 当前分支：`master`，工作区干净，最近 commit `5f251f6`（M2.5 区域标注）
+- 未提交改动：无（`data/` 产物不进 git）
 - 工作中 config：`configs/datasets/mmdocir.yaml`（working）
-- 最近 commit：`e270c54`（M1 规范同步）
+- 最近 commit：`5f251f6`（M2.5 区域标注）
 
 ## 未解决问题
 
