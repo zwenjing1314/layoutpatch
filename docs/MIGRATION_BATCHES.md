@@ -37,12 +37,13 @@
 ## 批次 2：数据准备（跑通 prepare 才算接上数据源）
 
 ```text
-[ ] src/layoutpatch/config.py  paths.py  schemas.py  io.py   ← 骨架四件，改包名
-[ ] src/layoutpatch/datasets/adapters.py                     ← MMDocIR prepare（对数逻辑必须原样）
-[ ] configs/datasets/mmdocir.yaml
-[ ] configs/README.md                                        ← 只登记本仓库实际存在的 config
-[ ] tests/test_schemas_io.py  test_data_splits.py            ← 旧测试直搬
-[ ] tests/datasets/test_adapters.py                          ← 参照 repro 风格按模块建子目录（新增）
+[x] src/layoutpatch/config.py  paths.py  schemas.py  io.py   ← 骨架四件，改包名（已完成）
+[x] src/layoutpatch/datasets/adapters.py                     ← MMDocIR prepare（对数逻辑原样，仅 demo/mmdocir 主线，不含中文年报）
+[x] configs/datasets/mmdocir.yaml                            ← 变量改为 LAYOUTPATCH_*
+[x] configs/README.md                                        ← 只登记本仓库实际存在的 config
+[x] tests/test_schemas_io.py                                 ← 旧测试直搬改包名（test_data_splits.py 待 M3 管线落地后补）
+[x] tests/datasets/test_adapters.py                          ← 参照 repro 风格按模块建子目录（新写）
+[x] M2.5 region_labels：官方 evaluation 原始三文件复制到本仓库 data/raw/；src/layoutpatch/evaluation/region_labels.py + scripts/build_region_labels.py + adapters with_region_labels 开关 + tests/evaluation/test_region_labels.py；region_labels.parquet 2638 行（2523 matched + 115 unmapped），四表对数未动
 ```
 
 完成判据：`./tasks.ps1 mmdocir-prepare` 对数 313/20395/170338/1658。

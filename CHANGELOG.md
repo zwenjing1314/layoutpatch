@@ -21,3 +21,4 @@
 - `src/layoutpatch/cli.py` 补 `@app.callback()`，修复 typer 0.27 单命令折叠导致 `uv run lp version` 被当成多余参数的问题。
 - `uv.lock` 首次生成（`uv sync --dev`，224 个包），`uv run lp version` 与 `./tasks.ps1 check`（ruff + 12 个 pytest）已验证通过。
 - M2 数据准备落地：`src/layoutpatch/{schemas,io,paths}.py` 迁移、`src/layoutpatch/datasets/adapters.py`（仅 demo/mmdocir 主线，不含中文年报）、`lp prepare` 命令、`tasks.ps1 mmdocir-prepare`、`configs/datasets/mmdocir.yaml`、`tests/test_schemas_io.py` + `tests/datasets/test_adapters.py`；全量 prepare 对数 313/20395/170338/1658 已验证。
+- M2.5 区域标注落地：官方 evaluation 原始数据复制到本仓库 `data/raw/mmdocir_evaluation/`（不进 git）；新增 `src/layoutpatch/evaluation/region_labels.py`（IoU/坐标缩放/分组函数）、`scripts/build_region_labels.py`（独立脚本）、`adapters.prepare_mmdocir(with_region_labels=True)` 开关、`tests/evaluation/test_region_labels.py`（解耦测试）；`region_labels.parquet` 共 2638 行（2523 matched + 115 unmapped，覆盖 1658 个 query），四表对数未动。

@@ -191,6 +191,7 @@ def prepare_demo(limit_docs: int | None = None) -> PrepareResult:
 def prepare_mmdocir(
     limit_docs: int | None = None,
     output_dataset: str | None = None,
+    with_region_labels: bool = False,
 ) -> PrepareResult:
     """MMDocIR evaluation 全量转换：313 文档 / 20395 页 / 170338 节点 / 1658 查询。
 
@@ -199,8 +200,14 @@ def prepare_mmdocir(
     `MMDocIR_pages.parquet`（20395 页）、`MMDocIR_layouts.parquet`（170338 布局块）。
     页图二进制（`image_binary` 列）会还原到 `data/interim/mmdocir_evaluation/page_images/`，
     ColPali 编码阶段需要这些图片。
+
+    `with_region_labels=True` 时额外输出 `region_labels.parquet`（M2.5）：
+    官方 2638 个 layout_mapping 框全部落地（含 nodes 表对不上的 115 个 unmapped），
+    四表本身一行不改，对数判据不受影响。
     """
     import os
+
+    from layoutpatch.evaluation.region_labels import build_region_labels_from_annotations
 
     dataset = "mmdocir_evaluation"
     raw_dir = Path(os.getenv("LAYOUTPATCH_MMDOCIR_EVALUATION_ROOT", data_root() / "raw" / dataset))
@@ -335,6 +342,9 @@ def prepare_mmdocir(
                 )
             )
     write_processed_dataset(processed_dir, documents, pages, nodes, queries)
+    if with_region_labels:
+        region_labels = build_region_labels_from_annotations(annotations, lookup)
+        write_region_labels(processed_dir, region_labels)
     return PrepareResult(
         dataset,
         processed_dir,
@@ -349,3 +359,25 @@ def prepare_mmdocir(
 def _write_missing_data_note(processed_dir: Path, message: str) -> None:
     processed_dir.mkdir(parents=True, exist_ok=True)
     (processed_dir / "README.md").write_text(message + "\n", encoding="utf-8")
+
+
+def write_region_labels(processed_dir: Path, labels: list) -> Path:
+    """写 region_labels.parquet：独立文件，不碰四表，删了可重建。"""
+    import polars as pl
+
+    out = processed_dir / "region_labels.parquet"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    rows = [
+        {
+            "query_id": label.query_id,
+            "doc_id": label.doc_id,
+            "page_id": label.page_id,
+            "node_id": label.node_id,
+            "bbox": label.bbox,
+            "page_size": label.page_size,
+            "source": label.source,
+        }
+        for label in labels
+    ]
+    pl.DataFrame(rows).write_parquet(out)
+    return out
