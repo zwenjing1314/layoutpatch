@@ -5,8 +5,8 @@
 
 ## 当前 Phase 与 Gate 状态
 
-- 当前所处阶段：**M2 + M2.5 已完成，下一步 M3（Phase 1A 复验：检索管线 + ColPali + 页级评测）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
-- 已完成的 Phase：M0（根目录骨架）+ M1（`uv sync --dev` 落盘 `uv.lock`；`uv run lp version` 通过；`./tasks.ps1 check` 全绿；git init 首个 commit；两份 SSOT 已覆盖）+ M2（adapters 迁移 + `lp prepare` + 全量对数 313/20395/170338/1658 验证通过）+ M2.5（官方 raw 已复制到本仓库 `data/raw/`；`region_labels.parquet` 2638 行落地，四表未动）。
+- 当前所处阶段：**M3 代码迁移完成、smoke 链路已通，下一步挂全量复验（EXP-001，约 8 小时 GPU）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
+- 已完成的 Phase：M0（根目录骨架）+ M1（`uv sync --dev` 落盘 `uv.lock`；`uv run lp version` 通过；`./tasks.ps1 check` 全绿；git init 首个 commit；两份 SSOT 已覆盖）+ M2（adapters 迁移 + `lp prepare` + 全量对数 313/20395/170338/1658 验证通过）+ M2.5（官方 raw 已复制到本仓库 `data/raw/`；`region_labels.parquet` 2638 行落地，四表未动）+ M3 代码（retrieval/scoring/colpali/pipeline + evaluation/metrics/pipeline + `lp retrieve/evaluate` + 3 个 config + 2 组测试，ruff + 24 pytest 全绿；smoke 链路 9 query 已通）。
 - 下一个 Gate：
 
 ```text
@@ -40,7 +40,7 @@ M2.5 通过条件：region_labels.parquet 2638 行（2523 matched + 115 unmapped
 ```text
 1. M1 收尾确认：uv sync --dev → lp version → tasks.ps1 check → git init → 覆盖 THESIS_SPEC 占位（已完成）。
 2. M2 数据准备：复制 datasets/adapters 与配置，实现 lp prepare 并跑 prepare 对数 313/20395/170338/1658（已完成：对数验证通过，见上）。
-3. M3 复制 ColPali 与 embedding cache，实现 lp retrieve/evaluate，跑 full 复验 R@5≈0.839，登记 registry。
+3. M3 代码迁移（已完成：smoke 链路已通）→ 挂全量复验 EXP-001：`./tasks.ps1 mmdocir-colpali-full`（约 8 小时 GPU，缓存签名对不上需全量重编码），判据 R@5 与旧 0.8390 偏差 < 0.005，然后登记 registry。
 ```
 
 ## 更新记录

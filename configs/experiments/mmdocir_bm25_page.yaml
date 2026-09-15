@@ -1,0 +1,7 @@
+experiment_name: mmdocir_bm25_page
+dataset: mmdocir_evaluation
+retriever:
+  type: bm25_page
+  search_scope: document
+  top_k: 20
+output_dir: runs/retrieval/mmdocir_bm25_page

@@ -51,17 +51,18 @@
 ## 批次 3：Phase 1A 复验（页级 baseline 搬运与重跑）
 
 ```text
-[ ] src/layoutpatch/retrieval/pipeline.py  scoring.py        ← 检索管线
-[ ] src/layoutpatch/retrieval/colpali.py                     ← ColPali 编码 + MaxSim + embedding cache
-[ ] src/layoutpatch/evaluation/metrics.py  pipeline.py       ← 页级指标（sufficiency.py 不搬）
-[ ] src/layoutpatch/cli.py                                   ← prepare/retrieve/evaluate 三命令
-[ ] configs/experiments/mmdocir_colpali.yaml                 ← 正式 config
-[ ] configs/experiments/mmdocir_bm25_page.yaml               ← BM25 对照
-[ ] tests/test_retrieval_metrics.py  test_colpali_integration.py
-[ ] （可选省 8 小时）artifacts/colpali/ embedding cache 从旧仓库复制
-[ ] experiments/registry.csv + templates/experiment-record.md ← 登记体系
-[ ] docs/reproduction/colpali_vidore_v1_reproduction_20260830.md ← 复现凭证
-[ ] 旧 run 目录 runs/retrieval/mmdocir_colpali/20260912_221714 只读留档
+[x] src/layoutpatch/retrieval/pipeline.py  scoring.py        ← 检索管线（仅 bm25/dense/colpali/hybrid 四页级分支，region/evidence_set/oracle 不搬）
+[x] src/layoutpatch/retrieval/colpali.py                     ← ColPali 编码 + MaxSim + embedding cache（包名/日志前缀改为 layoutpatch/lp，MPS 分支删除）
+[x] src/layoutpatch/evaluation/metrics.py  pipeline.py       ← 页级指标（sufficiency.py 不搬）
+[x] src/layoutpatch/cli.py                                   ← retrieve/evaluate 命令已注册（prepare 保留）
+[x] configs/experiments/mmdocir_colpali.yaml                 ← 正式 config（原样）
+[x] configs/experiments/mmdocir_bm25_page.yaml               ← BM25 对照（原样）
+[x] configs/experiments/mmdocir_colpali_smoke.yaml           ← smoke config（2 文档限流）
+[x] tests/test_retrieval_metrics.py  test_colpali_integration.py  ← 页级用例（旧方向分支不搬）
+[x] artifacts/colpali/ embedding cache 20395 个 .pt 已复制（签名含旧绝对路径，复验需重编码或放宽签名，待定）
+[ ] experiments/registry.csv + templates/experiment-record.md ← 登记体系（全量复验通过后登记 EXP-001）
+[ ] docs/reproduction/colpali_vidore_v1_reproduction_20260830.md ← 复现凭证（全量复验通过后补）
+[ ] 旧 run 目录 runs/retrieval/mmdocir_colpali/20260912_221714 只读留档（旧仓库不动，新仓库复验后对照 metrics.json）
 ```
 
 完成判据：`./tasks.ps1 mmdocir-colpali-full`，R@5 与旧 0.8390 偏差 < 0.005；本仓库登记 EXP-001（迁移复验）。

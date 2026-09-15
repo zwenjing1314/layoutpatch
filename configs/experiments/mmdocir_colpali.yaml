@@ -1,0 +1,14 @@
+experiment_name: mmdocir_colpali
+dataset: mmdocir_evaluation
+processed_dataset: mmdocir_evaluation
+retriever:
+  type: colpali_page
+  search_scope: document
+  model: vidore/colpali
+  top_k: 20
+  # RTX 3080 Ti (12 GB): start conservatively. Embeddings are cached under artifacts/.
+  image_batch_size: 1
+  query_batch_size: 2
+  score_batch_size: 4
+  use_embedding_cache: true
+output_dir: runs/retrieval/mmdocir_colpali

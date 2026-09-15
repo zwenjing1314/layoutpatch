@@ -6,7 +6,7 @@
 #   ./tasks.ps1 mmdocir-smoke
 #   ./tasks.ps1 mmdocir-colpali-full
 #
-# Status: check + mmdocir-prepare implemented; smoke/full retrieval land in batch M3.
+# Status: check + mmdocir-prepare + mmdocir-smoke + mmdocir-colpali-full implemented (batch M3).
 # mmdocir-prepare reads MMDocIR raw files via LAYOUTPATCH_DATA_ROOT (default ./data).
 # ColPali pages/layouts parquet files are ~4GB; keep them out of git (see .gitignore).
 
@@ -91,11 +91,22 @@ switch ($Task) {
     if ($LASTEXITCODE -ne 0) { throw "lp prepare failed" }
   }
   "mmdocir-smoke" {
-    throw "not implemented yet: register lp retrieve in cli.py first (Phase M2)"
+    Show-ExpHeader -ExpId "M3-smoke" -Config "configs/experiments/mmdocir_colpali_smoke.yaml" `
+      -Dataset "MMDocIR evaluation smoke (limit-docs)" -Output "runs/retrieval/mmdocir_colpali_smoke/"
+    Write-Host "RUN: uv run --extra colpali lp prepare --dataset mmdocir --limit-docs 2 --output-dataset mmdocir_evaluation_smoke"
+    & uv run --extra colpali lp prepare --dataset mmdocir --limit-docs 2 --output-dataset mmdocir_evaluation_smoke
+    if ($LASTEXITCODE -ne 0) { throw "smoke prepare failed" }
+    Write-Host "RUN: uv run --extra colpali lp retrieve --config configs/experiments/mmdocir_colpali_smoke.yaml"
+    & uv run --extra colpali lp retrieve --config configs/experiments/mmdocir_colpali_smoke.yaml
+    if ($LASTEXITCODE -ne 0) { throw "smoke retrieve failed" }
   }
   "mmdocir-colpali-full" {
     Assert-UvColpaliCuda
     Assert-MmdocirFullData
-    throw "not implemented yet: register lp retrieve in cli.py first (Phase M2)"
+    Show-ExpHeader -ExpId "EXP-001" -Config "configs/experiments/mmdocir_colpali.yaml" `
+      -Dataset "MMDocIR evaluation full (1658 queries)" -Output "runs/retrieval/mmdocir_colpali/"
+    Write-Host "RUN: uv run --extra colpali lp retrieve --config configs/experiments/mmdocir_colpali.yaml"
+    & uv run --extra colpali lp retrieve --config configs/experiments/mmdocir_colpali.yaml
+    if ($LASTEXITCODE -ne 0) { throw "full retrieve failed" }
   }
 }

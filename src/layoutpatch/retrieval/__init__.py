@@ -1,1 +1,7 @@
-"""Retrievers (ColPali page baseline, fusion) will be migrated here in Phase M2."""
+"""Page-level retrieval entry point."""
+
+from __future__ import annotations
+
+from layoutpatch.retrieval.pipeline import run_retrieval
+
+__all__ = ["run_retrieval"]
