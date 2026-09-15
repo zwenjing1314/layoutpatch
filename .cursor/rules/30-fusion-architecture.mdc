@@ -1,12 +1,12 @@
 ---
 description: 融合模块的网络结构与技术细节：TextLayoutEncoder、W 权重、稀疏局部融合、门控、坐标审计、评分与损失。当任务是实现或修改 layout_fusion 等检索模块时加载本条。
-globs: src/mmdocrag/**/*.py, configs/experiments/*.yaml
+globs: src/layoutpatch/**/*.py, configs/experiments/*.yaml
 alwaysApply: false
 ---
 
 # 融合模块结构与技术细节
 
-本条摘自小论文规范（`docs/SMALL_PAPER_DEV_SPEC.md`）第 5-6 节；实现前先读原文对应节，冲突以原文为准。
+本条摘自小论文规范（`docs/PAPER_SPEC.md`）第 5-6 节；实现前先读原文对应节，冲突以原文为准。
 
 ## 张量形状约定
 

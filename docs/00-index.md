@@ -25,7 +25,7 @@
 - `docs/THESIS_SPEC.md`（placeholder）：大论文边界——M1 用旧仓全文覆盖
 - `docs/PAPER_SPEC.md`（placeholder）：小论文执行——M1 用旧仓全文覆盖
 - `docs/handoff.md`（working）：当前批次、阻塞问题、下一步指令
-- `docs/MIGRATION.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）
+- `docs/MIGRATION_BATCHES.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）
 
 ## 实验过程
 
@@ -43,6 +43,6 @@
 
 ## 迁移状态
 
-- 本项目由 `mmdoc-evidence-rag` 迁移而来，执行清单 `docs/MIGRATION.md`。
+- 本项目由 `mmdoc-evidence-rag` 迁移而来，执行清单 `docs/MIGRATION_BATCHES.md`。
 - 当前进度：M0 完成；旧仓保持只读。
 - M2 验收（R@5 复验通过）后本文件 Status 改 `stable`。

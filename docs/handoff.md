@@ -5,13 +5,13 @@
 
 ## 当前 Phase 与 Gate 状态
 
-- 当前所处阶段：**M0 骨架已完成，下一步 M1（环境与规范）**，见 `docs/MIGRATION.md` 批次清单。
+- 当前所处阶段：**M0 骨架已完成，下一步 M1（环境与规范）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
 - 已完成的 Phase：M0（根目录骨架：pyproject/tasks/src/tests/docs/configs/experiments，全部占位或最小可用）。
 - 下一个 Gate：
 
 ```text
-M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首个 commit + 六条 rules/skill 复制并改引用 + 规则探针自检通过
-下一步任务：M1 清单逐项执行（docs/MIGRATION.md）
+M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首个 commit + 单一 skill（layoutpatch-research）引用正确 + `docs/PAPER_SPEC.md` 从占位替换为小论文执行规范
+下一步任务：M1 清单逐项执行（docs/MIGRATION_BATCHES.md）
 阻塞问题：无（旧仓库保持只读，不做修改）
 ```
 
@@ -30,14 +30,14 @@ M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首
 
 ## 未解决问题
 
-1. `.cursor/rules/` 六条与 skill 尚未从旧仓库复制（M1 第 4 项，复制后需替换包名/文档名引用）。
-2. `docs/THESIS_SPEC.md`、`docs/PAPER_SPEC.md` 是占位文件，M1 第 5/6 项用旧仓库两份 SSOT 全文覆盖。
+1. 本仓库 `.cursor/rules/` 与唯一 skill 已就位（旧引用已清理），剩余工作是执行 `uv sync` + `check` + `git init`。
+2. `docs/THESIS_SPEC.md` 仍是占位文件，后续用旧仓库大论文规范全文覆盖（`docs/PAPER_SPEC.md` 已于 2026-09-15 覆盖为小论文执行规范）。
 3. 数据目录布局待 M2 核对（`LAYOUTPATCH_DATA_ROOT` 环境变量在 `.env` 中设置）。
 
 ## 下一步（给新会话的指令）
 
 ```text
-1. 执行 docs/MIGRATION.md 的 M1 批：uv sync --dev → lp version → tasks.ps1 check → git init → 复制 .cursor → 覆盖两份占位 SSOT。
+1. 执行 docs/MIGRATION_BATCHES.md 的 M1 批：uv sync --dev → lp version → tasks.ps1 check → git init → 修正 .cursor 引用 → 覆盖 PAPER_SPEC 占位。
 2. M1 验收后进入 M2：复制 datasets/adapters 与配置，实现 lp prepare 并跑 prepare 对数 313/20395/170338/1658。
 3. M2 复制 ColPali 与 embedding cache，实现 lp retrieve/evaluate，跑 full 复验 R@5≈0.839，登记 registry。
 ```
@@ -47,3 +47,4 @@ M1 通过条件：uv sync --dev 成功 + ./tasks.ps1 check 三绿 + git init 首
 | 日期 | 更新内容 |
 | --- | --- |
 | 2026-06-16 | M0 骨架完成：根目录 12 个条目、src 包结构、tests（参考官方 repro：conftest + markers + smoke）、docs 七篇、configs/experiments 占位、MIGRATION 重写为 M0-M6 批次清单 |
+| 2026-09-15 | 第一优先级修复完成：删重复旧 skill、修正 rules 旧引用与 30 号 glob、修正 handoff/index 的 MIGRATION 引用、PAPER_SPEC 覆盖为小论文全文、GPU 测试改为函数内 importorskip；依赖保持完整未拆分 |

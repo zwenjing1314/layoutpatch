@@ -5,7 +5,7 @@ alwaysApply: false
 
 # 研究边界与创新表述
 
-本条是大论文规范（`docs/THESIS_RESEARCH_ROUTE_DRAFT.md`）和小论文规范（`docs/SMALL_PAPER_DEV_SPEC.md`）的执行摘要；细节和方法细节以这两份文档为准。
+本条是 `docs/THESIS_SPEC.md`（大论文边界）和 `docs/PAPER_SPEC.md`（小论文执行）的执行摘要；细节和方法细节以这两份文档为准。
 
 ## 当前主线（一句话）
 

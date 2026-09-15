@@ -6,7 +6,7 @@ alwaysApply: true
 
 # 项目铁律（Always）
 
-本仓库是视觉文档检索研究项目（mmdoc-evidence-rag）。完整规范在 `docs/PROJECT_RULES.md`，本条只是执行摘要；两者冲突以 `docs/PROJECT_RULES.md` 为准。
+本仓库是 LayoutPatch 视觉文档检索研究项目。完整规范在 `docs/RULES.md`，本条只是执行摘要；两者冲突以 `docs/RULES.md` 为准。
 
 ## 必须做
 
@@ -25,7 +25,7 @@ alwaysApply: true
 
 1. 禁止 `runs/`、`data/`、`artifacts/` 进 git。
 2. 禁止新建流水账文件：`*_change_log.md`、`current_*results*.md`、`*progress*.md`、`*_v2_final*.md`。
-3. 禁止新增根目录顶层文件/目录（白名单见 `docs/PROJECT_RULES.md` 2.1 节）；能放进 `src/ configs/ docs/ experiments/` 的必须放进去。
+3. 禁止新增根目录顶层文件/目录（白名单见 `docs/RULES.md` 2.1 节）；能放进 `src/ configs/ docs/ experiments/` 的必须放进去。
 4. 禁止绕过 Phase Gate：1A 没完成不跑 1B；1B 没有 A/B/C/D 统计不跑 1C；1C 三基线没完成不训练新网络。
 5. 禁止用 `--limit-docs` 写入 full 数据目录；run 目录不可变，重跑生成新 timestamp。
 6. 禁止在 test 集调参；按 test 改参必须回 dev 开新版本。
@@ -37,8 +37,8 @@ alwaysApply: true
 | --- | --- | --- | --- |
 | 命令怎么跑 | `docs/02-commands.md` | 新 task | `docs/02-commands.md` + CHANGELOG |
 | 环境怎么配 | `docs/01-quickstart.md` | 依赖版本 | `pyproject.toml` + `docs/01-quickstart.md` + CHANGELOG |
-| 研究方向/Gate | `docs/10-small-paper/plan.md` | 方向变更 | `plan.md` + `00-index.md` |
-| 评测口径 | `docs/10-small-paper/protocol.md` | 口径变更 | `protocol.md` + CHANGELOG |
+| 研究方向/Gate | `docs/PAPER_SPEC.md`（研究边界见 `docs/THESIS_SPEC.md`） | 方向变更 | `PAPER_SPEC.md` + `00-index.md` |
+| 评测口径 | `docs/PAPER_SPEC.md`（第 4/7/8 节） | 口径变更 | `PAPER_SPEC.md` + CHANGELOG |
 | 实验结果 | `experiments/registry.csv` + 记录页 | 新实验 | registry + 详情页 |
 | 全仓导航 | `docs/00-index.md` | 新 SSOT | `00-index.md` 状态行 |
 

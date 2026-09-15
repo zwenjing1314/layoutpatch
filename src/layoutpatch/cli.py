@@ -12,7 +12,12 @@ import typer
 app = typer.Typer(help="LayoutPatch experiment CLI.", no_args_is_help=True)
 
 
-@app.command()
+@app.callback()
+def _callback() -> None:
+    """Keep multi-command behaviour so `lp version` stays a subcommand."""
+
+
+@app.command("version")
 def version() -> None:
     """Print the package version."""
     from layoutpatch import __version__

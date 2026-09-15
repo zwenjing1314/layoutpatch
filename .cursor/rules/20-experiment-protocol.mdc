@@ -5,7 +5,7 @@ alwaysApply: false
 
 # 实验与评测规范
 
-本条摘自小论文规范（`docs/SMALL_PAPER_DEV_SPEC.md`）第 7-9 节和协议 SSOT（`docs/10-small-paper/protocol.md`）；数字定义冲突以后者为准。
+本条摘自小论文规范（`docs/PAPER_SPEC.md`）第 7-9 节；数字定义以 `docs/PAPER_SPEC.md` 第 8 节为准。
 
 ## 各阶段做什么
 
