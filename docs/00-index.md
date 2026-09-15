@@ -29,7 +29,7 @@
 
 ## 实验过程
 
-- `experiments/registry.csv`：注册表（M2 从旧仓迁入 EXP-001/002 两行）
+- `experiments/registry.csv`：注册表（EXP-001 全量复验通过后登记首行；旧仓 EXP-002 只作对照，不迁入）
 - `experiments/templates/experiment-record.md`：11 段模板（M2 迁入）
 
 ## 文献
@@ -44,5 +44,5 @@
 ## 迁移状态
 
 - 本项目由 `mmdoc-evidence-rag` 迁移而来，执行清单 `docs/MIGRATION_BATCHES.md`。
-- 当前进度：M0 完成，M1 环境+规范已完成（uv.lock 落盘、`check` 三绿、首个 commit、两份 SSOT 已覆盖）；旧仓保持只读。
-- M2 验收（R@5 复验通过）后本文件 Status 改 `stable`。
+- 当前进度：M0 完成，M1 环境+规范已完成（uv.lock 落盘、`check` 全绿、首个 commit、两份 SSOT 已覆盖），M2 四表+区域标注已完成，M3 代码迁移+smoke 已完成；旧仓保持只读。
+- M3 全量复验（EXP-001，R@5≈0.839）通过后本文件 Status 改 `stable`。
