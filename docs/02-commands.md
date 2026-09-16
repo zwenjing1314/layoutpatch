@@ -68,4 +68,19 @@ uv run python scripts/run_phase1b_audit.py --limit-pages 50   # 快速试扫
 - 输出：`artifacts/audit/mmdocir_evaluation/audit.json`（机器门限数值）+
   `artifacts/audit/mmdocir_evaluation/overlays/*.jpg`（≥20 张 patch 网格+布局框叠图）
 - 检查（`docs/PAPER_SPEC.md` 第 6 节）：越界率 < 1%；无页级覆盖为 0 的异常页；
-  人工抽查叠图回答"表格线/栏边界是否对齐"，任何一页不通过 → 停工修数据链
+  人工抽查叠图回答"表格线/栏边界是否对齐"，任何一页不通过 → 停工修数据链。
+  人工判读口径（2026-09-16 已固定）：看彩色框围没围住真实文字/表格
+  （红=表格/橙=段落/绿=图），不看框边压没压蓝色网格线；
+  页顶小字/页底文字/页码未被框住属官方标注稀疏，不是错位（用户已确认 `2021700463_p69` 通过）。
+
+## phase1b-abcd（已实现，批次 M4，EXP-002）
+
+```powershell
+uv run python -c "from layoutpatch.evaluation.region_diagnosis import diagnose; d = diagnose(k=5); print(d.a_page_hit_region_hit, d.b_page_hit_region_miss, d.c_page_miss_region_hit, d.d_page_miss_region_miss)"
+```
+
+- 输入：EXP-001 run 的 `predictions.parquet`（Top-5）+ `nodes.parquet`（页内候选框）+ `region_labels.parquet`（2638 行 gold 区域）
+- 输出：`artifacts/diagnosis/mmdocir_evaluation/abcd_diagnosis.json`
+- 检查（`docs/PAPER_SPEC.md` 第 7.3 节）：A 页中区中 / B 页中区不中 / C 页不中区中 / D 都不中；
+  当前值 A=1345/B=45/C=0/D=268，B 占页命中 3.24%；IoU 口径 `bbox_iou`≥0.5（0.3/0.5/0.7 敏感性 0.8154/0.8112/0.8100）；
+  与 EXP-001 差 1 题为 gold 页口径差异（`mmdocir_01342`）；记录页 `experiments/2026-09-16-exp-002-abcd-diagnosis.md` + registry 第二行

@@ -17,8 +17,8 @@
 ## 入门（按顺序读）
 
 1. `docs/01-quickstart.md`（working, SSOT）：环境 + 数据准备
-2. `docs/02-commands.md`（working, SSOT）：命令唯一入口
-3. `docs/RULES.md`（stable, SSOT）：开发规范十条铁律
+2. `docs/02-commands.md`（working, SSOT）：命令唯一入口（含 `phase1b-audit` 坐标审计命令）
+3. `docs/RULES.md`（stable, SSOT）：开发规范十条铁律 + 0.2 实验小白讲解 + 4.4 指令透明后台执行
 
 ## 现行研究
 
@@ -44,5 +44,5 @@
 ## 迁移状态
 
 - 本项目由 `mmdoc-evidence-rag` 迁移而来，执行清单 `docs/MIGRATION_BATCHES.md`。
-- 当前进度：M0 完成，M1 环境+规范已完成（uv.lock 落盘、`check` 全绿、首个 commit、两份 SSOT 已覆盖），M2 四表+区域标注已完成，M3 代码迁移+smoke 已完成；旧仓保持只读。
-- M3 全量复验（EXP-001，R@5≈0.839）通过后本文件 Status 改 `stable`。
+- 当前进度：M0 完成，M1 环境+规范已完成（uv.lock 落盘、`check` 全绿、首个 commit、两份 SSOT 已覆盖），M2 四表+区域标注已完成，M3 代码迁移+smoke+EXP-001（本机从零重编码 52 分钟，run 20260916_134144）已完成，M4 机器审计 Gate 通过 + EXP-002 A/B/C/D 主表已出（B 占页命中 3.24%），缺分层表/案例图与 BGE-M3/Hybrid 四基准补齐；旧仓保持只读。
+- M3 全量复验（EXP-001，R@5≈0.839）通过后本文件 Status 改 `stable`。（EXP-001/EXP-002 均已通过，待本轮文档同步后改 stable。）

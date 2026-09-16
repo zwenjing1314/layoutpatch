@@ -65,22 +65,27 @@
 [x] 旧 run 目录 runs/retrieval/mmdocir_colpali/20260912_221714 只读留档（旧仓库不动；新仓库 EXP-001=20260916_105545 作对照）
 ```
 
-完成判据：`./tasks.ps1 mmdocir-colpali-full`，R@5=0.8390 与旧 0.8390 偏差 0.0000 < 0.005；本仓库登记 EXP-001（迁移复验）。**批次 3 完成（2026-09-16）。**
+完成判据：`./tasks.ps1 mmdocir-colpali-full`，R@5=0.8390 与旧 0.8390 偏差 0.0000 < 0.005；本仓库登记 EXP-001（迁移复验）。**批次 3 完成（2026-09-16）。** 补充说明：`BGE-M3 dense` 与 `Hybrid` 分支代码已迁（默认 encoder `BAAI/bge-m3`，`require_model` 防 TF-IDF 降级），但正式 config（`mmdocir_bge_m3_page.yaml`/`mmdocir_hybrid_page.yaml`）与 EXP-003/EXP-004 尚未运行，属第 7.2 节四基准补齐任务，排在 M4 叠图确认后。
 
 ## 批次 4：Phase 1B 缺口诊断（需要 OCR/布局数据，是新增代码的起点）
 
 ```text
-[ ] src/layoutpatch/layout/nodes.py          ← TextLayoutEncoder → T [M,D]（新写，按 PAPER_SPEC 第 5 节）
-[ ] src/layoutpatch/layout/correspondence.py ← W 三种定义 + 行归一化 + 空行标记（新写）
-[ ] src/layoutpatch/evaluation/region_metrics.py ← IoU Hit@0.5 + Text Recall/F1 + A/B/C/D + 分层（新写）
-[ ] src/layoutpatch/evaluation/audit.py      ← 坐标审计（机器门限 + 叠图）（新写）
-[ ] src/layoutpatch/retrieval/layout_index.py ← BM25/结构信号检索布局节点（新写）
-[ ] tests/layout/  tests/evaluation/         ← 对应单测（新写）
-[ ] configs/experiments/mmdocir_layout_node_bge_m3.yaml ← 旧仓库预备 config 复制
-[ ] 判据前置：先过坐标审计，再谈任何区域指标
+[x] src/layoutpatch/layout/correspondence.py ← W cover 定义 + 行归一化 + 空行标记（新写，已完成 2026-09-16；fill/iou 候选未实现，按 PAPER_SPEC dev 定一种）
+[x] src/layoutpatch/evaluation/audit.py      ← 坐标审计（机器门限 + 叠图）（新写，已完成 2026-09-16；关键修复 c7a817c：去掉页号 -1 偏移，文本判别法双文档验证 layouts 页号与页图序号同义）
+[x] src/layoutpatch/evaluation/audit_overlays.py + scripts/run_phase1b_audit.py ← 叠图链路（已登记 02-commands 的 phase1b-audit；判读口径：框围内容不看网格；用户已确认 p69 通过）
+[x] src/layoutpatch/evaluation/region_metrics.py ← 正式 bbox IoU（新写，已完成 2026-09-16，EXP-002 用 IoU≥0.5）
+[x] src/layoutpatch/evaluation/region_diagnosis.py ← A/B/C/D 静态诊断（新写，已完成 2026-09-16；EXP-002：A=1345/B=45/C=0/D=268，B 占页命中 3.24%）
+[x] artifacts/audit/mmdocir_evaluation/audit.json ← 机器门限（20261 页/170338 区域/越界 1/零覆盖 0/Gate 全过）
+[x] artifacts/audit/mmdocir_evaluation/overlays/  ← 20 张叠图（已修页号重生成）
+[x] artifacts/diagnosis/mmdocir_evaluation/abcd_diagnosis.json + experiments/2026-09-16-exp-002-abcd-diagnosis.md ← EXP-002 已登记（45af9c0）
+[ ] src/layoutpatch/layout/nodes.py          ← TextLayoutEncoder → T [M,D]（未动；Phase 2 前再写，当前诊断不需要 T）
+[ ] src/layoutpatch/retrieval/layout_index.py ← BM25/结构信号检索布局节点（未动）
+[ ] configs/experiments/mmdocir_layout_node_bge_m3.yaml ← 旧仓库预备 config 复制（未动，随 EXP-003/004 一起补）
+[ ] 分层表（10 类问题类型/面积/OCR 密度）+ 10 成功/10 失败案例图（第 7.3 节剩余输出，未动）
+[ ] 判据前置：先过坐标审计，再谈任何区域指标（已过：机器 Gate + p69 人工确认；其余 19 张待抽查）
 ```
 
-完成判据：A/B/C/D 四象限产出 + 按 10 类问题类型分层表 + 10 成功/10 失败案例图；registry 登记。
+完成判据：A/B/C/D 四象限产出 + 按 10 类问题类型分层表 + 10 成功/10 失败案例图；registry 登记。（进度：主表已出 EXP-002；分层与案例图待补。）
 
 ## 批次 5：Phase 1C 无训练基线（三选一前先测 Snappy 传播）
 
