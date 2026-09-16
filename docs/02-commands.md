@@ -35,22 +35,37 @@ uv run lp version
 - 输出：`data/processed/mmdocir_evaluation/{documents,pages,nodes,queries}.parquet` + `page_images/`
 - 检查：对数 313 / 20395 / 170338 / 1658；`tasks.ps1` 内置断言
 
-## mmdocir-smoke（未实现，Phase M2 登记）
+## mmdocir-smoke（已实现，批次 M3）
 
 ```powershell
 ./tasks.ps1 mmdocir-smoke
 ```
 
-- 输入：`configs/experiments/mmdocir__phase1a__colpali.yaml`（限流版）+ embedding cache
-- 输出：`runs/retrieval/mmdocir__phase1a__colpali_smoke/<timestamp>/` 五件套
+- 输入：`configs/experiments/mmdocir_colpali_smoke.yaml`（2 文档限流）+ embedding cache
+- 输出：`runs/retrieval/mmdocir_colpali_smoke/<timestamp>/` 五件套
 - 检查：`torch.cuda.is_available()=True`；smoke 结果不进论文
 
-## mmdocir-colpali-full（未实现，Phase M2 登记，EXP 复验）
+## mmdocir-colpali-full（已实现，批次 M3，EXP-001）
 
 ```powershell
 ./tasks.ps1 mmdocir-colpali-full
+uv run lp evaluate --run runs/retrieval/mmdocir_colpali/latest
 ```
 
-- 输入：全量 parquet + `artifacts/colpali/` embedding cache（可从旧仓库复制）
-- 输出：`runs/retrieval/mmdocir__phase1a__colpali/<timestamp>/` 五件套
-- 检查：Page R@5 与旧仓库 EXP-002 的 0.8390 偏差 < 0.005 → 迁移验收通过
+- 输入：全量 parquet（313/20395/170338/1658）+ `artifacts/colpali/` embedding cache
+- 输出：`runs/retrieval/mmdocir_colpali/<timestamp>/` 五件套（evaluate 后补 metrics.json/summary.md）
+- 检查：Page R@5 与旧仓库 EXP-002 的 0.8390 偏差 < 0.005 → 迁移验收通过；
+  签名命中则复用缓存，不命中 GPU 重算并覆盖写回
+
+## phase1b-audit（已实现，批次 M4，坐标审计硬 Gate）
+
+```powershell
+uv run python scripts/run_phase1b_audit.py            # 全量机器门限 + 20 张叠图
+uv run python scripts/run_phase1b_audit.py --limit-pages 50   # 快速试扫
+```
+
+- 输入：`data/processed/mmdocir_evaluation/nodes.parquet` + `data/interim/mmdocir_evaluation/page_images/`
+- 输出：`artifacts/audit/mmdocir_evaluation/audit.json`（机器门限数值）+
+  `artifacts/audit/mmdocir_evaluation/overlays/*.jpg`（≥20 张 patch 网格+布局框叠图）
+- 检查（`docs/PAPER_SPEC.md` 第 6 节）：越界率 < 1%；无页级覆盖为 0 的异常页；
+  人工抽查叠图回答"表格线/栏边界是否对齐"，任何一页不通过 → 停工修数据链
