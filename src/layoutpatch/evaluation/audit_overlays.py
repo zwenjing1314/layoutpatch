@@ -100,10 +100,17 @@ def _parse_bbox(value: object) -> list[float] | None:
 
 
 def _page_image_for(page_id: str, images: Path) -> Path | None:
-    """nodes 的 page_id 是 `<doc>_p<index>`，页图文件名是 `<doc>_<index-1>.jpg`。"""
+    """nodes 的 page_id（如 `<doc>_p126`）直接对应页图 `<doc>_126.jpg`。
+
+    事实依据（文本判别法双文档验证）：layouts 表 page_id 与 pages 表 passage_id
+    同义（IBM 文档直配 779 vs 差一 3；arXiv 文档直配 135 vs 差一 0），
+    且 adapters.py 两边都用 page_id(doc, raw_int) 原样拼 `_pX`，
+    页图文件名来自 pages 表的 image_path（passage 原序号）。
+    旧注释的 `-1` 映射是错误的，已废弃——它把叠图贴错了页。
+    """
     prefix, _, index = page_id.rpartition("_p")
     try:
-        serial = int(index) - 1
+        serial = int(index)
     except ValueError:
         return None
     candidate = images / f"{prefix}_{serial}.jpg"

@@ -71,14 +71,15 @@ def _parse_bbox(value: object) -> list[float] | None:
 
 
 def _page_image_for(page_id: str, images: Path) -> Path | None:
-    """nodes 的 page_id 是 `<doc>_p<index>`，页图文件名是 `<doc>_<index-1>.jpg`。
+    """nodes 的 page_id（`<doc>_p126`）直接对应页图 `<doc>_126.jpg`。
 
-    映射规则（adapters.prepare_mmdocir 写盘约定）：page_index 从 1 开始，
-    图片序号从 0 开始，即序号 = page_index - 1。
+    文本判别法双文档验证：layouts.page_id 与 pages.passage_id 同义
+    （IBM 直配 779 vs 差一 3；arXiv 直配 135 vs 差一 0），
+    页图文件名沿用 passage 原序号，故不做 -1 偏移。
     """
     prefix, _, index = page_id.rpartition("_p")
     try:
-        serial = int(index) - 1
+        serial = int(index)
     except ValueError:
         return None
     candidate = images / f"{prefix}_{serial}.jpg"
