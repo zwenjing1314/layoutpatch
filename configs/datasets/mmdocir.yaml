@@ -1,5 +1,5 @@
 name: mmdocir_evaluation
-raw_dir: ${LAYOUTPATCH_MMDOCIR_EVALUATION_ROOT}
+raw_dir: ${LAYOUTPATCH_DATA_ROOT}/raw/mmdocir_evaluation
 interim_dir: ${LAYOUTPATCH_DATA_ROOT}/interim/mmdocir_evaluation
 processed_dir: ${LAYOUTPATCH_DATA_ROOT}/processed/mmdocir_evaluation
 language: mixed

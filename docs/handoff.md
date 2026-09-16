@@ -31,7 +31,7 @@ M4 前置（来自 PAPER_SPEC 第 6 节）：坐标审计机器门限 + ≥20 �
 
 ## 未解决问题
 
-1. `.env` 尚未创建：如需切换 raw 数据位置，复制 `.env.example` 为 `.env` 并设置 `LAYOUTPATCH_MMDOCIR_EVALUATION_ROOT`；默认直接读本仓库 `data/raw/mmdocir_evaluation/`（官方三文件已复制，约 4GB，不进 git）。
+1. `.env` 无需创建：本仓库默认直接读 `data/raw/mmdocir_evaluation/`（官方三文件已复制，约 4GB，不进 git）。仅当 raw 数据放在其他磁盘时，才在 `.env` 里设置 `LAYOUTPATCH_MMDOCIR_EVALUATION_ROOT` 覆盖默认路径。
 2. `test_data_splits.py` 未搬运：它依赖旧仓库 `retrieval.pipeline.apply_data_split` 与 `evaluation.pipeline`，等 M3 检索/评测管线落地后再补。
 3. 页图已还原到本仓库 `data/interim/mmdocir_evaluation/page_images/`（约 8GB，不进 git），ColPali 编码阶段直接复用。
 
