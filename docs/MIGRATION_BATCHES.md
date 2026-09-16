@@ -59,13 +59,13 @@
 [x] configs/experiments/mmdocir_bm25_page.yaml               ← BM25 对照（原样）
 [x] configs/experiments/mmdocir_colpali_smoke.yaml           ← smoke config（2 文档限流）
 [x] tests/test_retrieval_metrics.py  test_colpali_integration.py  ← 页级用例（旧方向分支不搬）
-[x] artifacts/colpali/ embedding cache 20395 个 .pt 已复制（签名含旧绝对路径，复验需重编码或放宽签名，待定）
-[ ] experiments/registry.csv + templates/experiment-record.md ← 登记体系（全量复验通过后登记 EXP-001）
-[ ] docs/reproduction/colpali_vidore_v1_reproduction_20260830.md ← 复现凭证（全量复验通过后补）
-[ ] 旧 run 目录 runs/retrieval/mmdocir_colpali/20260912_221714 只读留档（旧仓库不动，新仓库复验后对照 metrics.json）
+[x] artifacts/colpali/ embedding cache 20395 个 .pt 已复制（签名含旧绝对路径 → 判失效，EXP-001 改为本机全量重编码）
+[x] experiments/registry.csv + experiments/2026-09-16-exp-001-colpali-full.md ← EXP-001 已登记（首行）
+[x] docs/reproduction/colpali_vidore_v1_reproduction_20260830.md ← 复现凭证（从旧仓库迁入）
+[x] 旧 run 目录 runs/retrieval/mmdocir_colpali/20260912_221714 只读留档（旧仓库不动；新仓库 EXP-001=20260916_105545 作对照）
 ```
 
-完成判据：`./tasks.ps1 mmdocir-colpali-full`，R@5 与旧 0.8390 偏差 < 0.005；本仓库登记 EXP-001（迁移复验）。
+完成判据：`./tasks.ps1 mmdocir-colpali-full`，R@5=0.8390 与旧 0.8390 偏差 0.0000 < 0.005；本仓库登记 EXP-001（迁移复验）。**批次 3 完成（2026-09-16）。**
 
 ## 批次 4：Phase 1B 缺口诊断（需要 OCR/布局数据，是新增代码的起点）
 

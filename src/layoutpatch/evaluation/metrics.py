@@ -6,6 +6,10 @@
 - `region_hit@5` 是占位诊断：旧仓库的 region 指标是节点精确匹配
   （`hit.node_id in gold_nodes`），不是 `PAPER_SPEC` 第 8 节要的 IoU≥0.5 判定；
   真正的 IoU 评测在 1B/1C 写 `region_metrics.py`，这里只保留旧逻辑做回归对照。
+- `ndcg_at_k` 与旧仓库逐行一致（含 `target_count` 取 node 数或 page 数的分支），
+  这是 EXP-001 复验能对上旧 0.6932/0.7231 的前提。已知口径限制：多 gold 页的 query
+  在节点数小于页命中数时，dcg 分子可能超过 idcg，小样本下 ndcg 会略大于 1（旧仓库同病）。
+  正式的 IoU 区域口径在 1B 的 `region_metrics.py` 里另立，本文件不改公式只做回归对照。
 - `evaluate_metrics` 的 region 四件套（`region_gold_queries` / `region_mrr` /
   `region_ndcg@5` / `region_ndcg@10`）只在 hits 带 `node_id` 时才输出，
   页级 run 不带 node，自然没有这四个键——这是有意设计，不是 bug。
@@ -71,9 +75,14 @@ def ndcg_at_k(queries: list[QueryRecord], hits: list[RetrievalHit], k: int) -> f
         dcg = 0.0
         for hit in grouped.get(query.query_id, [])[:k]:
             relevance = 1 if hit_matches_target(query, hit) else 0
-            if relevance:
-                dcg += 1 / math.log2(hit.rank + 1)
-        ideal_hits = 1
+            dcg += relevance / math.log2(hit.rank + 1)
+        target_count = (
+            len(query.evidence_node_ids)
+            if any(hit.node_id for hit in grouped.get(query.query_id, [])[:k])
+            and query.evidence_node_ids
+            else len(query.evidence_page_ids)
+        )
+        ideal_hits = min(target_count, k)
         idcg = sum(1 / math.log2(rank + 1) for rank in range(1, ideal_hits + 1))
         score += dcg / idcg if idcg else 0.0
     return score / total if total else 0.0

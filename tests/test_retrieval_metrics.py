@@ -95,6 +95,30 @@ def test_page_only_run_has_no_region_keys():
     assert "region_mrr" not in metrics
 
 
+def test_ndcg_does_not_double_count_same_gold_page_for_node_hits():
+    queries = [
+        QueryRecord(
+            query_id="q1",
+            dataset="demo",
+            doc_id="doc1",
+            question="营业收入是多少？",
+            evidence_page_ids=["p1"],
+            evidence_node_ids=["n2"],
+        )
+    ]
+    hits = [
+        RetrievalHit(
+            query_id="q1", rank=1, score=2.0, doc_id="doc1", page_id="p1", node_id="n1", retriever="unit"
+        ),
+        RetrievalHit(
+            query_id="q1", rank=2, score=1.0, doc_id="doc1", page_id="p1", node_id="n2", retriever="unit"
+        ),
+    ]
+
+    assert ndcg_at_k(queries, hits, 2) <= 1.0
+    assert ndcg_at_k(queries, hits, 2) < 1.0
+
+
 def test_retrieve_pages_document_scope_filters_pages():
     pages = [
         PageRecord(doc_id="d1", page_id="d1_p1", page_index=1, page_text="营业收入增长"),

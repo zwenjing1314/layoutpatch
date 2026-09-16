@@ -1,0 +1,2 @@
+exp_id,exp_date,dataset,split,query_count,config,run_dir,backend,page_r_at_5,region_hit_at_5,sufficiency_rate,note
+EXP-001,2026-09-16,mmdocir_evaluation,-,1658,configs/experiments/mmdocir_colpali.yaml,runs/retrieval/mmdocir_colpali/20260916_105545,colpali_page,0.8390,0.0000,,Phase 1A ColPali full baseline（迁移复验）；hits=30112；R@5与旧仓EXP-002偏差0.0000；ndcg口径与旧仓逐行一致；缓存为本机全量重编码；详情见 experiments/2026-09-16-exp-001-colpali-full.md

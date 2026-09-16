@@ -5,14 +5,14 @@
 
 ## 当前 Phase 与 Gate 状态
 
-- 当前所处阶段：**M3 代码迁移完成、smoke 链路已通，下一步挂全量复验（EXP-001，约 8 小时 GPU）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
-- 已完成的 Phase：M0（根目录骨架）+ M1（`uv sync --dev` 落盘 `uv.lock`；`uv run lp version` 通过；`./tasks.ps1 check` 全绿；git init 首个 commit；两份 SSOT 已覆盖）+ M2（adapters 迁移 + `lp prepare` + 全量对数 313/20395/170338/1658 验证通过）+ M2.5（官方 raw 已复制到本仓库 `data/raw/`；`region_labels.parquet` 2638 行落地，四表未动）+ M3 代码（retrieval/scoring/colpali/pipeline + evaluation/metrics/pipeline + `lp retrieve/evaluate` + 3 个 config + 2 组测试，ruff + 24 pytest 全绿；smoke 链路 9 query 已通）。
+- 当前所处阶段：**M3 完成（EXP-001 复验通过），下一步 M4（Phase 1B 缺口诊断：坐标审计 + A/B/C/D）**，见 `docs/MIGRATION_BATCHES.md` 批次清单。
+- 已完成的 Phase：M0（根目录骨架）+ M1（`uv sync --dev` 落盘 `uv.lock`；`uv run lp version` 通过；`./tasks.ps1 check` 全绿；git init 首个 commit；两份 SSOT 已覆盖）+ M2（adapters 迁移 + `lp prepare` + 全量对数 313/20395/170338/1658 验证通过）+ M2.5（官方 raw 已复制到本仓库 `data/raw/`；`region_labels.parquet` 2638 行落地，四表未动）+ M3（retrieval/scoring/colpali/pipeline + evaluation/metrics/pipeline + `lp retrieve/evaluate` + 3 个 config + 2 组测试，ruff + 25 pytest 全绿；EXP-001 复验 R@5=0.8390 与旧仓逐位一致，已登记）。
 - 下一个 Gate：
 
 ```text
-M2 通过条件：lp prepare 实现 + tasks.ps1 mmdocir-prepare 注册 + 全量对数 313/20395/170338/1658 + check 全绿（ruff + 15 pytest，含 M2.5 的 3 个 region_labels 测试）
-M2.5 通过条件：region_labels.parquet 2638 行（2523 matched + 115 unmapped，覆盖全部 1658 query）+ 四表对数未动 + ruff 全绿
-下一步任务：M3（docs/MIGRATION_BATCHES.md 批次 3）：复制 retrieval/pipeline、scoring、colpali、evaluation/metrics、cli retrieve/evaluate，实现 full 复验 R@5≈0.839
+M3 通过条件：EXP-001 R@5=0.8390 与旧 EXP-002 偏差 0.0000 < 0.005 + 全指标逐位一致 + registry/记录页/复现凭证三件齐 + check 全绿（ruff + 25 pytest）
+M4 前置（来自 PAPER_SPEC 第 6 节）：坐标审计机器门限 + ≥20 页叠图人工抽查，先过审计再谈任何区域指标
+下一步任务：M4（docs/MIGRATION_BATCHES.md 批次 4）：新建 layout/nodes、correspondence、evaluation/region_metrics、audit，产出 A/B/C/D + 分层表 + 10 成功/10 失败案例图
 阻塞问题：无（旧仓库保持只读，不做修改）
 ```
 
@@ -20,14 +20,14 @@ M2.5 通过条件：region_labels.parquet 2638 行（2523 matched + 115 unmapped
 
 | EXP | run 目录 | 关键指标一句 | 是否可用 |
 | --- | --- | --- | --- |
-| （无） | 新仓库还没有任何 run | 旧仓库 EXP-002（Page R@5=0.8390）是迁移后的复验基准 | 是（作为对照） |
+| EXP-001 | `runs/retrieval/mmdocir_colpali/20260916_105545` | Phase 1A ColPali full 复验：R@5=0.8390 与旧仓 EXP-002 逐位一致，可作 1B 分母 | 是（本仓库首个正式 baseline） |
 
 ## 配置与分支状态
 
-- 当前分支：`master`，工作区干净，最近 commit `5f251f6`（M2.5 区域标注）
-- 未提交改动：无（`data/` 产物不进 git）
-- 工作中 config：`configs/datasets/mmdocir.yaml`（working）
-- 最近 commit：`5f251f6`（M2.5 区域标注）
+- 当前分支：`master`，EXP-001 完成后待提交（指标回滚 + registry + 记录页 + 复现凭证 + 文档同步）
+- 未提交改动：`metrics.py` ndcg 回滚、`tests/test_retrieval_metrics.py` 补回归、EXPERIMENT 与 docs 若干（见上），`data/`/`artifacts/`/`runs/` 产物不进 git
+- 工作中 config：`configs/datasets/mmdocir.yaml`（working）；`configs/experiments/mmdocir_colpali.yaml`（EXP-001 冻结基线）
+- 最近 commit：`bbe13ed`（EXP-001 运行头）
 
 ## 未解决问题
 
@@ -40,7 +40,7 @@ M2.5 通过条件：region_labels.parquet 2638 行（2523 matched + 115 unmapped
 ```text
 1. M1 收尾确认：uv sync --dev → lp version → tasks.ps1 check → git init → 覆盖 THESIS_SPEC 占位（已完成）。
 2. M2 数据准备：复制 datasets/adapters 与配置，实现 lp prepare 并跑 prepare 对数 313/20395/170338/1658（已完成：对数验证通过，见上）。
-3. M3 代码迁移（已完成：smoke 链路已通）→ 挂全量复验 EXP-001：`./tasks.ps1 mmdocir-colpali-full`（约 8 小时 GPU，缓存签名对不上需全量重编码），判据 R@5 与旧 0.8390 偏差 < 0.005，然后登记 registry。
+3. M3 检索评测（已完成：EXP-001 R@5=0.8390 与旧仓逐位一致，registry 已登记）→ 下一步 M4 Phase 1B：先过坐标审计（机器门限 + ≥20 页叠图人工抽查），再产出 A/B/C/D 缺口诊断。
 ```
 
 ## 更新记录
@@ -52,3 +52,4 @@ M2.5 通过条件：region_labels.parquet 2638 行（2523 matched + 115 unmapped
 | 2026-09-15 | M1 完成：`uv sync --dev` 落盘 `uv.lock`、`uv run lp version` 通过、`./tasks.ps1 check` 全绿、git 首个 commit、覆盖 `THESIS_SPEC.md`；`cli.py` 补 callback 修复 typer 单命令折叠 |
 | 2026-09-15 | M2 完成：adapters（demo/mmdocir）+ `lp prepare` + `tasks.ps1 mmdocir-prepare` + `configs/datasets/mmdocir.yaml` 落地；ruff + 12 pytest 全绿；全量对数 313/20395/170338/1658 验证通过（raw 经临时变量指向旧仓库，产物在本仓库 `data/`） |
 | 2026-09-15 | M2.5 完成：官方 evaluation 原始三文件复制到本仓库 `data/raw/`；`region_labels.parquet` 2638 行（2523 matched + 115 unmapped，覆盖 1658 query）；ruff + 15 pytest 全绿；四表对数未动 |
+| 2026-09-16 | M3 完成：检索评测管线（bm25/dense/colpali/hybrid 页级）+ `lp retrieve/evaluate` + smoke 全绿；EXP-001 全量复验 R@5=0.8390 与旧仓逐位一致（ndcg 口径回滚为旧逐行一致 + 补回归测试）；registry 首行 + 记录页 + 复现凭证已登记；ruff + 25 pytest 全绿 |
