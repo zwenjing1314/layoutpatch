@@ -37,5 +37,8 @@ tmp/
 *.jpeg
 *.xlsx
 
+# Thesis figures are curated small artifacts, tracked explicitly
+!docs/figures/**
+
 # Keep placeholder files that mark empty directories
 !.gitkeep
