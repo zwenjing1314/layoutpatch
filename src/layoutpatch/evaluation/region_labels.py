@@ -3,7 +3,8 @@
 背景（新手向）：M2 的四表里 `queries` 有 1658 行，其中 1598 行有 `evidence_node_ids`，
 60 行是空的；`evidence_bboxes` 全空。1B/1C 的区域评测（IoU Hit@0.5）需要每个 query
 的 gold 框坐标，而官方 `layout_mapping` 里 2638 个框中有 115 个在 nodes 表里找不到
-对应节点（bbox 四舍五入到 2 位小数后仍对不上，多为超大框如 [10,13,1180,800]）。
+对应节点（bbox 四舍五入到 2 位小数后仍对不上；模块注释猜测多为大框如 [10,13,1180,800]，
+仅为成因猜测，不作结论；真正面积分布以 EXP-005 直方图 `strat_area_hist.json/png` 为准）。
 本模块把“能对上节点的 2523 个框”和“对不上但真实存在的 115 个框”统一成一份
 `region_labels.parquet`，评测时直接读它，不再依赖 `evidence_node_ids` 是否为空。
 
