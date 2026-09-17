@@ -57,6 +57,28 @@ uv run lp evaluate --run runs/retrieval/mmdocir_colpali/latest
 - 检查：Page R@5 与旧仓库 EXP-002 的 0.8390 偏差 < 0.005 → 迁移验收通过；
   签名命中则复用缓存，不命中 GPU 重算并覆盖写回
 
+## mmdocir-bge-m3-full（已实现，批次 M3，EXP-003）
+
+```powershell
+./tasks.ps1 mmdocir-bge-m3-full
+uv run lp evaluate --run runs/retrieval/mmdocir_bge_m3_page/latest
+```
+
+- 输入：全量 parquet（313/20395/170338/1658）+ 本地 `BAAI/bge-m3`（`local_files_only=True` 可加载）
+- 输出：`runs/retrieval/mmdocir_bge_m3_page/<timestamp>/` 五件套（evaluate 后补 metrics.json/summary.md）
+- 检查：`run_info.json` 的 `actual_retrievers` 必须含 `dense:BAAI/bge-m3` 且不含 `dense:tfidf_fallback`；`require_model: true` 下模型缺席必须报错而不是降级；登记条件见小论文执行规范 `docs/PAPER_SPEC.md` 第 7.2 节 Phase 1A（query 数=1658 五件套齐全）
+
+## mmdocir-hybrid-full（已实现，批次 M3，EXP-004）
+
+```powershell
+./tasks.ps1 mmdocir-hybrid-full
+uv run lp evaluate --run runs/retrieval/mmdocir_hybrid_page/latest
+```
+
+- 输入：全量 parquet（313/20395/170338/1658）+ 本地 `BAAI/bge-m3`（Hybrid 内 dense 分支同 EXP-003 口径）
+- 输出：`runs/retrieval/mmdocir_hybrid_page/<timestamp>/` 五件套（evaluate 后补 metrics.json/summary.md）
+- 检查：`run_info.json` 的 `retriever_type=hybrid_page` 且 `retriever=hybrid_page`（RRF 融合 `page_methods=[bm25,dense]`，k=60）；dense 分支同样禁 TF-IDF 降级；登记条件同第 7.2 节
+
 ## phase1b-audit（已实现，批次 M4，坐标审计硬 Gate）
 
 ```powershell
@@ -72,6 +94,27 @@ uv run python scripts/run_phase1b_audit.py --limit-pages 50   # 快速试扫
   人工判读口径（2026-09-16 已固定）：看彩色框围没围住真实文字/表格
   （红=表格/橙=段落/绿=图），不看框边压没压蓝色网格线；
   页顶小字/页底文字/页码未被框住属官方标注稀疏，不是错位（用户已确认 `2021700463_p69` 通过）。
+
+## phase1b-stratify（已实现，批次 M4，EXP-005 关门补证）
+
+```powershell
+uv run python scripts/run_phase1b_stratify.py --k 5 --iou 0.5
+```
+
+- 输入：EXP-001 run 的 `predictions.parquet`（Top-5）+ `nodes.parquet` + `region_labels.parquet`（2638 行）+ `queries.parquet`（问题类型）
+- 输出：`artifacts/diagnosis/mmdocir_evaluation/` 下 `stratification.json`（分层表，`meta` 含 k/iou/面积均值定义/三分位点）+ `cases.json`（成功 10/失败 10/中间态 10 + `meta` 三档定义）+ `crosstab.json` + `addressability.json` + `oracle.json` + `strat_area_hist.png/json` + `strat_cov_hist.png/json` + `overlays_cases/*.jpg`（极值 20）+ `overlays_cases_mid/*.jpg`（中间态 10）
+- 检查（小论文执行规范 `docs/PAPER_SPEC.md` 第 7.3 节）：分层键=问题类型归一化/面积均值三分位/OCR 密度均值三分位；成功=A 类 IoU 最高 10；失败=B 类 IoU 最低 10；中间态=B 类多样贪心 10；C_topk=0 为定义性结果不许写成发现；记录页 `experiments/2026-09-17-exp-005-gate-closeout.md` + registry EXP-005 行
+
+## phase1c-baselines（已实现，批次 5，EXP-006）
+
+```powershell
+./tasks.ps1 phase1c-smoke
+./tasks.ps1 phase1c-baselines
+```
+
+- 输入：EXP-001 Top-5 + `nodes.parquet` + `region_labels.parquet` + 冻结 ColPali 缓存（页向量缓存-only，query 文本塔 GPU 编码）
+- 输出：`artifacts/baselines/mmdocir_1c/phase1c_smoke.json`（冒烟 10A/0B）+ `phase1c.json`（全量 1343A/45B：Snappy max/mean/iou + 固定 coverage/iou_mass + 分组 P25/P50/P75）
+- 检查（小论文执行规范 `docs/PAPER_SPEC.md` 第 7.4 节）：A Top-1 选框准确率 + B 消解率；B 分母为严格 45（非 47）；group 的 B 碰框率虚高不计消解；记录页 `experiments/2026-09-17-exp-006-phase1c.md` + registry EXP-006 行
 
 ## phase1b-abcd（已实现，批次 M4，EXP-002）
 

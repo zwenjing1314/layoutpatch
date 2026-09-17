@@ -65,7 +65,7 @@
 [x] 旧 run 目录 runs/retrieval/mmdocir_colpali/20260912_221714 只读留档（旧仓库不动；新仓库 EXP-001=20260916_105545 作对照）
 ```
 
-完成判据：`./tasks.ps1 mmdocir-colpali-full`，R@5=0.8390 与旧 0.8390 偏差 0.0000 < 0.005；本仓库登记 EXP-001（迁移复验）。**批次 3 完成（2026-09-16）。** 补充说明：`BGE-M3 dense` 与 `Hybrid` 分支代码已迁（默认 encoder `BAAI/bge-m3`，`require_model` 防 TF-IDF 降级），但正式 config（`mmdocir_bge_m3_page.yaml`/`mmdocir_hybrid_page.yaml`）与 EXP-003/EXP-004 尚未运行，属第 7.2 节四基准补齐任务，排在 M4 叠图确认后。
+完成判据：`./tasks.ps1 mmdocir-colpali-full`，R@5=0.8390 与旧 0.8390 偏差 0.0000 < 0.005；本仓库登记 EXP-001（迁移复验）。**批次 3 完成（2026-09-16）。** 补充（2026-09-17）：`mmdocir_bge_m3_page.yaml`（EXP-003，R@5=0.7750，run 20260917_113452）与 `mmdocir_hybrid_page.yaml`（EXP-004，R@5=0.7883，run 20260917_115238）已跑完登记，第 7.2 节四基准同表为 ColPali 0.8390 / Hybrid 0.7883 / BGE-M3 0.7750 / BM25 0.7521（同 1658 query、同文档内范围、同 Top-20、同脚本）。
 
 ## 批次 4：Phase 1B 缺口诊断（需要 OCR/布局数据，是新增代码的起点）
 
@@ -81,23 +81,24 @@
 [ ] src/layoutpatch/layout/nodes.py          ← TextLayoutEncoder → T [M,D]（未动；Phase 2 前再写，当前诊断不需要 T）
 [ ] src/layoutpatch/retrieval/layout_index.py ← BM25/结构信号检索布局节点（未动）
 [ ] configs/experiments/mmdocir_layout_node_bge_m3.yaml ← 旧仓库预备 config 复制（未动，随 EXP-003/004 一起补）
-[ ] 分层表（10 类问题类型/面积/OCR 密度）+ 10 成功/10 失败案例图（第 7.3 节剩余输出，未动）
-[ ] 判据前置：先过坐标审计，再谈任何区域指标（已过：机器 Gate + p69 人工确认；其余 19 张待抽查）
+[x] 分层表（问题类型归一化 12 组/面积均值三分位/OCR 密度均值三分位）+ 10 成功/10 失败 + 10 中间态案例图（第 7.3 节，EXP-005 已完成 2026-09-17：`scripts/run_phase1b_stratify.py` 统一脚本 + `stratification.json`（meta 冻结 k/iou/面积均值定义/三分位点）18 行 + `cases.json`（meta 三档定义）+ `crosstab/addressability/oracle.json` + `strat_*_hist.png/json` + `overlays_cases/` 20 张 + `overlays_cases_mid/` 10 张；结论：B=45/45 unmapped_only，可寻址双分母 0.0，离 10% 线低 10pp；Top-K 内 C=0 为定义性结果；oracle 页命中内 96.76%/全量 96.50%）
+[ ] 判据前置：先过坐标审计，再谈任何区域指标（已过：机器 Gate + p69 人工确认；其余 19 张待抽查；EXP-005 的 30 张案例图待用户同口径抽查，重点 `M_mmdocir_00522`）
 ```
 
-完成判据：A/B/C/D 四象限产出 + 按 10 类问题类型分层表 + 10 成功/10 失败案例图；registry 登记。（进度：主表已出 EXP-002；分层与案例图待补。）
+完成判据：A/B/C/D 四象限产出 + 按 10 类问题类型分层表 + 10 成功/10 失败案例图；registry 登记。（进度：主表 EXP-002 + 关门 EXP-005 均已出；批次 4 已关，S1 记录页恢复留档标 SUPERSEDED，registry 保留两行；30 张案例图待用户抽查。）
 
 ## 批次 5：Phase 1C 无训练基线（三选一前先测 Snappy 传播）
 
 ```text
-[ ] src/layoutpatch/retrieval/propagation.py      ← Snappy 式 patch→区域传播（新写，需先审计坐标映射）
-[ ] src/layoutpatch/retrieval/region_pooling.py   ← 固定 IoU/coverage 聚合（新写）
-[ ] src/layoutpatch/retrieval/region_grouping.py  ← 动态显著分组（新写，不许称 RegionRAG 复现）
-[ ] configs/experiments/ 三个对应 yaml             ← 新建
-[ ] tests/retrieval/ 对应单测
+[x] src/layoutpatch/retrieval/propagation.py      ← Snappy 式 patch→区域传播（新写 2026-09-17；max/mean/iou 三聚合；MaxSim 展平修复 reshape(-1,1024).amax）
+[x] src/layoutpatch/retrieval/region_pooling.py   ← 固定 IoU/coverage 聚合（新写 2026-09-17；coverage/iou_mass 双模式）
+[x] src/layoutpatch/retrieval/region_grouping.py  ← 动态显著分组（新写 2026-09-17，不许称 RegionRAG 复现；四连通组框，阈值 eta 取 P25/P50/P75）
+[x] scripts/run_phase1c.py                        ← 1C 跑者（新写；冒烟 --limit-docs 2 + 全量 1343A/45B；B 分母严格 45 非 47；`./tasks.ps1 phase1c-smoke/baselines` 对齐）
+[x] tests/retrieval/test_phase1c.py                ← 6 单测（聚合/组框/展平/缓存布局断言 [7 prefix, 1024 patches]）
+[x] artifacts/baselines/mmdocir_1c/phase1c.json    ← EXP-006 决策材料（1343A Top-1 最高 0.3187 fixed:iou_mass；45B 固定五档消解全 0.0；group 碰框虚高不计）
 ```
 
-完成判据：三基线区域指标同表输出；1C 决策材料（B 类占比、Snappy 消掉比例、dev/test 趋势）齐备交导师确认。
+完成判据：三基线区域指标同表输出；1C 决策材料（B 类占比 3.24%、Snappy 最好消解 0/45=0.0、P25/P50/P75 敏感性、A 选框准确率）齐备交导师确认。**批次 5 已跑完（2026-09-17，EXP-006）→ 不进 Phase 2，转 11.3 收缩（B1/B2）。禁令：未过 1C Gate 不建 fusion/ 子包、不写 train_fusion.py。**
 
 ## 批次 6：Phase 2 融合模块（只有 1C Gate 通过才解锁）
 
