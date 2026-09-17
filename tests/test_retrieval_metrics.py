@@ -3,16 +3,23 @@
 说明（新手向）：这些测试只用 demo 级小数据（几条 query、几页），验证三件事：
 1. BM25/TF-IDF 把含关键词的页面排前面（检索器的基本功）；
 2. dense 在模型缺席时显式降级为 TF-IDF（`LAYOUTPATCH_DISABLE_SENTENCE_TRANSFORMERS=1`
-   强制走降级分支），而不是静默失败；
+   强制走降级分支），而不是静默失败；`require_model=True` 时必须抛错（防论文误用降级分）；
+   Hybrid 的 RRF 融合把两份排名按 `1/(k+rank)` 相加；
 3. 页级指标公式正确（recall/mrr/ndcg），且 region 指标在 hits 无 node_id 时不输出。
-旧仓库 `test_retrieval_metrics.py` 里 hybrid/region/evidence_set/oracle 用例不搬，
+旧仓库 `test_retrieval_metrics.py` 里 region/evidence_set/oracle 用例不搬，
 那是 1B 之后或旧方向的，本轮 1A 用不上。
 """
 
 from __future__ import annotations
 
+import pytest
+
 from layoutpatch.evaluation.metrics import evaluate_metrics, mrr, ndcg_at_k, page_recall_at_k
-from layoutpatch.retrieval.pipeline import retrieve_pages, score_texts_with_backend
+from layoutpatch.retrieval.pipeline import (
+    retrieve_hybrid_pages,
+    retrieve_pages,
+    score_texts_with_backend,
+)
 from layoutpatch.retrieval.scoring import SimpleBM25, SimpleTfidf, reciprocal_rank_fusion
 from layoutpatch.schemas import PageRecord, QueryRecord, RetrievalHit
 
@@ -135,3 +142,44 @@ def test_retrieve_pages_document_scope_filters_pages():
 
     assert set(by_query["q1"]) <= {"d1_p1", "d1_p2"}
     assert by_query["q2"] == ["d2_p1"]
+
+
+def test_dense_require_model_raises_instead_of_fallback(monkeypatch):
+    monkeypatch.setenv("LAYOUTPATCH_DISABLE_SENTENCE_TRANSFORMERS", "1")
+
+    with pytest.raises(RuntimeError, match="requires local SentenceTransformer"):
+        score_texts_with_backend(
+            ["营业收入是多少"],
+            ["营业收入 100 元", "普通说明"],
+            "dense",
+            "BAAI/bge-m3",
+            require_model=True,
+        )
+
+
+def test_retrieve_hybrid_pages_fuses_bm25_and_dense(monkeypatch):
+    monkeypatch.setenv("LAYOUTPATCH_DISABLE_SENTENCE_TRANSFORMERS", "1")
+    pages = [
+        PageRecord(doc_id="d1", page_id="d1_p1", page_index=1, page_text="营业收入增长说明"),
+        PageRecord(doc_id="d1", page_id="d1_p2", page_index=2, page_text="完全无关的天气说明"),
+    ]
+    queries = [
+        QueryRecord(query_id="q1", dataset="demo", doc_id="d1", question="营业收入"),
+    ]
+
+    hits = retrieve_hybrid_pages(
+        queries,
+        pages,
+        {
+            "type": "hybrid_page",
+            "search_scope": "corpus",
+            "page_methods": ["bm25", "dense"],
+            "top_k": 2,
+            "candidate_top_k": 2,
+        },
+    )
+
+    assert [hit.query_id for hit in hits] == ["q1", "q1"]
+    assert {hit.page_id for hit in hits} == {"d1_p1", "d1_p2"}
+    assert all(hit.retriever == "hybrid_page" for hit in hits)
+    assert hits[0].page_id == "d1_p1"

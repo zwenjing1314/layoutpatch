@@ -70,13 +70,14 @@ def draw_overlay(
         y = height * i / GRID
         draw.line([(x, 0), (x, height)], fill=(0, 160, 255), width=1)
         draw.line([(0, y), (width, y)], fill=(0, 160, 255), width=1)
-    color_map = {"table_block": (255, 0, 0), "figure": (0, 180, 0), "paragraph": (255, 160, 0)}
+    color_map = {"table_block": (255, 0, 0), "figure": (0, 180, 0), "paragraph": (255, 160, 0), "gold": (255, 255, 0)}
     for row in rows:
         bbox = _parse_bbox(row.get("bbox"))
         if bbox is None:
             continue
         color = color_map.get(row["node_type"], (200, 0, 200))
-        draw.rectangle(bbox, outline=color, width=3)
+        width = 6 if row["node_type"] == "gold" else 3
+        draw.rectangle(bbox, outline=color, width=width)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     image.save(out_path, format="JPEG", quality=85)
     return out_path

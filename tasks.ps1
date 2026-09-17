@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke")]
   [string]$Task = "help"
 )
 
@@ -59,9 +59,18 @@ function Assert-UvColpaliCuda {
 function Assert-MmdocirFullData {
   $check = "import polars as pl, sys; root='data/processed/mmdocir_evaluation'; counts={name: pl.read_parquet(f'{root}/{name}.parquet').height for name in ['documents','pages','nodes','queries']}; print('full data counts:', counts); expected={'documents':313,'pages':20395,'nodes':170338,'queries':1658}; sys.exit(0 if counts == expected else 1)"
   Write-Host "CHECK: data/processed/mmdocir_evaluation must be the frozen full MMDocIR preparation"
-  & uv run --extra colpali python -c $check
+  & uv run python -c $check
   if ($LASTEXITCODE -ne 0) {
     throw "MMDocIR full data check failed. Run ./tasks.ps1 mmdocir-prepare without --limit-docs."
+  }
+}
+
+function Assert-BgeM3Cached {
+  $check = "from sentence_transformers import SentenceTransformer; m=SentenceTransformer('BAAI/bge-m3', local_files_only=True); print('bge-m3 ok:', m.get_sentence_embedding_dimension())"
+  Write-Host "CHECK: BAAI/bge-m3 must be loadable from local HF cache (local_files_only=True)"
+  & uv run python -c $check
+  if ($LASTEXITCODE -ne 0) {
+    throw "BAAI/bge-m3 is not in local cache. Download it first (e.g. huggingface-cli download BAAI/bge-m3). No TF-IDF fallback allowed for EXP-003/EXP-004."
   }
 }
 
@@ -72,6 +81,11 @@ switch ($Task) {
     Write-Host "  mmdocir-prepare       build MMDocIR parquet tables (needs raw data, see docs/01-quickstart.md)"
     Write-Host "  mmdocir-smoke         ColPali smoke retrieval (NOT REGISTERED YET)"
     Write-Host "  mmdocir-colpali-full  ColPali full page baseline (NOT REGISTERED YET)"
+    Write-Host "  mmdocir-bge-m3-full   BGE-M3 dense full page baseline EXP-003 (1A, requires local BAAI/bge-m3)"
+    Write-Host "  mmdocir-hybrid-full   BM25+BGE-M3 RRF hybrid full page baseline EXP-004 (1A)"
+    Write-Host "  phase1b-stratify      Phase 1B stratification + cases + gate support EXP-005 (1B, CPU)"
+    Write-Host "  phase1c-smoke         Phase 1C smoke 2 docs EXP-006 (needs GPU, cache-only pages)"
+    Write-Host "  phase1c-baselines     Phase 1C full 1343A/45B EXP-006 (needs GPU, cache-only pages)"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -108,5 +122,49 @@ switch ($Task) {
     Write-Host "RUN: uv run --extra colpali lp retrieve --config configs/experiments/mmdocir_colpali.yaml"
     & uv run --extra colpali lp retrieve --config configs/experiments/mmdocir_colpali.yaml
     if ($LASTEXITCODE -ne 0) { throw "full retrieve failed" }
+  }
+  "mmdocir-bge-m3-full" {
+    Assert-MmdocirFullData
+    Assert-BgeM3Cached
+    Show-ExpHeader -ExpId "EXP-003" -Config "configs/experiments/mmdocir_bge_m3_page.yaml" `
+      -Dataset "MMDocIR evaluation full (1658 queries)" -Output "runs/retrieval/mmdocir_bge_m3_page/"
+    Write-Host "RUN: uv run lp retrieve --config configs/experiments/mmdocir_bge_m3_page.yaml"
+    & uv run lp retrieve --config configs/experiments/mmdocir_bge_m3_page.yaml
+    if ($LASTEXITCODE -ne 0) { throw "bge-m3 retrieve failed" }
+  }
+  "mmdocir-hybrid-full" {
+    Assert-MmdocirFullData
+    Assert-BgeM3Cached
+    Show-ExpHeader -ExpId "EXP-004" -Config "configs/experiments/mmdocir_hybrid_page.yaml" `
+      -Dataset "MMDocIR evaluation full (1658 queries)" -Output "runs/retrieval/mmdocir_hybrid_page/"
+    Write-Host "RUN: uv run lp retrieve --config configs/experiments/mmdocir_hybrid_page.yaml"
+    & uv run lp retrieve --config configs/experiments/mmdocir_hybrid_page.yaml
+    if ($LASTEXITCODE -ne 0) { throw "hybrid retrieve failed" }
+  }
+  "phase1b-stratify" {
+    Assert-MmdocirFullData
+    Show-ExpHeader -ExpId "EXP-005" -Config "scripts/run_phase1b_stratify.py --k 5 --iou 0.5" `
+      -Dataset "MMDocIR evaluation full (1658 queries)" -Output "artifacts/diagnosis/mmdocir_evaluation/"
+    Write-Host "RUN: uv run python scripts/run_phase1b_stratify.py --k 5 --iou 0.5"
+    & uv run python scripts/run_phase1b_stratify.py --k 5 --iou 0.5
+    if ($LASTEXITCODE -ne 0) { throw "phase1b stratify failed" }
+  }
+  "phase1c-smoke" {
+    Assert-UvColpaliCuda
+    Assert-MmdocirFullData
+    Show-ExpHeader -ExpId "EXP-006-smoke" -Config "scripts/run_phase1c.py --limit-docs 2 --k 5 --iou 0.5" `
+      -Dataset "MMDocIR evaluation smoke (2 docs)" -Output "artifacts/baselines/mmdocir_1c/"
+    Write-Host "RUN: uv run --extra colpali python scripts/run_phase1c.py --limit-docs 2 --k 5 --iou 0.5"
+    & uv run --extra colpali python scripts/run_phase1c.py --limit-docs 2 --k 5 --iou 0.5
+    if ($LASTEXITCODE -ne 0) { throw "phase1c smoke failed" }
+  }
+  "phase1c-baselines" {
+    Assert-UvColpaliCuda
+    Assert-MmdocirFullData
+    Show-ExpHeader -ExpId "EXP-006" -Config "scripts/run_phase1c.py --k 5 --iou 0.5" `
+      -Dataset "MMDocIR evaluation full (1343A/45B)" -Output "artifacts/baselines/mmdocir_1c/"
+    Write-Host "RUN: uv run --extra colpali python scripts/run_phase1c.py --k 5 --iou 0.5"
+    & uv run --extra colpali python scripts/run_phase1c.py --k 5 --iou 0.5
+    if ($LASTEXITCODE -ne 0) { throw "phase1c baselines failed" }
   }
 }

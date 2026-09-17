@@ -7,9 +7,10 @@
 - search_scope（检索范围）：`document` 表示每个 query 只在自己文档的页里找
   （MMDocIR 的 1A 复验用这个）；`corpus` 表示全库 20395 页一起找。
   旧仓库 config 写 `document`，本仓库保持原样以保证复验可比。
-- 本文件只支持三页级检索器：`bm25_page`（本轮对照）、`dense_page`（本轮对照，
-  模型缺席时显式降级为 `dense:tfidf_fallback` 并记录在 hit 的 retriever 字段）、
-  `colpali_page`（本轮主角）。旧仓库的 hybrid/region/evidence_set/oracle 分支
+- 本文件支持四页级检索器：`bm25_page`（本轮对照）、`dense_page`（本轮对照，
+  模型缺席时显式降级为 `dense:tfidf_fallback` 并记录在 hit 的 retriever 字段；
+  正式实验必须 `require_model: true`）、`hybrid_page`（BM25+dense 的 RRF 融合对照）、
+  `colpali_page`（本轮主角）。旧仓库的 region/evidence_set/oracle 分支
   是开题中文年报方向或 1B 之后才用的，本轮不搬（见 MIGRATION_BATCHES 不进清单）。
 - `apply_data_split`：按文档级 split 切片。本轮 1A 全量复验不用 split（config 里不写
   `data_split` 即走全量），函数保留是为了 M3 的测试与将来 dev/test 划分。
@@ -131,10 +132,12 @@ def run_retrieval(config_path: Path, split_name: str | None = None) -> Path:
             config=retriever,
             search_scope=search_scope,
         )
+    elif retriever_type == "hybrid_page":
+        hits = retrieve_hybrid_pages(queries, pages, retriever)
     else:
         raise ValueError(
             f"Unsupported retriever type: {retriever_type}. "
-            "M3 supports bm25_page, dense_page, colpali_page."
+            "M3 supports bm25_page, dense_page, hybrid_page, colpali_page."
         )
 
     log_retrieval(
