@@ -59,7 +59,7 @@ uv run python scripts/run_phase1b_stratify.py --k 5 --iou 0.5
 | matched 1598（含 2 both 归 A：`mmdocir_00036/00491`） | 1598 | 1343 | 0 | 0 | 255 |
 | unmapped_only 60（45B+13D+2A 纯 unmapped 命中：`mmdocir_00520/00672`） | 60 | 2 | 45 | 0 | 13 |
 
-- B 类 45 题中 unmapped_only = **45（占比 100.0%）**；matched B = **0**。另按页命中口径：unmapped 页命中 47=45B+2A（2A 为纯 unmapped 命中）。
+- B 类 45 题中 unmapped_only = **45（占比 100.0%）**；matched B = **0**。47=45B+2A。
 - B 分母严格 45（见 EXP-006 第 3 节）。
 
 ### 8.2 扣掉 unmapped 后的可寻址 B（addressability.json 原样）
