@@ -13,7 +13,11 @@ What it does (beginner):
   (b) 45 B: dissolution rate, i.e. picked box hits the unmapped gold box
   (expected ~0 because the gold box has no candidate; negative result).
 - Aggregation grid: Snappy max/mean/iou x fixed coverage/iou_mass x grouping
-  eta P25/P50/P75. Outputs artifacts/baselines/mmdocir_1c/phase1c.json.
+  eta P25/P50/P75. Outputs artifacts/baselines/mmdocir_1c/phase1c.json plus
+  phase1c_picks.json (per-query Top-1 pick node_id per method for Text dual-track).
+
+Cost note: query encoding is GPU (same as EXP-001, batch=2); page vectors are
+cache-only. No training, no fusion/ subpackage, no train_fusion.py (ban intact).
 
 Cost note: query encoding is GPU (same as EXP-001, batch=2); page vectors are
 cache-only. No training, no fusion/ subpackage, no train_fusion.py (ban intact).
@@ -88,6 +92,7 @@ def main(
 
     nodes_rows = pl.read_parquet(processed / "nodes.parquet").to_dicts()
     nodes_by_page: dict[str, dict] = {}
+    node_text_by_id: dict[str, str] = {}
     for row in nodes_rows:
         bbox = row["bbox"]
         if isinstance(bbox, str):
@@ -95,6 +100,7 @@ def main(
         nodes_by_page.setdefault(row["page_id"], []).append(
             {"node_id": row["node_id"], "node_type": row["node_type"], "bbox": [float(v) for v in bbox]}
         )
+        node_text_by_id[row["node_id"]] = row.get("text", "") or ""
 
     if limit_docs is not None:
         docs = sorted({q["doc_id"] for q in queries.values()})[:limit_docs]
@@ -109,7 +115,7 @@ def main(
             top_pages.setdefault(hit["query_id"], []).append(hit["page_id"])
 
     # EXP-005 classes: A = page-hit + matched + topk_hit (1343); B = page-hit + topk_miss (45).
-    # Unmapped_only page-hit is 47 (45 B + 2 both-A); dissolution denominator must be strict B=45.
+    # Unmapped page-hit is 47 (45 B + 2 A pure-unmapped 00520/00672); dissolution denominator must be strict B=45.
     eval_a: list[str] = []
     eval_b: list[str] = []
     for qid in qids:
@@ -129,6 +135,7 @@ def main(
             "group:P25", "group:P50", "group:P75"]
     acc_a: dict[str, dict] = {g: {"hit": 0, "total": 0} for g in grid}
     dis_b: dict[str, dict] = {g: {"hit": 0, "total": 0} for g in grid}
+    picks_log: dict[str, dict[str, str | None]] = {}
 
     with torch.inference_mode():
         for pos, qid in enumerate(eval_a + eval_b, start=1):
@@ -180,6 +187,11 @@ def main(
                 hit_box = regions[idx]["bbox_orig"]
                 store[tag]["hit"] += 1 if bbox_iou(hit_box, gold_box) >= iou else 0
 
+            picks_log[qid] = {
+                tag: (regions[idx]["node_id"] if idx is not None and tag not in ("group:P25", "group:P50", "group:P75") else None)
+                for tag, idx in picks.items()
+            }
+
             if pos % 100 == 0 or pos == len(eval_a) + len(eval_b):
                 print(f"[1C] {pos}/{len(eval_a) + len(eval_b)} A={len(eval_a)} B={len(eval_b)} elapsed={time.monotonic() - started:.0f}s", flush=True)
 
@@ -191,6 +203,11 @@ def main(
         "elapsed_s": round(time.monotonic() - started, 1),
     }
     (out_dir / ("phase1c_smoke.json" if limit_docs else "phase1c.json")).write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    if not limit_docs:
+        (out_dir / "phase1c_picks.json").write_text(
+            json.dumps({"meta": {"k": k, "iou_threshold": iou, "methods": grid,
+                                 "note": "per-query Top-1 pick node_id for fixed-candidate methods; group methods are self-drawn boxes (None); for Text dual-track scoring"},
+                        "picks": picks_log}, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

@@ -56,11 +56,9 @@ def main(n_queries: int = 20, k: int = 5, iou: float = 0.5) -> None:
     from colpali_engine.models import ColPali, ColPaliProcessor
     from colpali_engine.utils.torch_utils import get_torch_device
 
-    t0 = time.monotonic()
     device = get_torch_device("auto")
     model = ColPali.from_pretrained("vidore/colpali", torch_dtype=torch.bfloat16, device_map=device).eval()
     processor = ColPaliProcessor.from_pretrained("vidore/colpali")
-    load_s = time.monotonic() - t0
 
     processed = data_root() / "processed" / "mmdocir_evaluation"
     run_dir = __import__("pathlib").Path("runs/retrieval/mmdocir_colpali/20260916_134144")
@@ -92,17 +90,21 @@ def main(n_queries: int = 20, k: int = 5, iou: float = 0.5) -> None:
         if len(subset) == n_queries:
             break
 
-    # probe 1: pure query-encode latency + peak
+    # probe 1: pure query-encode latency + peak (drop first = warmup; report incremental only)
     lat_ms: list[float] = []
     peak_mb: list[float] = []
+    torch.cuda.reset_peak_memory_stats()
+    base_mb = torch.cuda.max_memory_allocated() / 1024**2  # model weights baseline
     with torch.inference_mode():
-        for qid in subset:
+        for _pos, qid in enumerate(subset):
             torch.cuda.reset_peak_memory_stats()
             s = time.perf_counter()
             _ = model(**processor.process_queries([queries[qid]["question"]]).to(model.device))
             torch.cuda.synchronize()
             lat_ms.append((time.perf_counter() - s) * 1000)
             peak_mb.append(torch.cuda.max_memory_allocated() / 1024**2)
+    lat_ms = lat_ms[1:]  # drop warmup (first encode includes lazy init)
+    peak_mb = peak_mb[1:]
 
     # probe 2: box-select on one fixed page (first subset query's top-1 gold page)
     qid0 = subset[0]
@@ -116,17 +118,31 @@ def main(n_queries: int = 20, k: int = 5, iou: float = 0.5) -> None:
         qvec = model(**processor.process_queries([queries[qid0]["question"]]).to(model.device)).float()
         qvec = normalize(qvec.cpu(), dim=-1)
     pscores = patch_scores_from_vectors(qvec, pvec)
+    # probe 2: per-branch box-select timing (CPU IoU aggregation; GPU already synced)
+    branch_ms: dict[str, float] = {}
     torch.cuda.reset_peak_memory_stats()
     s = time.perf_counter()
     top1_pick(propagate_region_scores(pscores, regions, "max"))
+    branch_ms["snappy_max"] = (time.perf_counter() - s) * 1000
+    s = time.perf_counter()
     top1_pick(propagate_region_scores(pscores, regions, "mean"))
+    branch_ms["snappy_mean"] = (time.perf_counter() - s) * 1000
+    s = time.perf_counter()
     top1_pick(propagate_region_scores(pscores, regions, "iou"))
+    branch_ms["snappy_iou"] = (time.perf_counter() - s) * 1000
+    s = time.perf_counter()
     top1_pick(coverage_region_scores(pscores, regions, "coverage"))
+    branch_ms["fixed_coverage"] = (time.perf_counter() - s) * 1000
+    s = time.perf_counter()
     top1_pick(coverage_region_scores(pscores, regions, "iou_mass"))
-    for q in (0.25, 0.50, 0.75):
+    branch_ms["fixed_iou_mass"] = (time.perf_counter() - s) * 1000
+    group_ms: dict[str, float] = {}
+    for tag, q in (("P25", 0.25), ("P50", 0.50), ("P75", 0.75)):
+        s = time.perf_counter()
         salient_groups(pscores, _quantile(pscores, q))
+        group_ms[tag] = (time.perf_counter() - s) * 1000
     torch.cuda.synchronize()
-    select_ms = (time.perf_counter() - s) * 1000
+    select_ms = sum(branch_ms.values()) + sum(group_ms.values())
     select_peak = torch.cuda.max_memory_allocated() / 1024**2
 
     # text-index weighing: what is persisted vs missing by construction
@@ -136,14 +152,17 @@ def main(n_queries: int = 20, k: int = 5, iou: float = 0.5) -> None:
         weighed[name] = round(p.stat().st_size / 1024**2, 2) if p.exists() else None
 
     result = {
-        "meta": {"n_queries": len(subset), "k": k, "iou": iou, "device": str(device), "model_load_s": round(load_s, 1),
-                 "note": "probes only; no re-rank; text-index cells stay 缺 (vectors computed on the fly, never persisted)"},
+        "meta": {"n_queries": len(lat_ms), "k": k, "iou": iou, "device": str(device),
+                 "model_weights_MB": round(base_mb, 1),
+                 "note": "probes only; no re-rank; warmup dropped; peak reports incremental over weights baseline; text-index cells stay MISSING (vectors computed on the fly, never persisted)"},
         "query_encode_latency_ms": {"n": len(lat_ms), "mean": round(sum(lat_ms) / len(lat_ms), 1), "p50": round(sorted(lat_ms)[len(lat_ms) // 2], 1), "max": round(max(lat_ms), 1)},
-        "query_encode_peak_MB": {"mean": round(sum(peak_mb) / len(peak_mb), 1), "max": round(max(peak_mb), 1)},
+        "query_encode_peak_MB": {"mean": round(sum(peak_mb) / len(peak_mb) - base_mb, 1), "max": round(max(peak_mb) - base_mb, 1), "baseline_weights_MB": round(base_mb, 1)},
         "box_select_7way_ms": round(select_ms, 1),
-        "box_select_peak_MB": round(select_peak, 1),
+        "box_select_branch_ms": {tag: round(v, 1) for tag, v in branch_ms.items()},
+        "box_select_group_ms": {tag: round(v, 1) for tag, v in group_ms.items()},
+        "box_select_peak_MB": round(select_peak - base_mb, 1),
         "persisted_predictions_MB": weighed,
-        "text_index_weighed": "缺 (BM25 inverted + BGE page vectors never persisted; see persisted_predictions_MB for output-only sizes, not index)",
+        "text_index_weighed": "MISSING (BM25 inverted + BGE page vectors never persisted; see persisted_predictions_MB for output-only sizes, not index)",
     }
     out_dir = artifacts_dir() / "baselines" / "mmdocir_1c"
     out_dir.mkdir(parents=True, exist_ok=True)

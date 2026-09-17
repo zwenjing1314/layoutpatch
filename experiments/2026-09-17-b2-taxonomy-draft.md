@@ -17,7 +17,7 @@
 
 - **B2-a 框缺失型（45/45 B）**：gold 框不在 nodes 表，固定五档消解率全 0.0；group 碰框 0.6889/0.3556/0.0889 为大框碰大框虚高，不计消解（P25→P75 单调降即证据）。
 - **B2-b 排序缺口型（1343A 内约 68% Top-1 未中）**：框在但排不到第一；iou_mass（0.3187）> snappy-iou（0.2621）> max/mean（约0.10），说明尺寸归一化比局部峰值重要。
-- **B2-c 口径约束型（D=268=255 页未中 matched D + 13 unmapped_only D；另 2 题 matched 内 both 归 A）**：255 题 matched 但页未中故不在 1C 集；13 题 unmapped_only 页未中；2 题 both（`mmdocir_00036/00491`）命中来自 matched 行，归 A 不归 B。D 总 268=255+13，A 总 1345=1343+2，B=45，全量 1658=1343+45+2+255+13。
+- **B2-c 口径约束型（D=268=255 matched D 页未中 + 13 unmapped_only D 页未中）**：255 题 matched 但页未中故不在 1C 集；13 题 unmapped_only 页未中；A 总 1345=1343（matched A）+2（unmapped_only A 纯 unmapped 命中 `mmdocir_00520/00672`）；both 题 `mmdocir_00036/00491`（既有 matched 行又有 unmapped 行）在 matched 行内归 A。全量 1658=1343+45+2+255+13。
 
 ## 与 11.2/11.3 的对照（只摆数字，不选择）
 

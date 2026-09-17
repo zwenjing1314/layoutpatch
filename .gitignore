@@ -37,8 +37,9 @@ tmp/
 *.jpeg
 *.xlsx
 
-# Thesis figures are curated small artifacts, tracked explicitly
-!docs/figures/**
+# Thesis figures are curated small artifacts, tracked explicitly (two-file whitelist)
+!docs/figures/case_A_success.jpg
+!docs/figures/case_M_middle.jpg
 
 # Keep placeholder files that mark empty directories
 !.gitkeep
