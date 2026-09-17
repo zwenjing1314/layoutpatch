@@ -43,10 +43,10 @@
 
 ## 配置与分支状态
 
-- 当前分支：`master`，最新 `45af9c0 feat(phase1b): abcd gap diagnosis with formal region IoU metric`；工作区改动见下。
-- 未提交改动：本轮只改文档（`handoff.md`、`MIGRATION_BATCHES.md`、`02-commands.md`、`00-index.md`、`CHANGELOG.md`），代码与产物无改动；`data/`（约 12GB）/`artifacts/`/`runs/` 产物不进 git。
+- 当前分支：`master`，最新 `7312bb8 exp(mmdocir):登记EXP-003至EXP-006与1B关门1C决策材料`；工作区干净，仅剩 `docs/figures/` 未跟踪（`layoutpatch_network_framework.svg`，非本批产物，待确认是否入库）。
+- 未提交改动：无（本轮代码/配置/文档均已分 3 个 commit 提交）；`data/`（约 12GB）/`artifacts/`/`runs/` 产物不进 git。
 - 工作中 config：`configs/experiments/mmdocir_colpali.yaml`（EXP-001 冻结基线）、`configs/experiments/mmdocir_bm25_page.yaml`（BM25 对照 run `20260915_215504`，R@5=0.7521）、`configs/experiments/mmdocir_bge_m3_page.yaml`（EXP-003 新建已跑）+ `configs/experiments/mmdocir_hybrid_page.yaml`（EXP-004 新建已跑）。
-- 最近 commits：`45af9c0`（EXP-002 诊断）← `c7a817c`（叠图页号修复）← `dfd2ab2`（审计机器门限）← `ffd11d0`（数据路径隔离）← `883dd41`（规则 4.4 后台执行+指令透明）。
+- 最近 commits：`7312bb8`（EXP-003~006 登记）← `397edce`（BGE/Hybrid config）← `1b0bfb4`（hybrid分支/关门脚本/1C三基线）← `74aa05a`（M4 交接）← `45af9c0`（EXP-002 诊断）。
 
 ## 实验讲解规则（新窗口必读，docs/RULES.md 第 0.2 节）
 
