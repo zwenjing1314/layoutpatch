@@ -30,8 +30,8 @@
 - 有：缓存 5.05GB（0.254MB/页）；探针清洗后（n=19 去 warmup，权重基座 5653.3MB）query 编码 mean 38.1ms/p50 35.1ms/max 62.8ms、增量 mean 28.1MB；七档选框合计 243.0ms（分档 max 10.8/mean 9.8/iou 10.4/coverage 6.5/iou_mass 5.4/P25 1.0/P50 7.4/P75 191.7ms，P75 碎裂组数多故最贵）、增量 8.1MB；k+1 原文向量数/延迟/页级数（LFRAG 块均 2.79/页、生成 token 减 67.9~77.7%；ColParse 均约 5.9/页、α0.6~0.8、GME-7B 0.81s/文档；页码表号见 B1 表）。
 - 源：`experiments/2026-09-17-eff-b1.md` + `artifacts/baselines/mmdocir_1c/phase1c_probes.json`。
 
-## 5. 待判（三个问题，不选择）
+## 5. 待判（三个问题，只摆数不选择）
 
-1. B2 分类学是否足以撑"诊断+基准"型小论文，还是需补 Text Top-1 跨方法对照（本轮已出五档方法分，见 §3；是否再跑显著性检验由导师定）？
-2. B1 缺格是否补测全量延迟/显存，还是维持草稿现状（探针已清洗但仍为单页，见 §4）？
-3. B3 跨页表格是否立项（需另立 Gate，本轮无跨页统计，不自动 fallback）？
+1. B2 分类学是否足以撑"诊断+基准"型小论文？本轮数：EXP-005 三笔账：matched 1598=1343A+255D 含 2 both 归 A（`mmdocir_00036/00491`）、unmapped_only 60=45B+13D+2A 纯 unmapped 命中（`mmdocir_00520/00672`）、47=45B+2A；可寻址 B 0/1390=0.0、0/1598=0.0；oracle 1600/1658=96.50%、1345/1390=96.76%，未中 58=45+13，B 为 58 真子集。EXP-006 Top-1 最高 428/1343=0.3187（fixed:iou_mass），与 0.8112 候选召回不可比。Text 方法分（n=1388 中 NaN 53/有效 1335；group 三档未跑）：fixed:iou_mass Recall 0.3455/F1 0.3341，snappy:iou 0.2716/0.2712，coverage 0.2708/0.2704，max/mean 约 0.09~0.10，oracle 上界 0.9101/0.9101；大框超 50% 置零 341 格（分档 max 58/mean 58/iou 72/coverage 72/iou_mass 81）；IoU 未中但 Text≥0.8 组双口径 n=0（condition-not-met，本口径恒为空）。是否再跑显著性检验由导师定，agent 不选择。
+2. B1 缺格是否补测全量延迟/显存，还是维持草稿现状？本轮数：清洗探针（cuda:0，n=19 去 warmup，权重基座 5653.3MB）query 编码 mean 38.1ms/p50 35.1ms/max 62.8ms、增量 mean 28.1MB/max 46.1MB；七档选框合计 243.0ms（分档 max 10.8/mean 9.8/iou 10.4/coverage 6.5/iou_mass 5.4/P25 1.0/P50 7.4/P75 191.7ms，P75 碎裂组数多故最贵）、增量 8.1MB；文本索引缺（BM25 倒排 + BGE 页向量从未落盘）；k+1 引用值 LFRAG 块均 2.79/页、ColParse 均约 5.9/页（页码表号见 B1 表），索引 GB 与检索延迟/显存原文未单列维持缺。探针为单页单点，不可推广全量。补测与否由导师定，agent 不选择。
+3. B3 跨页表格是否立项？本轮数：无跨页样本统计，不自动 fallback，需另立 Gate 与协议。立项与否由导师定，agent 不选择。
