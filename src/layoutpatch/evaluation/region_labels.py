@@ -12,7 +12,7 @@
 - query_id / doc_id / page_id：定位到哪次查询、哪份文档、哪一页；
 - node_id：能对上 nodes 表时填真实 node_id，对不上时填空字符串；
 - bbox：原图绝对像素 [x1,y1,x2,y2]，与官方 annotations 一致；
-- page_size：同页 `page_size` [W,H]，Snappy 式缩放到 448 模型坐标时用；
+- page_size：同页 `page_size` [W,H]，三用途指引见 EXP-006 §3（Snappy 缩 448 / 面积归一分箱 / 防刷分母）；本字段冻结只读；
 - source：matched（对上节点）或 unmapped（官方有框但 nodes 无对应）。
 """
 
