@@ -101,7 +101,7 @@ uv run python scripts/run_phase1b_audit.py --limit-pages 50   # 快速试扫
 uv run python scripts/run_phase1b_stratify.py --k 5 --iou 0.5
 ```
 
-- 输入：EXP-001 run 的 `predictions.parquet`（Top-5）+ `nodes.parquet` + `region_labels.parquet`（2638 行）+ `queries.parquet`（问题类型）
+- 输入：EXP-001 run 的 `predictions.parquet`（Top-5）+ `nodes.parquet` + `region_labels.parquet`（2638 行：matched 2523 + unmapped 115；题级 matched 1598/unmapped_only 60；`page_size` 冻结只读）+ `queries.parquet`（问题类型）
 - 输出：`artifacts/diagnosis/mmdocir_evaluation/` 下 `stratification.json`（分层表，`meta` 含 k/iou/面积均值定义/三分位点）+ `cases.json`（成功 10/失败 10/中间态 10 + `meta` 三档定义）+ `crosstab.json` + `addressability.json` + `oracle.json` + `strat_area_hist.png/json` + `strat_cov_hist.png/json` + `overlays_cases/*.jpg`（极值 20）+ `overlays_cases_mid/*.jpg`（中间态 10）
 - 检查（小论文执行规范 `docs/PAPER_SPEC.md` 第 7.3 节）：分层键=问题类型归一化/面积均值三分位/OCR 密度均值三分位；成功=A 类 IoU 最高 10；失败=B 类 IoU 最低 10；中间态=B 类多样贪心 10；C_topk=0 为定义性结果不许写成发现；记录页 `experiments/2026-09-17-exp-005-gate-closeout.md` + registry EXP-005 行
 
@@ -112,9 +112,9 @@ uv run python scripts/run_phase1b_stratify.py --k 5 --iou 0.5
 ./tasks.ps1 phase1c-baselines
 ```
 
-- 输入：EXP-001 Top-5 + `nodes.parquet` + `region_labels.parquet` + 冻结 ColPali 缓存（页向量缓存-only，query 文本塔 GPU 编码）
-- 输出：`artifacts/baselines/mmdocir_1c/phase1c_smoke.json`（冒烟 10A/0B）+ `phase1c.json`（全量 1343A/45B：Snappy max/mean/iou + 固定 coverage/iou_mass + 分组 P25/P50/P75）
-- 检查（小论文执行规范 `docs/PAPER_SPEC.md` 第 7.4 节）：A Top-1 选框准确率 + B 消解率；B 分母为严格 45（非 47）；group 的 B 碰框率虚高不计消解；记录页 `experiments/2026-09-17-exp-006-phase1c.md` + registry EXP-006 行
+- 输入：EXP-001 Top-5 + `nodes.parquet` + `region_labels.parquet`（冻结只读）+ 冻结 ColPali 缓存（页向量缓存-only，query 文本塔 GPU 编码）
+- 输出：`artifacts/baselines/mmdocir_1c/phase1c_smoke.json`（冒烟 10A/0B）+ `phase1c.json`（全量 1343A/45B：Snappy max/mean/iou + 固定 coverage/iou_mass + 分组 P25/P50/P75）+ `phase1c_picks.json`（1388 题逐题五档 picks，供 Text 双轨）+ `phase1c_probes.json`（`run_phase1c_probes.py` 清洗探针：cuda:0，n=19 去 warmup，权重基座 5653.3MB；query 编码 mean 38.1ms；七档选框合计 243.0ms，P75 191.7ms 最贵；单页单点不可推广）
+- 检查（小论文执行规范 `docs/PAPER_SPEC.md` 第 7.4 节）：A Top-1 选框准确率（最高 0.3187 fixed:iou_mass）+ B 消解率（固定五档全 0.0）；B 分母为严格 45（非 47=45B+2A）；group 的 B 碰框率虚高不计消解；`page_size` 三用途行号见 EXP-006§3；记录页 `experiments/2026-09-17-exp-006-phase1c.md` + registry EXP-006 行
 
 ## phase1b-abcd（已实现，批次 M4，EXP-002）
 

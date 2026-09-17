@@ -8,8 +8,8 @@
 
 - 项目：LayoutPatch（布局约束的文档侧 patch 融合），旧仓库 `mmdoc-evidence-rag` 迁移而来，保持只读，永不修改。
 - 目标：ColPali 页级已达 R@5=0.8390，在此之上长出页内区域定位能力，约束见 `docs/PAPER_SPEC.md` 第 5 节（单次编码/不裁剪/MaxSim 接口不动）。
-- 关键结论速记：EXP-001 复验通过（R@5=0.8390 逐位一致）→ 叠图曾因"页号差一"全错，已修（`c7a817c`）→ 机器审计 Gate 通过（越界 1/170338）→ EXP-002 A/B/C/D 首次诊断：B 类仅 3.24%（45/1390），Top-K 内 C=0 为定义性结果（区域命中要求页命中，不许写成发现） → EXP-003 BGE-M3（R@5=0.7750）/ EXP-004 Hybrid（R@5=0.7883）补齐第 7.2 节四基准 → EXP-005 关门：matched 1598=1343A+255D含2 both归A；unmapped_only 60=45B+13D+2A纯unmapped命中；可寻址 B 双分母均为 0.0（离 10% 线低 10pp）；oracle 页命中内 96.76%/全量 96.50%；自匹配 5 题 IoU 全 1.0（候选召回上限非排序能力；B 是 oracle 未中 58 题真子集） → EXP-006 实测 1C：1343A Top-1 最高 0.3187，45B 固定五档消解全 0.0，不进 Phase 2 转收缩。
-- 当前位置：`docs/MIGRATION_BATCHES.md` 批次 5 已跑完（Phase 1C，`docs/PAPER_SPEC.md` 第 7.4 节三基线 + P25/P50/P75，registry 为 EXP-006）；下一步是与导师按 11.2/11.3 共判收缩（B1/B2）。
+- 关键结论速记：EXP-001 复验通过（R@5=0.8390 逐位一致）→ 叠图曾因"页号差一"全错，已修（`c7a817c`）→ 机器审计 Gate 通过（越界 1/170338）→ EXP-002 A/B/C/D 首次诊断：B 类仅 3.24%（45/1390），Top-K 内 C=0 为定义性结果（区域命中要求页命中，不许写成发现） → EXP-003 BGE-M3（R@5=0.7750）/ EXP-004 Hybrid（R@5=0.7883）补齐第 7.2 节四基准 → EXP-005 关门：matched 1598=1343A+255D含2 both归A（`mmdocir_00036/00491`）；unmapped_only 60=45B+13D+2A纯unmapped命中（`mmdocir_00520/00672`）；47=45B+2A；可寻址 B 双分母均为 0.0（离 10% 线低 10pp）；oracle 页命中内 96.76%/全量 96.50%；自匹配 5 题 IoU 全 1.0（行级抽样已避开 both 编号；候选召回上限非排序能力；B 是 oracle 未中 58 题真子集） → EXP-006 实测 1C：1343A Top-1 最高 0.3187，45B 固定五档消解全 0.0，不进 Phase 2 转收缩 → 关门加固（`bd24fcb/c29b2ff/5356ba9/6b17287/88334aa/ded49bf/4bbc40c/447460f`）：registry EXP-006 回填 query_count=1658（region 格为 Top-1 口径 0.3187，与 0.8112 不可比）；`pyproject.toml` 显式声明 `matplotlib`；`docs/figures/` 白名单两张代表压缩图（`case_A_success.jpg` 114920B + `case_M_middle.jpg` 71830B，SVG 已删）；Text 双轨同一 picks 方法分 + 探针清洗 + 决策包三问摆数已定稿。
+- 当前位置：`docs/MIGRATION_BATCHES.md` 批次 5 已跑完并关门加固完（Phase 1C + Text 双轨 + B1/B2/决策包，registry 为 EXP-006）；`./tasks.ps1 check` 44 绿，干净树 `447460f`；下一步是与导师按 11.2/11.3 共判收缩（B1/B2），agent 只摆数不选择。
 
 ## 当前 Phase 与 Gate 状态
 
@@ -38,15 +38,28 @@
 | EXP-002 | `artifacts/diagnosis/mmdocir_evaluation/abcd_diagnosis.json`（静态诊断，无 run 目录） | Phase 1B A/B/C/D：A=1345 B=45 C=0 D=268；B 占页命中 3.24%；Top-K 内 C=0 为定义性结果（区域命中要求页命中） | 是（1B 主表；口径修正见 EXP-005） |
 | EXP-003 | `runs/retrieval/mmdocir_bge_m3_page/20260917_113452` | Phase 1A BGE-M3 dense（CPU 约 13.4 分钟）：R@5=0.7750/R@1=0.4783/MRR=0.6118；actual_retrievers=dense:BAAI/bge-m3 无降级 | 是（文本 dense 基线） |
 | EXP-004 | `runs/retrieval/mmdocir_hybrid_page/20260917_115238` | Phase 1A Hybrid RRF k=60（CPU 约 13.5 分钟）：R@5=0.7883 高于 BM25/BGE 单路，低于 ColPali | 是（融合对照基线） |
-| EXP-005 | `artifacts/diagnosis/mmdocir_evaluation/crosstab.json` + `addressability.json` + `oracle.json` + `strat_*_hist.png/json` + `overlays_cases/`（20）+ `overlays_cases_mid/`（10） | Phase 1B 关门：matched 1598=1343A+255D含2 both归A；unmapped_only 60=45B+13D+2A纯unmapped命中；可寻址 B 双分母 0.0（离 10% 线低 10pp）；oracle 页命中内 96.76%/全量 96.50%；自匹配 5 题全 1.0（召回上限非排序能力；B 是 58 真子集） | 是（第 7.3 节关门证据；30 张待抽查） |
-| EXP-006 | `artifacts/baselines/mmdocir_1c/phase1c.json`（全量 1343A/45B，约 225 秒）+ `phase1c_smoke.json`（冒烟 10A/0B） | Phase 1C 实测：A Top-1 最高 0.3187（fixed:iou_mass）；B 固定五档消解全 0.0（group 碰框虚高不计）；不进 Phase 2 转收缩 | 是（第 7.4 节决策材料；B 分母严格 45） |
+| EXP-005 | `artifacts/diagnosis/mmdocir_evaluation/crosstab.json` + `addressability.json` + `oracle.json` + `strat_*_hist.png/json` + `overlays_cases/`（20）+ `overlays_cases_mid/`（10） | Phase 1B 关门：matched 1598=1343A+255D含2 both归A；unmapped_only 60=45B+13D+2A纯unmapped命中；47=45B+2A；可寻址 B 双分母 0.0（离 10% 线低 10pp）；oracle 页命中内 96.76%/全量 96.50%；自匹配 5 题全 1.0（行级抽样避开 both） | 是（第 7.3 节关门证据；30 张待抽查） |
+| EXP-006 | `artifacts/baselines/mmdocir_1c/phase1c.json`（全量 1343A/45B，约 225 秒）+ `phase1c_smoke.json`（冒烟 10A/0B）+ `phase1c_picks.json`（1388 题逐题五档 picks）+ `phase1c_probes.json`（20 题清洗探针） | Phase 1C 实测：A Top-1 最高 0.3187（fixed:iou_mass）；B 固定五档消解全 0.0（group 碰框虚高不计）；不进 Phase 2 转收缩 | 是（第 7.4 节决策材料；B 分母严格 45） |
+
+## 关门加固产出（2026-09-18 全部入库，新窗口直接引用）
+
+| 产物 | 位置 | 一句话 |
+| --- | --- | --- |
+| Text 双轨方法分 | `artifacts/diagnosis/mmdocir_evaluation/text_dual.json` + `scripts/run_text_dual.py` | 同一 stored picks 方法分：fixed:iou_mass Recall 0.3455/F1 0.3341，snappy:iou 0.2716/0.2712，coverage 0.2708/0.2704，max/mean 约 0.09~0.10，oracle 上界 0.9101；分母 n=1388 中 NaN 53/有效 1335；大框超 50% 置零 341 格（分档 max58/mean58/iou72/coverage72/iou_mass81）；IoU 未中但 Text≥0.8 组双口径 n=0（本口径恒为空非经验为零）；group 三档未跑（自组框无文本，明写未跑） |
+| B1 效率表 | `experiments/2026-09-17-eff-b1.md` | 9.4 一行表 8 行（ColPali/Hybrid/BGE/Snappy/固定/分组 + LFRAG/ColParse 引用值行）；探针清洗（n=19 去 warmup，权重基座 5653.3MB）query 编码 mean 38.1ms/p50 35.1ms/max 62.8ms 增量 mean 28.1MB；七档选框合计 243.0ms 分档（P75 191.7ms 最贵：高阈值→hot 少→连通域碎裂→组数多→逐组包围盒开销大，与 P25 1.0ms 成反比）；k+1 引用值已补原文页码表号（LFRAG 表2/表3/图1/§4.1，块均 2.79/页；ColParse 表1/表8/图6/§4.2.3-4，均约 5.9/页）；缺格明写（全量延迟/显存/文本索引大小/索引 GB），维持草稿不许引用为对照 |
+| B2 失败分类学 | `experiments/2026-09-17-b2-taxonomy-draft.md` | 四数并列：45B 全 unmapped_only + oracle 58 缺框（45⊆58）+ 1343A Top-1 0.3187 排序缺口 + Text 方法分；三类 B2-a 框缺失/B2-b 排序缺口/B2-c 口径约束（D=268=255+13）；只摆数不做选择 |
+| 导师决策包 | `experiments/2026-09-18-advisor-decision-pack.md` | §1 B 占比 3.24% 且可寻址 0；§2 Snappy 最好消解 0/45；§3 A Top-1 0.3187 与 0.8112 不可比 + Text 方法分；§4 效率缺格清单；§5 三问（B2 够否/B1 补测否/B3 立项否）只摆数不选择 |
+| 术语终结 | registry EXP-005 行 + EXP-005§8.1 + B2-c + 决策包§1 四处 | 统一写法：matched 1598=1343A+255D含2 both归A（`mmdocir_00036/00491`）；unmapped_only 60=45B+13D+2A纯unmapped命中（`mmdocir_00520/00672`）；47=45B+2A；不许第四种写法 |
+| page_size 冻结 | EXP-006§3 三用途行号 + `region_labels.py` 字段声明 | Snappy 缩 448（`propagation.py:68`，定义 `correspondence.py:28`）；面积归一分箱（`run_phase1b_stratify.py:148`，覆盖 `:161`）；防刷分母（`run_text_dual.py:110,135`）；`region_labels.parquet` 冻结只读不写 |
+| figures | `docs/figures/case_A_success.jpg`（114920B）+ `case_M_middle.jpg`（71830B） | 两张代表压缩图已入库（长边 800px quality65）；SVG 框架图已删（待收缩方向确定后按 B1/B2 重画）；白名单见 `.gitignore` |
 
 ## 配置与分支状态
 
-- 当前分支：`master`，最新 `7312bb8 exp(mmdocir):登记EXP-003至EXP-006与1B关门1C决策材料`；工作区干净，仅剩 `docs/figures/` 未跟踪（`layoutpatch_network_framework.svg`，非本批产物，待确认是否入库）。
-- 未提交改动：无（本轮代码/配置/文档均已分 3 个 commit 提交）；`data/`（约 12GB）/`artifacts/`/`runs/` 产物不进 git。
-- 工作中 config：`configs/experiments/mmdocir_colpali.yaml`（EXP-001 冻结基线）、`configs/experiments/mmdocir_bm25_page.yaml`（BM25 对照 run `20260915_215504`，R@5=0.7521）、`configs/experiments/mmdocir_bge_m3_page.yaml`（EXP-003 新建已跑）+ `configs/experiments/mmdocir_hybrid_page.yaml`（EXP-004 新建已跑）。
-- 最近 commits：`7312bb8`（EXP-003~006 登记）← `397edce`（BGE/Hybrid config）← `1b0bfb4`（hybrid分支/关门脚本/1C三基线）← `74aa05a`（M4 交接）← `45af9c0`（EXP-002 诊断）。
+- 当前分支：`master`，最新 `447460f docs(decision):决策包三问摆数更新禁令重申`；工作区干净（`git status --short` 空），`docs/figures/` 两张代表图已入库（SVG 已删，白名单见 `.gitignore` 末尾两行 `!docs/figures/case_A_success.jpg` / `!docs/figures/case_M_middle.jpg`）。
+- 未提交改动：无；`data/`（约 12GB）/`artifacts/`/`runs/` 产物不进 git。
+- 工作中 config：`configs/experiments/mmdocir_colpali.yaml`（EXP-001 冻结基线）、`configs/experiments/mmdocir_bm25_page.yaml`（BM25 对照 run `20260915_215504`，R@5=0.7521）、`configs/experiments/mmdocir_bge_m3_page.yaml`（EXP-003）+ `configs/experiments/mmdocir_hybrid_page.yaml`（EXP-004）。
+- 最近 commits（关门链）：`447460f`（决策包三问摆数）← `4bbc40c`（page_size 字段冻结指引）← `ded49bf`（超大框降级猜测/page_size 三用途/行级抽样注记）← `88334aa`（Text 分母拆档+恒空声明+B1 探针解释）← `6b17287`（术语终结+Text 方法分+清洗探针）← `5356ba9`（figures 入库+术语修正+B1B2 决策包）← `c29b2ff`（两张代表图记账）← `bd24fcb`（EXP-006 回填 1658+Top-1 口径+B1B2 草稿）← `dbde18f`（handoff 同步）← `7312bb8`（EXP-003~006 登记）。
+- 质量门：`./tasks.ps1 check` 44 绿（ruff + 44 pytest，2026-09-18 最新一轮）。
 
 ## 实验讲解规则（新窗口必读，docs/RULES.md 第 0.2 节）
 
