@@ -21,3 +21,8 @@
 | config | 状态 | 说明 |
 | --- | --- | --- |
 | `configs/datasets/mmdocir.yaml` | working | MMDocIR evaluation 数据集主配置，环境变量已改为 `LAYOUTPATCH_*` |
+| `configs/experiments/mmdocir_colpali.yaml` | frozen | EXP-001 Phase 1A ColPali 基线（`colpali_page/document/top_k=20/batch 1-2-4`），R@5=0.8390；改动需新版本 |
+| `configs/experiments/mmdocir_bm25_page.yaml` | working | Phase 1A BM25 对照（`bm25_page/document/top_k=20`） |
+| `configs/experiments/mmdocir_colpali_smoke.yaml` | working | smoke 限流（2 文档），不进论文 |
+| `configs/experiments/mmdocir_bge_m3_page.yaml` | working | EXP-003 Phase 1A dense 对照（`dense_page/document/BAAI/bge-m3/require_model=true/top_k=20`，禁 TF-IDF 降级） |
+| `configs/experiments/mmdocir_hybrid_page.yaml` | working | EXP-004 Phase 1A Hybrid 对照（`hybrid_page/document/page_methods=[bm25,dense]/RRF k=60/candidate_top_k=20`） |

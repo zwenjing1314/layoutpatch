@@ -1,0 +1,12 @@
+experiment_name: mmdocir_hybrid_page
+dataset: mmdocir_evaluation
+retriever:
+  type: hybrid_page
+  search_scope: document
+  page_methods: [bm25, dense]
+  encoder: BAAI/bge-m3
+  require_model: true
+  top_k: 20
+  candidate_top_k: 20
+  dense_batch_size: 8
+output_dir: runs/retrieval/mmdocir_hybrid_page

@@ -1,0 +1,10 @@
+experiment_name: mmdocir_bge_m3_page
+dataset: mmdocir_evaluation
+retriever:
+  type: dense_page
+  search_scope: document
+  encoder: BAAI/bge-m3
+  require_model: true
+  top_k: 20
+  dense_batch_size: 8
+output_dir: runs/retrieval/mmdocir_bge_m3_page
