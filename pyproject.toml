@@ -11,6 +11,7 @@ dependencies = [
   "faiss-cpu",
   "huggingface-hub",
   "loguru",
+  "matplotlib",
   "numpy",
   "opencv-python",
   "openpyxl",
