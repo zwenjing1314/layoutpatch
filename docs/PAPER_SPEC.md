@@ -27,13 +27,13 @@ Documents/论文第三阶段阅读/  8 篇原文 PDF（唯一事实来源，旧�
 
 > ColPali 的视觉 patch 表示能找到相关页面，但能否在**不裁剪页面、不重复视觉编码、保持 MaxSim 接口**的条件下，利用 OCR/Layout 结构改善**页面内证据区域定位**？
 
-### 1.2 三个正式研究问题
+### 1.2 三个正式研究问题（2026-09-18 修订：与 MMDocIR 官方口径对齐）
 
-- **RQ1（缺口是否存在）：** 页面命中是否等于证据命中？输出 A/B/C/D 四类统计。
-- **RQ2（规则能走多远）：** 固定 OCR/Layout 框聚合 vs patch 显著性动态分组，各解决多少？Snappy 式传播是上限探针。
-- **RQ3（学习是否值得）：** 若规则仍有稳定缺口，可学习的文档侧 patch 融合能否同时做到：页级不掉、区域涨、成本可控？
+- **RQ1（缺口是否存在）：** 页面命中是否等于证据命中？输出 A/B/C/D 四类统计 + 官方面积召回三层分解（页面召回 / 候选覆盖上限 Oracle Area Recall / 实际排序 Area Recall）。其中 A/B/C/D（单框 IoU≥0.5）降级为严格辅助诊断，不再作为唯一 Gate；主口径为官方 `recall_layout`（交集面积 / gold 面积，可跨框累加，不要求同框）。
+- **RQ2（规则能走多远）：** 固定 OCR/Layout 框聚合 vs patch 显著性动态分组，各解决多少？Snappy 式传播是上限探针。统一用官方 Layout Area Recall@1/5/10 报告，IoU Hit@0.5 与 Text 双轨并列为辅助。
+- **RQ3（学习是否值得）：** 若规则仍有稳定缺口，可学习的文档侧 patch 融合 / 候选重排能否同时做到：页级不掉、区域涨（官方口径）、成本可控？
 
-三指标必须同报（页级 + 区域 + 效率），只涨一处不算成。
+三指标必须同报（页级 + 区域官方口径 + 效率），只涨一处不算成。IoU 口径结果必须与官方口径并列声明，不许单报 IoU 否定方法。
 
 ### 1.3 硬约束（实现时不许违反）
 
@@ -48,6 +48,13 @@ C3. 文档侧 query-independent：P_fused 离线算好，所有 query 共用，�
 1. 不能随 query 动态改变文档表示（Argus 的 D(q) 能，我们不能）。
 2. 一个 patch 压住多个主题/框时，统一注入可能互相污染，甚至拉低页级。
 3. OCR 错误会通过交叉注意力污染视觉表示，必须有门控保底和噪声消融。
+
+### 1.5 与 MMDocIR 官方口径对齐声明（2026-09-18 新增，SSOT）
+
+1. 官方评测（`metric_eval.py: recall_layout`）为主口径：`Area(预测∩gold)/Area(gold)`，可跨框累加，不要求同框、不要求 IoU≥0.5。我们的单框 IoU≥0.5 为严格辅助诊断，两者必须并列报告。
+2. 官方原文已解释 gold 与 MinerU candidate 允许不精确匹配（gold 含 MinerU + 人工补框；评测时只给 MinerU 预测框）。本地 115 unmapped = 精确 bbox 查户口失败，属预期现象（Issue #3 复现 0/115），不是数据全坏。
+3. 官方检索范围为文档内（`search.py` 按 `page_indices/layout_indices` 切片打分），与本仓 `search_scope=document` 一致；`layout_topk` 在文档内 layout 切片上取，不强制先截 Top-K 页。级联（先页后面区）为论文概念，代码实现为文档内分别打分。
+4. MMDocIR 原文未来工作建议文本+视觉联合训练/微调（joint training or fine-tuning）。本方法 C1–C3 是该建议的低成本子集（冻视觉主干、只学文档侧融合）；输入层拼接 OCR（image_hybrid 弱于 pure image）是已知坑，我们用门控残差避开，不在输入层拼接。
 
 ## 2. 创新点章节（写作规范，不是定稿）
 
@@ -65,9 +72,10 @@ C3. 文档侧 query-independent：P_fused 离线算好，所有 query 共用，�
 
 | 编号 | 候选贡献 | 成立证据 | 若证据不足则降级为 |
 |---|---|---|---|
-| C-a | 问题证据：量化“页面命中但区域未命中”在 MMDocIR 上的规模与结构 | Phase 1B 的 A/B/C/D + 按类型/面积/OCR 密度分层 + 10 成功/10 失败可视化 | 引言动机段，不进贡献列表 |
+| C-a | 问题证据：量化“页面命中但区域未命中”在 MMDocIR 上的规模与结构 | Phase 1B 的官方三层分解（页面召回 / Oracle 覆盖 / 实际排序）+ A/B/C/D 严格辅助 + 按类型/面积/OCR 密度分层 + 10 成功/10 失败可视化 | 引言动机段，不进贡献列表 |
 | C-b | 方法：在 C1–C3 约束下的稀疏局部融合前向结构（W + TopK + 局部交叉注意力 + 门控残差，patch 数不变） | 第 5 节结构实现 + 前向公式 + 离线/在线拆分证明（0 次额外视觉编码） | 方法描述，不称创新 |
-| C-c | 效果：冻结主干下，页级保持 + 区域提升 + 成本可控，三指标同报 | Phase 2 dev 稳定提升 + 最终 test + 与 Snappy/固定聚合/ColMate 对照的对照表 | 若 dev 不涨则删除本条，转失败分析 |
+| C-b2 | 轻量候选重排头（2026-09-18 新增备选路径）：冻结 ColPali，只学框级 reranker（patch 分 + 框先验 + 文本相似度），在 Oracle 覆盖高但排序低的子集上验证 | Phase 2-R（重排分支）dev 提升 + 页级不掉 | 若 dev 不涨则删除本条 |
+| C-c | 效果：冻结主干下，页级保持 + 区域提升（官方口径） + 成本可控，三指标同报 | Phase 2/2-R dev 稳定提升 + 最终 test + 与 Snappy/固定聚合/ColMate 对照的对照表 | 若 dev 不涨则删除本条，转失败分析 |
 | C-d | 机理：消融证明每个组件解决哪个观察到的问题（坐标、类型、soft bias、Gate、蒸馏、K） | 第 9 节消融矩阵，每行对应一个 1B/1C 观察 | 只保留涨/跌显著的行，其余放附录 |
 | C-e | 鲁棒性：OCR 噪声下 Gate 自动关小、保底退回原 ColPali 性能 | 噪声扰动曲线（坐标打乱/词替换比例 vs 页级/区域） | 若 Gate 关不小，如实报负结果 |
 
@@ -154,13 +162,16 @@ Phase 1C 必须先跑前三行，Phase 2 的涨分才有归因意义。
 
 ## 4. 数据说明
 
-### 4.1 主数据集 MMDocIR evaluation（唯一主线）
+### 4.1 主数据集 MMDocIR evaluation（官方双任务主线）
 
 ```text
 文档 313（平均 65.1 页，10 领域）；query 1658；页级标签 2107；布局标签 2638。
-有布局 gold 的 query 约 1598/1658，无框 query 只做页级，不进区域分母。
+官方任务：page-level retrieval + layout-level retrieval。layout gold 同时含 MinerU 输出与人工补框，candidate 来自 MinerU layouts.parquet；gold 与 candidate 不要求精确 bbox 一致。
+主区域指标：官方 Area Recall（metric_eval.py: recall_layout，Top-K candidate 与 gold 的交集面积 / gold 面积，可跨 candidate 累加）；严格 IoU Hit@0.5 仅辅助诊断。
+本地审计：115/2638 gold bbox 无精确 candidate（Issue #3 复现，0/115），但不自动视为不可用；详见 `experiments/audit/`。
 config：configs/datasets/mmdocir.yaml（role: main_retrieval）。
 ```
+
 
 ### 4.2 训练候选 MMDocIR train（Phase 2 前必须先审）
 
@@ -253,17 +264,28 @@ gate_i = sigmoid( Linear([p_i ; delta_i ; coverage_i]) + b0 )
 - NaN 防护：注意力分母加 eps；W 全 0 行禁止进 softmax；梯度裁剪阈值记录。
 - Gate 是稳定性设计，不单列创新；但“OCR 噪声下 Gate 关小、保底退回原性能”是可以写的实验结论（第 9.3 节）。
 
-### 5.6 评分：页级与区域级（同一套 P'）
+### 5.6 评分：页级与区域级（2026-09-18 修订：官方口径为主）
 
 ```text
 S[i,j] = Q_i · P'_j
 页级分  s_page(q,d) = Σ_i max_j S[i,j]                     # 标准 MaxSim
-patch 分 s_patch(j)  = max_i S[i,j]                        # 空间热图
-区域分  rel(q,r)     = Σ_j IoU(B'(r),patch_j)*s_patch(j) / Σ_j IoU(...)   # Snappy 式，max/mean/IoU 三聚合 dev 对比
+patch 分 s_patch(j)  = max_i S[i,j]                        # 空间热图（内部探针用）
 ```
 
-- 页面与区域融合（如需）：先各自 z-score/归一化再加权，权重 dev 定或预先固定（如 0.5），test 不调。
-- BBox 必须缩放到模型坐标（Snappy 公式）：`B'(r)=(x1*I/W, y1*I/H, x2*I/W, y2*I/H)`，I=448。
+区域主指标采用 MMDocIR 官方定义（`MMDocIR/metric_eval.py: recall_layout`），对
+Top-K candidate layout 逐个与 gold 求交集面积并累加：
+
+```text
+AreaRecall@K(q) = Σ_{c∈TopK} Σ_{g∈Gold} Area(c∩g) / Σ_g Area(g)   # 同页才计，跨页不计
+```
+
+约束：candidate 只能来自官方 `layouts.parquet`；不要求 candidate 与 gold
+精确相等；不要求单框 IoU≥0.5；必须保留 page_id 过滤。官方实现允许重叠
+candidate 对同一 gold 重复累加，主复现严格跟随官方代码，另报
+union-clipped Area Recall 作重叠敏感性分析，两者不许混称。
+Snappy 式 `rel=ΣIoU·s/ΣIoU`（max/mean/IoU 三聚合）降级为内部排序探针，不再是
+区域主指标。BBox 缩放仍用 Snappy 公式 `B'(r)=(x1*I/W, y1*I/H, x2*I/W, y2*I/H)`，
+I=448（仅探针内部用；官方 Area Recall 在原图坐标系直接算交集）。
 
 ### 5.7 损失函数（Phase 2）
 
@@ -272,7 +294,7 @@ L = λ_page * L_page + λ_region * L_region + λ_distill * L_distill
 ```
 
 - `L_page`：页级 InfoNCE（in-batch 负例），保持正确页排序。λ_page 优先保证页级不掉。
-- `L_region`：区域对比，正框 vs 同页无关框（margin/InfoNCE 二选一，dev 定）。正框来自独立训练数据的框标注，禁止用 evaluation gold。
+- `L_region`：区域排序回归/对比。candidate 软标签 `y(c)=Area(c∩G)/Area(G)`（与官方 Area Recall 对齐；大 gold 被多小框覆盖时各自按覆盖分给分，不判无正样本）。正样本来自独立训练数据的框标注，禁止用 evaluation gold。另设轻量分支 Phase 2-R：冻结 P，只学框级 reranker 头，loss 为 listwise/pointwise 回归 Area 覆盖分。
 - `L_distill`：约束 P' 不破坏原排序，如对原 ColPali 分数分布的 KL，或正负 margin 保持。权重 dev 定。
 - 三个 λ 全部 dev 网格记录，test 冻结。先只练布局编码器+注意力+投影+门控（主干冻结）；LoRA 动主干是最后手段，需先过显存评估（3080Ti 12GB，batch 1/2/4）。
 
@@ -323,34 +345,50 @@ PaliGemma 默认 448×448、32×32 网格、s=14；OCR 框是原图绝对像素�
 登记条件：query 数=1658、commit、耗时、输出目录、指标文件五项齐全，否则不算完成。
 ```
 
-### 7.3 Phase 1B：页面–区域缺口诊断（纯测量，不训练）
+### 7.3 Phase 1B：页面–区域缺口诊断（2026-09-18 修订：三层分解为主）
 
 ```text
 输入：冻结 ColPali 页级 Top-K + OCR/Layout 框 + gold 页/框。
-输出：A/B/C/D 统计 + 按类型/面积/OCR 密度分层 + 10 成功/10 失败可视化 + 失败归因（框缺失 vs 选错，参考 Snappy 85% 天花板口径）。
-判定：B 类（页中区不中）稳定存在才进 1C；否则停工修数据/协议。
+输出（三层分解，主口径官方 Area Recall）：
+  L1 页面召回：Page Recall@1/5/10（文档内范围，与官方 search.py 一致）。
+  L2 候选覆盖上限：Oracle Area Recall（正确页上全部 candidate 对 gold 的最大面积覆盖；另报 oracle 单框 IoU≥0.5 作为严格对照）。
+  L3 实际排序效果：Official Layout Area Recall@1/5/10（模型 Top-K 下的面积召回）。
+辅助：A/B/C/D（单框 IoU≥0.5）+ 按类型/面积/OCR 密度分层 + 10 成功/10 失败可视化 + 失败归因（候选覆盖不足 vs 排序不足 vs 页未中）。
+判定：L2 高但 L3 低 → 排序问题，值得做融合/重排；L2 本身低 → 候选生成问题，先做候选合并/补框或换口径说明，不直接进 Phase 2。
+历史注记：EXP-002/005 的 B=45（页中但无单框 IoU≥0.5）与 0/45 消解率是严格 IoU 口径结论，已降级为辅助诊断，不作为 Phase 2 唯一 Gate。
 ```
 
-### 7.4 Phase 1C：三类无训练基线（决定是否训练的生死判）
+### 7.4 Phase 1C：无训练基线（2026-09-18 修订：官方口径重算）
 
-1. 原始 ColPali 页检索；
-2. Snappy 式传播（含第 6 节审计，max/mean/IoU 三聚合对比，P25/P50/P75 阈值敏感性记录）；
+1. 原始 ColPali 页检索（文档内范围）；
+2. 候选 layout 打分基线：文本相似度 / 面积先验 / Snappy 式传播（含第 6 节审计，max/mean/IoU 三聚合对比，P25/P50/P75 阈值敏感性记录；此时 Snappy 为排序探针，非主指标）；
 3. 固定 IoU/coverage 区域聚合；
 4. patch 显著性动态分组（阈值 η、邻域半径 dev 记录；不许叫 RegionRAG 复现）。
 
 ```text
-判定（数字口径与 docs/THESIS_SPEC.md 第 11.2 节一致）：
-  进 Phase 2：B 类占比 ≥ 10% 且 Snappy 最好聚合只消掉 ≤ 50% 的 B 类，dev/test 趋势一致；
-  转收缩：不满足上述任一条 → 按 docs/THESIS_SPEC.md 第 11.3 节有序收缩（B1 效率 / B2 失败分类学 / B3 需另立项）。
-  agent 只准备决策材料（B 类占比、Snappy 消解率、分层表、直方图），选择由学生与导师共同确认。
+报告（与 docs/THESIS_SPEC.md 第 11.2 节一致）：
+  主表：各基线的 Official Layout Area Recall@1/5/10 + Page Recall@1/5。
+  辅助：单框 IoU Hit@0.5、Text 双轨。
+判定：
+  进 Phase 2/2-R：Oracle Area Recall 高、规则排序 Area Recall 仍有稳定缺口（dev/test 趋势一致），且缺口可归因到排序而非候选全缺；
+  转收缩：Oracle 本身低（候选生成瓶颈）或规则已接近 Oracle → 按 docs/THESIS_SPEC.md 第 11.3 节有序收缩（B1 效率 / B2 失败分类学 / B3 需另立项）。
+  历史注记：EXP-006 的 0.3187 Top-1 与 0/45 是 IoU 口径数，不可与官方 Area Recall 直接比较；须重算官方口径后再判。
+  agent 只准备决策材料（L1/L2/L3 三层表、Oracle–实际 gap、分布直方图），选择由学生与导师共同确认。
 ```
 
-### 7.5 Phase 2：训练融合模块（1B/1C 通过后）
+### 7.5 Phase 2：训练融合模块 + Phase 2-R：轻量重排分支（2026-09-18 修订）
 
 ```text
+Phase 2（全融合 P→P'）：
 顺序：冻主干练小模块 → dev 确认稳定 →（必要时）LoRA → 冻结全部（模型+超参+映射规则+K+阈值+λ）→ test 跑一次。
 数据：独立训练集（MMDocIR train 需先审标签规则与泄漏）；evaluation gold 永不进训练。
+区域监督：candidate 软标签 y(c)=Area(c∩G)/Area(G)，与官方 Area Recall 对齐。
 记录：loss 曲线、梯度范数、Gate 均值（应从≈0 渐变）、页级/区域 dev 曲线、显存峰值、seed。
+
+Phase 2-R（低风险先行分支，推荐先跑）：
+冻结 P 不动，只学框级 reranker 头（输入 patch 分 + 框面积/覆盖先验 + 文本相似度），loss 回归 Area 覆盖分或 listwise 排序。
+适用：Oracle Area Recall 高但规则排序低的子集；2 周可出数；显存远低于全融合。
+若 2-R dev 稳定提升且页级不掉，再决定是否做全融合 Phase 2；若 2-R 亦不涨，转 B2 诊断型论文。
 ```
 
 ### 7.6 最终 test 与记录格式
@@ -362,16 +400,17 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 + audit.json（1B/1C）/ hyperparams_frozen.json（Phase 2）/ eval_config.json（含 IoU 阈值、Top-K、分母定义）
 ```
 
-## 8. 评测指标定义（全实验统一）
+## 8. 评测指标定义（2026-09-18 修订：官方口径为主，全实验统一）
 
 ```text
-页级：Recall@1/5/10、MRR、nDCG@5/10。页面命中 = gold 页在 Top-K（K 预先声明）内。
-区域：Region Recall@1/5、Region MRR、IoU Hit@0.5（主指标，阈值预先声明，dev/test 一致）。
+页级：Recall@1/5/10、MRR、nDCG@5/10。检索范围为文档内（与官方 search.py 一致）；页面命中 = gold 页在 Top-K（K 预先声明）内。
+区域（主）：Official Layout Area Recall@1/5/10（metric_eval.py: recall_layout；交集面积/gold 面积，可跨框累加；同页才计）。
+区域（辅）：单框 IoU Hit@0.5（阈值预先声明，dev/test 一致；须与官方口径并列，不许单报否定方法）。
       Text Recall / Text F1（辅指标，防 IoU 误杀；定义与防刷分规则见 docs/THESIS_SPEC.md 第 8.3 节，
       tokenization：中文按字、英文按词、统一小写去空格；IoU 未命中但 Text-Recall≥0.8 的
       样本单独成组人工抽查 ≥20 例）。
-分解：A/B/C/D 四类占比；无框 query 不进区域分母；跨页证据单独列。
-公平：同 query 集、同页面集、同划分、同脚本、同 Top-K 同表对比。
+分解：L1/L2/L3 三层 + A/B/C/D 严格辅助；无框 query 不进区域分母；跨页证据单独列。
+公平：同 query 集、同页面集（含文档内范围声明）、同划分、同脚本、同 Top-K 同表对比。
 ```
 
 ## 9. 消融、鲁棒性与效率
@@ -459,16 +498,17 @@ runs/
 RTX 3080Ti 12GB：ColPali image/query/score batch 从 1/2/4 起；融合模块 batch 按显存测峰值后冻结记录。
 确定性：seed、torch deterministic/cudnn benchmark 开关、tokenizer/渲染版本全部进 run_info.json。
 
-## 11. Gate 与停止条件（执行时对照）
+## 11. Gate 与停止条件（2026-09-18 修订：官方口径为准，执行时对照）
 
 ```text
-1A 数据规模对上（1658）        → 才做 1B
-1B 有 A/B/C/D + 分层 + 案例    → 才做 1C
-1C 三基线完成（含 Snappy 三聚合）→ 才训练 Phase 2
-Phase 2 dev 稳定提升            → 才冻结跑 test
+1A 数据规模对上（1658）                    → 才做 1B
+1B 有 L1/L2/L3 三层 + A/B/C/D 辅助 + 分层 + 案例 → 才做 1C
+1C 官方口径基线完成（含三聚合探针 + Oracle gap） → 才训练 Phase 2/2-R
+Phase 2/2-R dev 稳定提升（页级不掉 + 官方 Area 涨）→ 才冻结跑 test
 ```
 
-出现任一条即停：审计不通过（机器门限或人工抽查任一不过）；BBox 系统性错位；无独立训练数据又要用 gold 训练；dev 不涨只涨 test；页级掉且区域不涨；复杂融合不如固定聚合；显存超限；1C 判定不满足进 Phase 2 条件（按 docs/THESIS_SPEC.md 第 11.2/11.3 节定量判定与有序收缩执行）。
+出现任一条即停：审计不通过（机器门限或人工抽查任一不过）；BBox 系统性错位；无独立训练数据又要用 gold 训练；dev 不涨只涨 test；页级掉且区域不涨；复杂融合不如固定聚合；显存超限；1C 判定不满足进 Phase 2/2-R 条件（按 docs/THESIS_SPEC.md 第 11.2/11.3 节定量判定与有序收缩执行）。
+历史注记：旧 IoU 唯一 Gate（B≥10%/Snappy 消解≤50%）已废止，EXP-005/006 的 IoU 数保留为辅助诊断，不再作为 Phase 2 准入判据。
 
 ## 12. 实验记录模板与超参冻结表（每次运行必填）
 
@@ -491,17 +531,17 @@ Phase 2 dev 稳定提升            → 才冻结跑 test
 # gate_numeric_thresholds：11.2 节 10%/50% 的最终数值 + 修正依据（B 类分布直方图路径）
 ```
 
-## 附录：投稿前核对清单
+## 附录：投稿前核对清单（2026-09-18 修订）
 
 ```text
 [ ] Beyond 空笔记已补，五问可答；
 [ ] 第 2.5 节每句区分能在原文找到公式/页码；
 [ ] 坐标审计 audit.json + 叠图通过（机器门限 + 人工确认人签名）；
-[ ] 1A=1658 对数；1B 有分层+10/10 案例；1C 有 Snappy 三聚合+阈值敏感性；
-[ ] 1C 决策材料齐全（B 类占比、Snappy 消解率、直方图）且 11.2 定量判定已执行；
-[ ] Phase 2 有独立训练数据证明 + dev 曲线 + Gate 均值记录；
+[ ] 1A=1658 对数；1B 有 L1/L2/L3 三层 + 分层 + 10/10 案例；1C 有官方 Area Recall 主表 + 三聚合探针 + 阈值敏感性；
+[ ] 1C 决策材料齐全（Oracle–实际 gap、B 类占比辅助、Snappy 消解率辅助、直方图）且 11.2 定量判定已执行；
+[ ] Phase 2/2-R 有独立训练数据证明 + dev 曲线 + Gate 均值记录；
 [ ] 六条创新检查项逐条有证据；Gate/残差/zero-init 未单列创新；
-[ ] 区域指标含 Text Recall/F1 双轨与防刷分记录；
+[ ] 区域指标含官方 Area Recall 主 + IoU/Text 双轨辅助与防刷分记录；
 [ ] 效率表含 k+1 对照行 + 硬件 batch 如实标注；
 [ ] OCR 噪声 + 背景 token 有记录；test 只跑一次冻结配置；
 [ ] arXiv 重扫日期已记（Snappy/Beyond 若出可学习变体即更新第 2.5 节）。

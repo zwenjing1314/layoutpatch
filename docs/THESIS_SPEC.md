@@ -141,40 +141,35 @@
 - 对 Argus：它是 query-conditioned 在线 D(q)；我们是 query-independent 离线 P_fused。这是部署 trade-off，不是高低之分，Argus 只能当未来工作。
 - 对 MM-Matryoshka/ColChunk/SAP：压缩正交，可组合，我们的 P_fused 可以是它们的输入。
 
-## 5. 小论文的正式研究问题（含操作定义）
+## 5. 小论文的正式研究问题（含操作定义，2026-09-18 修订：官方口径为主）
 
 ### RQ1：页面命中是否等于证据命中？
 
-使用冻结的 ColPali 页面级检索结果，分别统计：
-
-- A：页面命中且区域命中；
-- B：页面命中但区域未命中；
-- C：页面未命中但其他方法能够找到证据区域；
-- D：页面和区域均未命中。
-
-操作定义（执行手册 `docs/PAPER_SPEC.md` 必须照此实现，不得临时改）：
+使用冻结的 ColPali 页面级检索结果，报告三层分解（主口径）+ A/B/C/D（严格辅助）：
 
 ```text
-页面命中：gold 页在 Top-K（K 预先声明，如 5）内。
-区域命中：预测框与 gold 框 IoU ≥ 0.5（阈值预先声明，dev/test 一致）。
-候选框：只能来自 OCR/Layout 解析结果；gold 框只用于评测。
-多框覆盖：一个 patch 压住多个框时权重必须归一化，不得重复送分。
+L1 页面召回：Page Recall@1/5/10（文档内范围，与官方 search.py 一致）。
+L2 候选覆盖上限：Oracle Area Recall（正确页上全部 candidate 对 gold 的最大面积覆盖）。
+L3 实际排序效果：Official Layout Area Recall@1/5/10（模型 Top-K 下的面积召回，metric_eval.py: recall_layout）。
+A/B/C/D（辅助）：单框 IoU≥0.5 下的页面–区域四类；不再作为唯一 Gate。
+候选框：只能来自官方 layouts.parquet / MinerU 解析结果；gold 框只用于评测；不要求精确相等。
+多框覆盖：一个 patch 压住多个框时权重必须归一化，不得重复送分；官方 Area Recall 允许跨框累加，主复现严格跟随官方代码并另报 union-clipped 作敏感性分析。
 分层：按区域类型、面积、OCR 密度分层报告；至少保存 10 成功 + 10 失败可视化。
 ```
 
-如果 B 类在 dev/test 规则下稳定存在，才能证明页面级检索不足以代表证据定位正确，并继续研究区域方法。
+如果 L2 高但 L3 低且稳定存在，才能证明缺口在排序、值得训练区域方法；若 L2 本身低，则瓶颈在候选生成。
 
 ### RQ2：固定布局区域和查询相关显著区域各有什么优缺点？
 
 比较已有 OCR/Layout BBox 的固定聚合，与基于 patch relevance map 的动态显著区域分组。该阶段是无训练诊断和 baseline，不应被表述为完整复现 RegionRAG。
 
-必须包含 Snappy 式传播（公式 rel=ΣIoU·score/ΣIoU，max/mean/IoU 三聚合对比）。Snappy 的坐标映射（G=32, I=448, s=14，OCR 框缩放到模型坐标）必须先审计通过。
+必须包含 Snappy 式传播（公式 rel=ΣIoU·score/ΣIoU，max/mean/IoU 三聚合对比；此时为排序探针，非区域主指标）。Snappy 的坐标映射（G=32, I=448, s=14，OCR 框缩放到模型坐标）必须先审计通过。主表统一用官方 Area Recall@1/5/10 + Page Recall，IoU/Text 仅辅助。
 
 ### RQ3：能否在不裁剪页面和重复视觉编码的前提下学习更好的 patch 表示？
 
-如果无训练方法仍存在稳定缺口，训练一个布局约束的文档侧 patch 融合模块，并检验它能否同时保持页面检索能力、改善区域定位能力和控制额外计算成本。
+如果无训练方法仍存在稳定缺口（Oracle 高、实际排序低），训练布局约束的文档侧 patch 融合模块（Phase 2）或轻量候选重排头（Phase 2-R，先行分支），并检验它能否同时保持页面检索能力、改善区域定位能力（官方口径）和控制额外计算成本。
 
-回答形式必须是三指标同报：页级（Recall/MRR/nDCG）+ 区域级（Region Recall/MRR/IoU Hit@0.5）+ 效率（向量数/索引/离线融合/在线延迟/显存）。只涨一处不算成。
+回答形式必须是三指标同报：页级（Recall/MRR/nDCG）+ 区域级（官方 Area Recall 主 + IoU/Text 辅助）+ 效率（向量数/索引/离线融合/在线延迟/显存）。只涨一处不算成。区域监督用 candidate 软标签 `y(c)=Area(c∩G)/Area(G)`，与官方口径对齐。
 
 ## 6. 小论文方法设计
 
@@ -257,28 +252,30 @@ Gate、残差和零初始化属于训练稳定性设计，不能分别包装成�
 
 最低记录：query 数、页面数、数据 split、配置文件、代码 commit、运行时间、输出目录和指标文件。全量 MMDocIR evaluation 应为 1658 query，行数对不上不登记 baseline。
 
-### 阶段 2：页面-区域缺口诊断（Phase 1B）
+### 阶段 2：页面-区域缺口诊断（Phase 1B，三层分解为主）
 
-目标：统计 RQ1 的 A/B/C/D 四类样本，并保存可复核的错误案例。按类型/面积/OCR 密度分层 + 可视化。
+目标：报告 L1/L2/L3 三层 + RQ1 的 A/B/C/D 严格辅助四类样本，并保存可复核的错误案例。按类型/面积/OCR 密度分层 + 可视化。
 
-只有当“页面命中但区域未命中”在 dev/test 规则下表现为稳定问题，才进入下一阶段。注意 MMDocIR evaluation 有布局 gold 的 query 约 1598/1658，无框 query 只做页级，不混入区域分母。
+只有当 Oracle 覆盖高但实际排序低在 dev/test 规则下表现为稳定问题，才进入下一阶段。注意 MMDocIR evaluation 有精确匹配 gold 的 query 约 1598/1658，无精确匹配 query 只做页级与官方 Area Recall，不混入 IoU 严格分母。历史注记：EXP-002/005 的 B=45（IoU 口径）已降级为辅助诊断，不作为 Phase 2 唯一 Gate。
 
-### 阶段 3：无训练区域 baseline（Phase 1C）
+### 阶段 3：无训练区域 baseline（Phase 1C，官方口径重算）
 
 至少比较：
 
-1. 原始 ColPali 页面检索；
-2. Snappy-style BBox 分数传播（含坐标映射审计）；
+1. 原始 ColPali 页面检索（文档内范围）；
+2. 候选 layout 打分基线：文本相似度 / 面积先验 / Snappy-style BBox 分数传播（含坐标映射审计；三聚合为排序探针）；
 3. 固定 IoU/coverage 的区域聚合；
 4. 基于 patch relevance map 的动态显著区域分组（不许叫 RegionRAG 复现，因无其训练期全局/局部对齐与区域监督）。
 
-目标：判断规则方法能解决多少缺口，以及剩余错误是否值得训练新模块。若 Snappy 已解决大部分问题，论文转向失败类型与效率分析，不强行训练。
+目标：判断规则方法在官方 Area Recall 上能解决多少缺口（Oracle–实际 gap），以及剩余错误是否值得训练新模块。若规则已接近 Oracle，论文转向失败类型与效率分析，不强行训练。历史注记：EXP-006 的 0.3187/0-45 为 IoU 口径数，须重算官方口径后再判。
 
-### 阶段 4：训练 patch 融合模块（Phase 2）
+### 阶段 4：训练 patch 融合模块（Phase 2）与轻量重排分支（Phase 2-R，先行）
 
 前提：阶段 2 和阶段 3 已完成，且有独立训练或开发数据。MMDocIR evaluation gold 不能同时当训练监督和最终测试。
 
-训练顺序：
+Phase 2-R（推荐先跑，低风险）：冻结 P 不动，只学框级 reranker 头（patch 分 + 框先验 + 文本相似度），loss 回归 Area 覆盖分；2 周可出数；若 dev 稳定提升且页级不掉，再议全融合。
+
+训练顺序（Phase 2 全融合）：
 
 1. 冻结 ColPali，只训练布局节点编码器、局部注意力、投影和门控参数；
 2. 先在 dev 上确认训练稳定；
@@ -321,13 +318,14 @@ L = lambda_page * L_page
 - MRR；
 - nDCG@5、nDCG@10。
 
-### 8.3 区域级指标
+### 8.3 区域级指标（2026-09-18 修订：官方口径为主）
 
-- Region Recall@1、Recall@5；
-- Region MRR；
-- IoU Hit@0.5（阈值需要预先定义）；
+- Official Layout Area Recall@1/5/10（主指标；`metric_eval.py: recall_layout`；文档内范围）；
+- Oracle Area Recall（候选覆盖上限；诊断用）；
+- union-clipped Area Recall（重叠敏感性分析；与官方实现并列，不混称）；
+- IoU Hit@0.5（严格辅助；阈值预先定义；须与官方口径并列，不许单报）；
 - Text Recall / Text F1（辅指标，防 IoU 误杀，定义见下）；
-- 页面命中与区域命中的 A/B/C/D 分解。
+- L1/L2/L3 三层 + 页面命中与区域命中的 A/B/C/D 严格辅助分解。
 
 Text Recall/F1 定义（tokenization 预先声明：中文按字、英文按词、统一小写去空格）：
 
@@ -386,11 +384,11 @@ predictions.parquet（如适用）
 ```text
 Phase 1A 完成并核验数据规模
     -> 才能做 Phase 1B
-Phase 1B 得到 A/B/C/D 统计
+Phase 1B 得到 L1/L2/L3 三层 + A/B/C/D 严格辅助统计
     -> 才能做 Phase 1C
-Phase 1C 三类无训练 baseline 完成
-    -> 才能训练 Phase 2 模块
-Phase 2 在 dev 有稳定提升
+Phase 1C 官方口径基线 + Oracle gap 完成
+    -> 才能训练 Phase 2 / 2-R 模块
+Phase 2/2-R 在 dev 有稳定提升（页级不掉 + 官方 Area 涨）
     -> 才能冻结配置并跑最终 test
 ```
 
@@ -409,18 +407,20 @@ Phase 2 在 dev 有稳定提升
 
 科学风险重申：query-independent 融合可能污染页级匹配（Beyond 消融：去 global 只掉 0.3~0.4；Argus 消融：去 query 条件掉 3~4 分）。我们没有 query 条件，增益天花板必须由 1B/1C 数据回答，不能预设网络一定有效。
 
-### 11.2 Gate 的定量判定口径（数字 dev 定，test 不改）
+### 11.2 Gate 的定量判定口径（2026-09-18 修订：官方口径为准；旧 IoU 唯一 Gate 已废止）
 
-“稳定存在”“解决大部分缺口”必须落到数字，且必须注明计算条件（Top-K、IoU 阈值、query 子集）：
+“稳定存在”“解决大部分缺口”必须落到数字，且必须注明计算条件（文档内范围、Top-K、query 子集）：
 
 ```text
-进 Phase 2 需同时满足：
-  a. B 类占比 ≥ 10%（有布局 gold 的 1598 query 上，IoU≥0.5，Top-K 同 1B config）；
-  b. Snappy 三聚合中最好者只消掉 B 类的 ≤ 50%；
-  c. a/b 在 dev 与 test 划分上趋势一致（正式划分文件见执行手册）。
-停 Phase 2（转收缩）为上述任一条不满足的相反面，即：
-  B 类占比 < 10%，或 Snappy 已消掉 ≥ 50% 的 B 类，且趋势一致。
-10%/50% 是初始值：dev 数据出来后允许修正一次，修正必须写进执行手册的冻结表并给出 B 类分布直方图作为依据，之后不再改动。
+进 Phase 2/2-R 需同时满足：
+  a. Oracle Area Recall 高（候选覆盖本身足够；阈值 dev 冻结，如均值/中位数下限）；
+  b. 最好规则基线的实际 Area Recall 与 Oracle 之间有稳定 gap（gap 下限 dev 冻结；dev/test 趋势一致）；
+  c. gap 可归因到排序而非候选全缺（分层与失败归因支持）；
+  d. a/b/c 在 dev 与 test 划分上趋势一致（正式划分文件见执行手册）。
+停 Phase 2/2-R（转收缩）为上述任一条不满足的相反面，即：
+  Oracle 本身低（候选生成瓶颈），或规则已接近 Oracle，且趋势一致。
+旧 IoU 唯一 Gate（B≥10%/Snappy 消解≤50%）已废止：EXP-005/006 的 B=45、0/45 保留为严格辅助诊断，
+  不再作为准入判据；新判据以官方 Area Recall 三层为准，数值 dev 定、test 不改。
 ```
 
 ### 11.3 有序收缩选项（Plan B，按成本从低到高，触发即逐级评估）
@@ -435,8 +435,8 @@ B1/B2 不需要新数据，保住小论文下限；B3 是新研究，不是救�
 
 小论文阶段：
 
-- 一套可复现的页面和区域检索实验；
-- 一个包含可学习参数的 patch 融合模块（若 Gate 通过；若不通过则为三基线 + 缺口与效率分析）；
+- 一套可复现的页面和区域检索实验（官方口径 Area Recall 主表 + IoU/Text 辅助）；
+- 一个包含可学习参数的 patch 融合模块或轻量重排头（若 Gate 通过；若不通过则为官方口径基线 + Oracle gap 缺口与效率分析）；
 - 与强 baseline 的公平比较；
 - 消融、效率和错误案例分析；
 - 一篇围绕明确研究问题撰写的小论文。
