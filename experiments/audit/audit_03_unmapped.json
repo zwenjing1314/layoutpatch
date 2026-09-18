@@ -1,0 +1,2540 @@
+{
+  "n": 115,
+  "exact_found": 0,
+  "mean_area": 372327.8,
+  "coverable_ge08": 2,
+  "zero_area_n": 1,
+  "conclusion": "Issue复现成立: 转置+2位rounding下0/115精确命中, 真缺非假性缺; 但多为大框套小框(可被相邻nodes部分覆盖), 另有零面积退化框(如mmdocir_00700 [300,100,300,450]); 非全空无意义",
+  "rows": [
+    {
+      "query_id": "mmdocir_00036",
+      "doc_id": "ddoseattle-150627210357-lva1-app6891_95",
+      "page": 16,
+      "bbox": [
+        38.0,
+        123.0,
+        663.0,
+        453.0
+      ],
+      "page_size": [
+        768.0,
+        576.0
+      ],
+      "area": 206250.0,
+      "area_ratio": 0.4662,
+      "exact_in_parquet": false,
+      "n_page_nodes": 9,
+      "n_overlap_nodes": 9,
+      "covered_frac": 0.414,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00036",
+      "doc_id": "ddoseattle-150627210357-lva1-app6891_95",
+      "page": 24,
+      "bbox": [
+        97.0,
+        104.0,
+        671.0,
+        471.0
+      ],
+      "page_size": [
+        768.0,
+        576.0
+      ],
+      "area": 210658.0,
+      "area_ratio": 0.4762,
+      "exact_in_parquet": false,
+      "n_page_nodes": 2,
+      "n_overlap_nodes": 2,
+      "covered_frac": 0.9651,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00042",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95",
+      "page": 25,
+      "bbox": [
+        50.0,
+        29.0,
+        768.0,
+        432.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 289354.0,
+      "area_ratio": 0.8721,
+      "exact_in_parquet": false,
+      "n_page_nodes": 12,
+      "n_overlap_nodes": 12,
+      "covered_frac": 0.2659,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00042",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95",
+      "page": 26,
+      "bbox": [
+        62.0,
+        108.0,
+        768.0,
+        432.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 228744.0,
+      "area_ratio": 0.6895,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 7,
+      "covered_frac": 0.2637,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00081",
+      "doc_id": "2024.ug.eprospectus",
+      "page": 11,
+      "bbox": [
+        10.0,
+        13.0,
+        1180.0,
+        800.0
+      ],
+      "page_size": [
+        1190.550048828125,
+        841.8900146484375
+      ],
+      "area": 920790.0,
+      "area_ratio": 0.9187,
+      "exact_in_parquet": false,
+      "n_page_nodes": 26,
+      "n_overlap_nodes": 26,
+      "covered_frac": 0.1431,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00081",
+      "doc_id": "2024.ug.eprospectus",
+      "page": 12,
+      "bbox": [
+        10.0,
+        13.0,
+        1180.0,
+        800.0
+      ],
+      "page_size": [
+        1190.550048828125,
+        841.8900146484375
+      ],
+      "area": 920790.0,
+      "area_ratio": 0.9187,
+      "exact_in_parquet": false,
+      "n_page_nodes": 42,
+      "n_overlap_nodes": 42,
+      "covered_frac": 0.3457,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00082",
+      "doc_id": "Bergen-Brochure-en-2022-23",
+      "page": 10,
+      "bbox": [
+        21.0,
+        13.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 476334.2,
+      "area_ratio": 0.9537,
+      "exact_in_parquet": false,
+      "n_page_nodes": 41,
+      "n_overlap_nodes": 41,
+      "covered_frac": 0.4433,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00082",
+      "doc_id": "Bergen-Brochure-en-2022-23",
+      "page": 11,
+      "bbox": [
+        21.0,
+        13.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 476334.2,
+      "area_ratio": 0.9537,
+      "exact_in_parquet": false,
+      "n_page_nodes": 41,
+      "n_overlap_nodes": 41,
+      "covered_frac": 0.4347,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00082",
+      "doc_id": "Bergen-Brochure-en-2022-23",
+      "page": 12,
+      "bbox": [
+        21.0,
+        13.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 476334.2,
+      "area_ratio": 0.9537,
+      "exact_in_parquet": false,
+      "n_page_nodes": 40,
+      "n_overlap_nodes": 40,
+      "covered_frac": 0.4598,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00082",
+      "doc_id": "Bergen-Brochure-en-2022-23",
+      "page": 13,
+      "bbox": [
+        21.0,
+        13.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 476334.2,
+      "area_ratio": 0.9537,
+      "exact_in_parquet": false,
+      "n_page_nodes": 37,
+      "n_overlap_nodes": 37,
+      "covered_frac": 0.4063,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00091",
+      "doc_id": "PG_2020.03.09_US-Germany_FINAL",
+      "page": 10,
+      "bbox": [
+        66.0,
+        90.0,
+        545.0,
+        658.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 272072.0,
+      "area_ratio": 0.5613,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.7153,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00091",
+      "doc_id": "PG_2020.03.09_US-Germany_FINAL",
+      "page": 11,
+      "bbox": [
+        66.0,
+        90.0,
+        545.0,
+        658.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 272072.0,
+      "area_ratio": 0.5613,
+      "exact_in_parquet": false,
+      "n_page_nodes": 7,
+      "n_overlap_nodes": 7,
+      "covered_frac": 0.7667,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00091",
+      "doc_id": "PG_2020.03.09_US-Germany_FINAL",
+      "page": 12,
+      "bbox": [
+        66.0,
+        90.0,
+        545.0,
+        658.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 272072.0,
+      "area_ratio": 0.5613,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.5635,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00096",
+      "doc_id": "fd76bbefe469561966e5387aa709c482",
+      "page": 0,
+      "bbox": [
+        57.0,
+        168.0,
+        355.0,
+        216.0
+      ],
+      "page_size": [
+        440.4000244140625,
+        715.2000122070312
+      ],
+      "area": 14304.0,
+      "area_ratio": 0.0454,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0.0,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00102",
+      "doc_id": "379f44022bb27aa53efd5d322c7b57bf",
+      "page": 0,
+      "bbox": [
+        32.0,
+        10.0,
+        225.0,
+        110.0
+      ],
+      "page_size": [
+        595.0,
+        842.0
+      ],
+      "area": 19300.0,
+      "area_ratio": 0.0385,
+      "exact_in_parquet": false,
+      "n_page_nodes": 26,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0.0,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00102",
+      "doc_id": "379f44022bb27aa53efd5d322c7b57bf",
+      "page": 4,
+      "bbox": [
+        32.0,
+        10.0,
+        225.0,
+        110.0
+      ],
+      "page_size": [
+        595.0,
+        842.0
+      ],
+      "area": 19300.0,
+      "area_ratio": 0.0385,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0.0,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00106",
+      "doc_id": "efd88e41c5f2606c57929cac6c1c0605",
+      "page": 13,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        760.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 442500.0,
+      "area_ratio": 0.9129,
+      "exact_in_parquet": false,
+      "n_page_nodes": 7,
+      "n_overlap_nodes": 7,
+      "covered_frac": 0.6746,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00106",
+      "doc_id": "efd88e41c5f2606c57929cac6c1c0605",
+      "page": 14,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        760.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 442500.0,
+      "area_ratio": 0.9129,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 8,
+      "covered_frac": 0.7013,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00109",
+      "doc_id": "edb88a99670417f64a6b719646aed326",
+      "page": 15,
+      "bbox": [
+        10.0,
+        10.0,
+        500.0,
+        840.0
+      ],
+      "page_size": [
+        596.0,
+        842.0
+      ],
+      "area": 406700.0,
+      "area_ratio": 0.8104,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 8,
+      "covered_frac": 0.3722,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00110",
+      "doc_id": "edb88a99670417f64a6b719646aed326",
+      "page": 4,
+      "bbox": [
+        10.0,
+        10.0,
+        300.0,
+        300.0
+      ],
+      "page_size": [
+        596.0,
+        842.0
+      ],
+      "area": 84100.0,
+      "area_ratio": 0.1676,
+      "exact_in_parquet": false,
+      "n_page_nodes": 10,
+      "n_overlap_nodes": 9,
+      "covered_frac": 0.3906,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00115",
+      "doc_id": "finalpresentationdeck-whatwhyhowofcertificationsocial-160324220748_95",
+      "page": 21,
+      "bbox": [
+        636.0,
+        510.0,
+        753.0,
+        535.0
+      ],
+      "page_size": [
+        768.0,
+        546.0
+      ],
+      "area": 2925.0,
+      "area_ratio": 0.007,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0.0,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00116",
+      "doc_id": "avalaunchpresentationsthatkickasteriskv3copy-150318114804-conversion-gate01_95",
+      "page": 2,
+      "bbox": [
+        300.0,
+        10.0,
+        753.0,
+        400.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 176670.0,
+      "area_ratio": 0.5325,
+      "exact_in_parquet": false,
+      "n_page_nodes": 1,
+      "n_overlap_nodes": 1,
+      "covered_frac": 0.0036,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00117",
+      "doc_id": "avalaunchpresentationsthatkickasteriskv3copy-150318114804-conversion-gate01_95",
+      "page": 0,
+      "bbox": [
+        200.0,
+        10.0,
+        400.0,
+        100.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 18000.0,
+      "area_ratio": 0.0543,
+      "exact_in_parquet": false,
+      "n_page_nodes": 1,
+      "n_overlap_nodes": 1,
+      "covered_frac": 0.5889,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00147",
+      "doc_id": "guojixueshengshenghuozhinanyingwen9.1",
+      "page": 3,
+      "bbox": [
+        10.0,
+        500.0,
+        400.0,
+        796.0
+      ],
+      "page_size": [
+        583.93701171875,
+        796.5349731445312
+      ],
+      "area": 115440.0,
+      "area_ratio": 0.2482,
+      "exact_in_parquet": false,
+      "n_page_nodes": 7,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0.0,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00233",
+      "doc_id": "obs-productdesc-en",
+      "page": 6,
+      "bbox": [
+        32.0,
+        10.0,
+        595.275634765625,
+        841.8897705078125
+      ],
+      "page_size": [
+        595.275634765625,
+        841.8897705078125
+      ],
+      "area": 468587.0,
+      "area_ratio": 0.935,
+      "exact_in_parquet": false,
+      "n_page_nodes": 4,
+      "n_overlap_nodes": 4,
+      "covered_frac": 0.515,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00233",
+      "doc_id": "obs-productdesc-en",
+      "page": 7,
+      "bbox": [
+        32.0,
+        10.0,
+        595.275634765625,
+        400.0
+      ],
+      "page_size": [
+        595.275634765625,
+        841.8897705078125
+      ],
+      "area": 219679.2,
+      "area_ratio": 0.4383,
+      "exact_in_parquet": false,
+      "n_page_nodes": 2,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0.0,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00237",
+      "doc_id": "GPL-Graduate-Studies-Professional-Learning-Brochure-Jul-2021",
+      "page": 3,
+      "bbox": [
+        1.0,
+        1.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 498036.4,
+      "area_ratio": 0.9971,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.433,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00238",
+      "doc_id": "GPL-Graduate-Studies-Professional-Learning-Brochure-Jul-2021",
+      "page": 9,
+      "bbox": [
+        150.0,
+        1.0,
+        550.0,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 237712.0,
+      "area_ratio": 0.4759,
+      "exact_in_parquet": false,
+      "n_page_nodes": 24,
+      "n_overlap_nodes": 10,
+      "covered_frac": 0.1623,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00239",
+      "doc_id": "GPL-Graduate-Studies-Professional-Learning-Brochure-Jul-2021",
+      "page": 9,
+      "bbox": [
+        150.0,
+        1.0,
+        550.0,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 237712.0,
+      "area_ratio": 0.4759,
+      "exact_in_parquet": false,
+      "n_page_nodes": 24,
+      "n_overlap_nodes": 10,
+      "covered_frac": 0.1623,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00240",
+      "doc_id": "GPL-Graduate-Studies-Professional-Learning-Brochure-Jul-2021",
+      "page": 10,
+      "bbox": [
+        1.0,
+        1.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 498036.4,
+      "area_ratio": 0.9971,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.1635,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00240",
+      "doc_id": "GPL-Graduate-Studies-Professional-Learning-Brochure-Jul-2021",
+      "page": 11,
+      "bbox": [
+        1.0,
+        1.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 498036.4,
+      "area_ratio": 0.9971,
+      "exact_in_parquet": false,
+      "n_page_nodes": 11,
+      "n_overlap_nodes": 11,
+      "covered_frac": 0.5847,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00241",
+      "doc_id": "GPL-Graduate-Studies-Professional-Learning-Brochure-Jul-2021",
+      "page": 15,
+      "bbox": [
+        1.0,
+        1.0,
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "page_size": [
+        839.0549926757812,
+        595.2760009765625
+      ],
+      "area": 498036.4,
+      "area_ratio": 0.9971,
+      "exact_in_parquet": false,
+      "n_page_nodes": 7,
+      "n_overlap_nodes": 7,
+      "covered_frac": 0.1228,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00345",
+      "doc_id": "User_Manual_1500S_Classic_EN",
+      "page": 55,
+      "bbox": [
+        10.0,
+        90.0,
+        400.0,
+        500.0
+      ],
+      "page_size": [
+        419.52801513671875,
+        595.2760009765625
+      ],
+      "area": 159900.0,
+      "area_ratio": 0.6403,
+      "exact_in_parquet": false,
+      "n_page_nodes": 20,
+      "n_overlap_nodes": 19,
+      "covered_frac": 0.3401,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00345",
+      "doc_id": "User_Manual_1500S_Classic_EN",
+      "page": 56,
+      "bbox": [
+        10.0,
+        10.0,
+        400.0,
+        400.0
+      ],
+      "page_size": [
+        419.52801513671875,
+        595.2760009765625
+      ],
+      "area": 152100.0,
+      "area_ratio": 0.609,
+      "exact_in_parquet": false,
+      "n_page_nodes": 11,
+      "n_overlap_nodes": 11,
+      "covered_frac": 0.2026,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00351",
+      "doc_id": "camry_ebrochure",
+      "page": 13,
+      "bbox": [
+        10.0,
+        90.0,
+        600.0,
+        500.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 241900.0,
+      "area_ratio": 0.4991,
+      "exact_in_parquet": false,
+      "n_page_nodes": 13,
+      "n_overlap_nodes": 12,
+      "covered_frac": 0.2489,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00352",
+      "doc_id": "camry_ebrochure",
+      "page": 9,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 436600.0,
+      "area_ratio": 0.9008,
+      "exact_in_parquet": false,
+      "n_page_nodes": 45,
+      "n_overlap_nodes": 45,
+      "covered_frac": 0.4925,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00352",
+      "doc_id": "camry_ebrochure",
+      "page": 10,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 436600.0,
+      "area_ratio": 0.9008,
+      "exact_in_parquet": false,
+      "n_page_nodes": 43,
+      "n_overlap_nodes": 43,
+      "covered_frac": 0.4938,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00356",
+      "doc_id": "q1-2023-bilibili-inc-investor-presentation",
+      "page": 7,
+      "bbox": [
+        200.0,
+        50.0,
+        800.0,
+        500.0
+      ],
+      "page_size": [
+        960.0,
+        540.0
+      ],
+      "area": 270000.0,
+      "area_ratio": 0.5208,
+      "exact_in_parquet": false,
+      "n_page_nodes": 9,
+      "n_overlap_nodes": 9,
+      "covered_frac": 0.3616,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00393",
+      "doc_id": "amb-siteaudits-ds15-150204174043-conversion-gate01_95",
+      "page": 19,
+      "bbox": [
+        10.0,
+        10.0,
+        750.0,
+        350.0
+      ],
+      "page_size": [
+        768.0,
+        576.0
+      ],
+      "area": 251600.0,
+      "area_ratio": 0.5688,
+      "exact_in_parquet": false,
+      "n_page_nodes": 4,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.3424,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00427",
+      "doc_id": "e639029d16094ea71d964e2fb953952b",
+      "page": 0,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 436600.0,
+      "area_ratio": 0.9008,
+      "exact_in_parquet": false,
+      "n_page_nodes": 11,
+      "n_overlap_nodes": 11,
+      "covered_frac": 0.1302,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00431",
+      "doc_id": "a5879805d70c854ea4361e43a84e3bb2",
+      "page": 0,
+      "bbox": [
+        300.0,
+        10.0,
+        600.0,
+        200.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 57000.0,
+      "area_ratio": 0.1176,
+      "exact_in_parquet": false,
+      "n_page_nodes": 11,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.2386,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00437",
+      "doc_id": "3276a5b991c49cf5f9a4af0f7d6fce67",
+      "page": 12,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        780.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 454300.0,
+      "area_ratio": 0.9373,
+      "exact_in_parquet": false,
+      "n_page_nodes": 4,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.6137,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00437",
+      "doc_id": "3276a5b991c49cf5f9a4af0f7d6fce67",
+      "page": 13,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        780.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 454300.0,
+      "area_ratio": 0.9373,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 5,
+      "covered_frac": 0.5386,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00440",
+      "doc_id": "earthlinkweb-150213112111-conversion-gate02_95",
+      "page": 10,
+      "bbox": [
+        10.0,
+        10.0,
+        750.0,
+        550.0
+      ],
+      "page_size": [
+        768.0,
+        576.0
+      ],
+      "area": 399600.0,
+      "area_ratio": 0.9033,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.0449,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00440",
+      "doc_id": "earthlinkweb-150213112111-conversion-gate02_95",
+      "page": 13,
+      "bbox": [
+        10.0,
+        10.0,
+        750.0,
+        550.0
+      ],
+      "page_size": [
+        768.0,
+        576.0
+      ],
+      "area": 399600.0,
+      "area_ratio": 0.9033,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.5635,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00453",
+      "doc_id": "competitiveoutcomes-091006065143-phpapp01_95",
+      "page": 9,
+      "bbox": [
+        300.0,
+        10.0,
+        600.0,
+        780.0
+      ],
+      "page_size": [
+        768.0,
+        576.0
+      ],
+      "area": 231000.0,
+      "area_ratio": 0.5222,
+      "exact_in_parquet": false,
+      "n_page_nodes": 4,
+      "n_overlap_nodes": 2,
+      "covered_frac": 0.1417,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00453",
+      "doc_id": "competitiveoutcomes-091006065143-phpapp01_95",
+      "page": 11,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        550.0
+      ],
+      "page_size": [
+        768.0,
+        576.0
+      ],
+      "area": 318600.0,
+      "area_ratio": 0.7202,
+      "exact_in_parquet": false,
+      "n_page_nodes": 4,
+      "n_overlap_nodes": 4,
+      "covered_frac": 0.6415,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00456",
+      "doc_id": "2023.findings-emnlp.248",
+      "page": 13,
+      "bbox": [
+        10.0,
+        10.0,
+        580.0,
+        830.0
+      ],
+      "page_size": [
+        595.2760009765625,
+        841.8900146484375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9326,
+      "exact_in_parquet": false,
+      "n_page_nodes": 10,
+      "n_overlap_nodes": 10,
+      "covered_frac": 0.5258,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00456",
+      "doc_id": "2023.findings-emnlp.248",
+      "page": 14,
+      "bbox": [
+        10.0,
+        10.0,
+        580.0,
+        830.0
+      ],
+      "page_size": [
+        595.2760009765625,
+        841.8900146484375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9326,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.1568,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00456",
+      "doc_id": "2023.findings-emnlp.248",
+      "page": 15,
+      "bbox": [
+        10.0,
+        10.0,
+        580.0,
+        830.0
+      ],
+      "page_size": [
+        595.2760009765625,
+        841.8900146484375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9326,
+      "exact_in_parquet": false,
+      "n_page_nodes": 22,
+      "n_overlap_nodes": 22,
+      "covered_frac": 0.2392,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00456",
+      "doc_id": "2023.findings-emnlp.248",
+      "page": 16,
+      "bbox": [
+        10.0,
+        10.0,
+        580.0,
+        830.0
+      ],
+      "page_size": [
+        595.2760009765625,
+        841.8900146484375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9326,
+      "exact_in_parquet": false,
+      "n_page_nodes": 29,
+      "n_overlap_nodes": 29,
+      "covered_frac": 0.183,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00456",
+      "doc_id": "2023.findings-emnlp.248",
+      "page": 17,
+      "bbox": [
+        10.0,
+        10.0,
+        580.0,
+        830.0
+      ],
+      "page_size": [
+        595.2760009765625,
+        841.8900146484375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9326,
+      "exact_in_parquet": false,
+      "n_page_nodes": 10,
+      "n_overlap_nodes": 10,
+      "covered_frac": 0.5375,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00472",
+      "doc_id": "NUS-FASS-Graduate-Guidebook-2021-small",
+      "page": 16,
+      "bbox": [
+        10.0,
+        10.0,
+        830.0,
+        580.0
+      ],
+      "page_size": [
+        840.5186157226562,
+        595.8363037109375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9333,
+      "exact_in_parquet": false,
+      "n_page_nodes": 22,
+      "n_overlap_nodes": 22,
+      "covered_frac": 0.4584,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00472",
+      "doc_id": "NUS-FASS-Graduate-Guidebook-2021-small",
+      "page": 17,
+      "bbox": [
+        10.0,
+        10.0,
+        830.0,
+        580.0
+      ],
+      "page_size": [
+        840.5186157226562,
+        595.8363037109375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9333,
+      "exact_in_parquet": false,
+      "n_page_nodes": 26,
+      "n_overlap_nodes": 26,
+      "covered_frac": 0.5811,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00472",
+      "doc_id": "NUS-FASS-Graduate-Guidebook-2021-small",
+      "page": 19,
+      "bbox": [
+        10.0,
+        10.0,
+        830.0,
+        580.0
+      ],
+      "page_size": [
+        840.5186157226562,
+        595.8363037109375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9333,
+      "exact_in_parquet": false,
+      "n_page_nodes": 16,
+      "n_overlap_nodes": 16,
+      "covered_frac": 0.5547,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00473",
+      "doc_id": "NUS-FASS-Graduate-Guidebook-2021-small",
+      "page": 14,
+      "bbox": [
+        10.0,
+        10.0,
+        830.0,
+        580.0
+      ],
+      "page_size": [
+        840.5186157226562,
+        595.8363037109375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9333,
+      "exact_in_parquet": false,
+      "n_page_nodes": 22,
+      "n_overlap_nodes": 22,
+      "covered_frac": 0.628,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00473",
+      "doc_id": "NUS-FASS-Graduate-Guidebook-2021-small",
+      "page": 15,
+      "bbox": [
+        10.0,
+        10.0,
+        830.0,
+        580.0
+      ],
+      "page_size": [
+        840.5186157226562,
+        595.8363037109375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9333,
+      "exact_in_parquet": false,
+      "n_page_nodes": 16,
+      "n_overlap_nodes": 16,
+      "covered_frac": 0.3757,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00473",
+      "doc_id": "NUS-FASS-Graduate-Guidebook-2021-small",
+      "page": 24,
+      "bbox": [
+        10.0,
+        10.0,
+        830.0,
+        580.0
+      ],
+      "page_size": [
+        840.5186157226562,
+        595.8363037109375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9333,
+      "exact_in_parquet": false,
+      "n_page_nodes": 25,
+      "n_overlap_nodes": 25,
+      "covered_frac": 0.6367,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00473",
+      "doc_id": "NUS-FASS-Graduate-Guidebook-2021-small",
+      "page": 25,
+      "bbox": [
+        10.0,
+        10.0,
+        830.0,
+        580.0
+      ],
+      "page_size": [
+        840.5186157226562,
+        595.8363037109375
+      ],
+      "area": 467400.0,
+      "area_ratio": 0.9333,
+      "exact_in_parquet": false,
+      "n_page_nodes": 20,
+      "n_overlap_nodes": 20,
+      "covered_frac": 0.3593,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00482",
+      "doc_id": "owners-manual-2170416",
+      "page": 9,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        700.0
+      ],
+      "page_size": [
+        636.0,
+        739.0
+      ],
+      "area": 407100.0,
+      "area_ratio": 0.8662,
+      "exact_in_parquet": false,
+      "n_page_nodes": 17,
+      "n_overlap_nodes": 17,
+      "covered_frac": 0.3044,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00482",
+      "doc_id": "owners-manual-2170416",
+      "page": 12,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        700.0
+      ],
+      "page_size": [
+        636.0,
+        739.0
+      ],
+      "area": 407100.0,
+      "area_ratio": 0.8662,
+      "exact_in_parquet": false,
+      "n_page_nodes": 19,
+      "n_overlap_nodes": 19,
+      "covered_frac": 0.4386,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00491",
+      "doc_id": "ISEP_student_handbook_2020",
+      "page": 3,
+      "bbox": [
+        51.0,
+        92.0,
+        555.0,
+        761.0
+      ],
+      "page_size": [
+        595.3200073242188,
+        841.9199829101562
+      ],
+      "area": 337176.0,
+      "area_ratio": 0.6727,
+      "exact_in_parquet": false,
+      "n_page_nodes": 15,
+      "n_overlap_nodes": 15,
+      "covered_frac": 0.3896,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00491",
+      "doc_id": "ISEP_student_handbook_2020",
+      "page": 4,
+      "bbox": [
+        51.0,
+        92.0,
+        555.0,
+        600.0
+      ],
+      "page_size": [
+        595.3200073242188,
+        841.9199829101562
+      ],
+      "area": 256032.0,
+      "area_ratio": 0.5108,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.9155,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00505",
+      "doc_id": "7c3f6204b3241f142f0f8eb8e1fefe7a",
+      "page": 0,
+      "bbox": [
+        250.0,
+        10.0,
+        600.0,
+        200.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 66500.0,
+      "area_ratio": 0.1372,
+      "exact_in_parquet": false,
+      "n_page_nodes": 12,
+      "n_overlap_nodes": 4,
+      "covered_frac": 0.2177,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00513",
+      "doc_id": "f1f5242528411b262be447e61e2eb10f",
+      "page": 0,
+      "bbox": [
+        2.0,
+        600.0,
+        500.0,
+        790.0
+      ],
+      "page_size": [
+        595.2760009765625,
+        793.7009887695312
+      ],
+      "area": 94620.0,
+      "area_ratio": 0.2003,
+      "exact_in_parquet": false,
+      "n_page_nodes": 11,
+      "n_overlap_nodes": 1,
+      "covered_frac": 0.4866,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00520",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 13,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.6746,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00520",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 14,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.7149,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00520",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 13,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.6746,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00520",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 15,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 4,
+      "n_overlap_nodes": 4,
+      "covered_frac": 0.7827,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00520",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 16,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 8,
+      "covered_frac": 0.487,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00520",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 17,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 5,
+      "n_overlap_nodes": 5,
+      "covered_frac": 0.6961,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00522",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 49,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 2,
+      "n_overlap_nodes": 2,
+      "covered_frac": 0.4474,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00522",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 50,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.6382,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00522",
+      "doc_id": "formwork-150318073913-conversion-gate01_95",
+      "page": 51,
+      "bbox": [
+        50.0,
+        50.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 266000.0,
+      "area_ratio": 0.8017,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.7391,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00532",
+      "doc_id": "germanwingsdigitalcrisisanalysis-150403064828-conversion-gate01_95",
+      "page": 17,
+      "bbox": [
+        300.0,
+        150.0,
+        750.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 126000.0,
+      "area_ratio": 0.3798,
+      "exact_in_parquet": false,
+      "n_page_nodes": 7,
+      "n_overlap_nodes": 4,
+      "covered_frac": 0.5597,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00556",
+      "doc_id": "2405.09818v1",
+      "page": 2,
+      "bbox": [
+        50.0,
+        50.0,
+        610.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 392000.0,
+      "area_ratio": 0.8087,
+      "exact_in_parquet": false,
+      "n_page_nodes": 7,
+      "n_overlap_nodes": 7,
+      "covered_frac": 0.4803,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00556",
+      "doc_id": "2405.09818v1",
+      "page": 3,
+      "bbox": [
+        50.0,
+        50.0,
+        610.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 392000.0,
+      "area_ratio": 0.8087,
+      "exact_in_parquet": false,
+      "n_page_nodes": 13,
+      "n_overlap_nodes": 13,
+      "covered_frac": 0.4642,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00556",
+      "doc_id": "2405.09818v1",
+      "page": 4,
+      "bbox": [
+        50.0,
+        50.0,
+        610.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 392000.0,
+      "area_ratio": 0.8087,
+      "exact_in_parquet": false,
+      "n_page_nodes": 14,
+      "n_overlap_nodes": 14,
+      "covered_frac": 0.4547,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00556",
+      "doc_id": "2405.09818v1",
+      "page": 9,
+      "bbox": [
+        50.0,
+        50.0,
+        610.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 392000.0,
+      "area_ratio": 0.8087,
+      "exact_in_parquet": false,
+      "n_page_nodes": 19,
+      "n_overlap_nodes": 19,
+      "covered_frac": 0.4493,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00556",
+      "doc_id": "2405.09818v1",
+      "page": 10,
+      "bbox": [
+        50.0,
+        50.0,
+        610.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 392000.0,
+      "area_ratio": 0.8087,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 8,
+      "covered_frac": 0.6613,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00565",
+      "doc_id": "san-francisco-11-contents",
+      "page": 3,
+      "bbox": [
+        10.0,
+        10.0,
+        350.0,
+        540.0
+      ],
+      "page_size": [
+        362.8349914550781,
+        558.4249877929688
+      ],
+      "area": 180200.0,
+      "area_ratio": 0.8894,
+      "exact_in_parquet": false,
+      "n_page_nodes": 27,
+      "n_overlap_nodes": 27,
+      "covered_frac": 0.5481,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00565",
+      "doc_id": "san-francisco-11-contents",
+      "page": 4,
+      "bbox": [
+        10.0,
+        10.0,
+        350.0,
+        540.0
+      ],
+      "page_size": [
+        362.8349914550781,
+        558.4249877929688
+      ],
+      "area": 180200.0,
+      "area_ratio": 0.8894,
+      "exact_in_parquet": false,
+      "n_page_nodes": 24,
+      "n_overlap_nodes": 24,
+      "covered_frac": 0.4472,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00567",
+      "doc_id": "san-francisco-11-contents",
+      "page": 2,
+      "bbox": [
+        10.0,
+        10.0,
+        350.0,
+        540.0
+      ],
+      "page_size": [
+        362.8349914550781,
+        558.4249877929688
+      ],
+      "area": 180200.0,
+      "area_ratio": 0.8894,
+      "exact_in_parquet": false,
+      "n_page_nodes": 5,
+      "n_overlap_nodes": 5,
+      "covered_frac": 0.7659,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00568",
+      "doc_id": "san-francisco-11-contents",
+      "page": 6,
+      "bbox": [
+        10.0,
+        10.0,
+        350.0,
+        540.0
+      ],
+      "page_size": [
+        362.8349914550781,
+        558.4249877929688
+      ],
+      "area": 180200.0,
+      "area_ratio": 0.8894,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.113,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00570",
+      "doc_id": "san-francisco-11-contents",
+      "page": 28,
+      "bbox": [
+        10.0,
+        10.0,
+        350.0,
+        540.0
+      ],
+      "page_size": [
+        362.8349914550781,
+        558.4249877929688
+      ],
+      "area": 180200.0,
+      "area_ratio": 0.8894,
+      "exact_in_parquet": false,
+      "n_page_nodes": 19,
+      "n_overlap_nodes": 19,
+      "covered_frac": 0.7762,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00625",
+      "doc_id": "mi_phone",
+      "page": 5,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 436600.0,
+      "area_ratio": 0.9008,
+      "exact_in_parquet": false,
+      "n_page_nodes": 19,
+      "n_overlap_nodes": 19,
+      "covered_frac": 0.1412,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00625",
+      "doc_id": "mi_phone",
+      "page": 6,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 436600.0,
+      "area_ratio": 0.9008,
+      "exact_in_parquet": false,
+      "n_page_nodes": 19,
+      "n_overlap_nodes": 19,
+      "covered_frac": 0.1813,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00625",
+      "doc_id": "mi_phone",
+      "page": 7,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 436600.0,
+      "area_ratio": 0.9008,
+      "exact_in_parquet": false,
+      "n_page_nodes": 18,
+      "n_overlap_nodes": 18,
+      "covered_frac": 0.0976,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00625",
+      "doc_id": "mi_phone",
+      "page": 8,
+      "bbox": [
+        10.0,
+        10.0,
+        600.0,
+        750.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 436600.0,
+      "area_ratio": 0.9008,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.0113,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00635",
+      "doc_id": "stereo_headset",
+      "page": 50,
+      "bbox": [
+        10.0,
+        10.0,
+        590.0,
+        820.0
+      ],
+      "page_size": [
+        594.9599609375,
+        841.9199829101562
+      ],
+      "area": 469800.0,
+      "area_ratio": 0.9379,
+      "exact_in_parquet": false,
+      "n_page_nodes": 14,
+      "n_overlap_nodes": 14,
+      "covered_frac": 0.3634,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00635",
+      "doc_id": "stereo_headset",
+      "page": 51,
+      "bbox": [
+        10.0,
+        10.0,
+        590.0,
+        820.0
+      ],
+      "page_size": [
+        594.9599609375,
+        841.9199829101562
+      ],
+      "area": 469800.0,
+      "area_ratio": 0.9379,
+      "exact_in_parquet": false,
+      "n_page_nodes": 12,
+      "n_overlap_nodes": 12,
+      "covered_frac": 0.366,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00635",
+      "doc_id": "stereo_headset",
+      "page": 52,
+      "bbox": [
+        10.0,
+        10.0,
+        590.0,
+        820.0
+      ],
+      "page_size": [
+        594.9599609375,
+        841.9199829101562
+      ],
+      "area": 469800.0,
+      "area_ratio": 0.9379,
+      "exact_in_parquet": false,
+      "n_page_nodes": 9,
+      "n_overlap_nodes": 9,
+      "covered_frac": 0.1946,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00636",
+      "doc_id": "stereo_headset",
+      "page": 50,
+      "bbox": [
+        10.0,
+        10.0,
+        590.0,
+        820.0
+      ],
+      "page_size": [
+        594.9599609375,
+        841.9199829101562
+      ],
+      "area": 469800.0,
+      "area_ratio": 0.9379,
+      "exact_in_parquet": false,
+      "n_page_nodes": 14,
+      "n_overlap_nodes": 14,
+      "covered_frac": 0.3634,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00636",
+      "doc_id": "stereo_headset",
+      "page": 51,
+      "bbox": [
+        10.0,
+        10.0,
+        590.0,
+        820.0
+      ],
+      "page_size": [
+        594.9599609375,
+        841.9199829101562
+      ],
+      "area": 469800.0,
+      "area_ratio": 0.9379,
+      "exact_in_parquet": false,
+      "n_page_nodes": 12,
+      "n_overlap_nodes": 12,
+      "covered_frac": 0.366,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00636",
+      "doc_id": "stereo_headset",
+      "page": 52,
+      "bbox": [
+        10.0,
+        10.0,
+        590.0,
+        820.0
+      ],
+      "page_size": [
+        594.9599609375,
+        841.9199829101562
+      ],
+      "area": 469800.0,
+      "area_ratio": 0.9379,
+      "exact_in_parquet": false,
+      "n_page_nodes": 9,
+      "n_overlap_nodes": 9,
+      "covered_frac": 0.1946,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00657",
+      "doc_id": "f86d073b0d735ac873a65d906ba82758",
+      "page": 0,
+      "bbox": [
+        450.0,
+        10.0,
+        595.0,
+        150.0
+      ],
+      "page_size": [
+        595.3074951171875,
+        842.3074951171875
+      ],
+      "area": 20300.0,
+      "area_ratio": 0.0405,
+      "exact_in_parquet": false,
+      "n_page_nodes": 16,
+      "n_overlap_nodes": 1,
+      "covered_frac": 0.2153,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00664",
+      "doc_id": "a4f3ced0696009fec3179f493e4f28c4",
+      "page": 0,
+      "bbox": [
+        100.0,
+        10.0,
+        600.0,
+        150.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 70000.0,
+      "area_ratio": 0.1444,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 1,
+      "covered_frac": 0.0155,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00665",
+      "doc_id": "a4f3ced0696009fec3179f493e4f28c4",
+      "page": 0,
+      "bbox": [
+        100.0,
+        10.0,
+        600.0,
+        150.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 70000.0,
+      "area_ratio": 0.1444,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 1,
+      "covered_frac": 0.0155,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00668",
+      "doc_id": "csewt7zsecmmbzjufbyx-signature-24d91a254426c21c3079384270e1f138dc43a271cfe15d6d520d68205855b2a3-poli-150306115347-conversion-gate01",
+      "page": 36,
+      "bbox": [
+        10.0,
+        10.0,
+        1800.0,
+        1000.0
+      ],
+      "page_size": [
+        1920.0,
+        1080.0
+      ],
+      "area": 1772100.0,
+      "area_ratio": 0.8546,
+      "exact_in_parquet": false,
+      "n_page_nodes": 2,
+      "n_overlap_nodes": 2,
+      "covered_frac": 0.1117,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00668",
+      "doc_id": "csewt7zsecmmbzjufbyx-signature-24d91a254426c21c3079384270e1f138dc43a271cfe15d6d520d68205855b2a3-poli-150306115347-conversion-gate01",
+      "page": 38,
+      "bbox": [
+        10.0,
+        10.0,
+        1800.0,
+        1000.0
+      ],
+      "page_size": [
+        1920.0,
+        1080.0
+      ],
+      "area": 1772100.0,
+      "area_ratio": 0.8546,
+      "exact_in_parquet": false,
+      "n_page_nodes": 5,
+      "n_overlap_nodes": 5,
+      "covered_frac": 0.1663,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00668",
+      "doc_id": "csewt7zsecmmbzjufbyx-signature-24d91a254426c21c3079384270e1f138dc43a271cfe15d6d520d68205855b2a3-poli-150306115347-conversion-gate01",
+      "page": 39,
+      "bbox": [
+        10.0,
+        10.0,
+        1800.0,
+        1000.0
+      ],
+      "page_size": [
+        1920.0,
+        1080.0
+      ],
+      "area": 1772100.0,
+      "area_ratio": 0.8546,
+      "exact_in_parquet": false,
+      "n_page_nodes": 5,
+      "n_overlap_nodes": 5,
+      "covered_frac": 0.2387,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00668",
+      "doc_id": "csewt7zsecmmbzjufbyx-signature-24d91a254426c21c3079384270e1f138dc43a271cfe15d6d520d68205855b2a3-poli-150306115347-conversion-gate01",
+      "page": 40,
+      "bbox": [
+        10.0,
+        10.0,
+        1800.0,
+        1000.0
+      ],
+      "page_size": [
+        1920.0,
+        1080.0
+      ],
+      "area": 1772100.0,
+      "area_ratio": 0.8546,
+      "exact_in_parquet": false,
+      "n_page_nodes": 15,
+      "n_overlap_nodes": 15,
+      "covered_frac": 0.5112,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00671",
+      "doc_id": "b3m5kaeqm2w8n4bwcesw-140602121350-phpapp02_95",
+      "page": 8,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 315000.0,
+      "area_ratio": 0.9494,
+      "exact_in_parquet": false,
+      "n_page_nodes": 12,
+      "n_overlap_nodes": 12,
+      "covered_frac": 0.5488,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00672",
+      "doc_id": "b3m5kaeqm2w8n4bwcesw-140602121350-phpapp02_95",
+      "page": 15,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 315000.0,
+      "area_ratio": 0.9494,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 3,
+      "covered_frac": 0.6943,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00672",
+      "doc_id": "b3m5kaeqm2w8n4bwcesw-140602121350-phpapp02_95",
+      "page": 16,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 315000.0,
+      "area_ratio": 0.9494,
+      "exact_in_parquet": false,
+      "n_page_nodes": 9,
+      "n_overlap_nodes": 9,
+      "covered_frac": 0.6591,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00672",
+      "doc_id": "b3m5kaeqm2w8n4bwcesw-140602121350-phpapp02_95",
+      "page": 17,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 315000.0,
+      "area_ratio": 0.9494,
+      "exact_in_parquet": false,
+      "n_page_nodes": 9,
+      "n_overlap_nodes": 9,
+      "covered_frac": 0.7107,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00673",
+      "doc_id": "b3m5kaeqm2w8n4bwcesw-140602121350-phpapp02_95",
+      "page": 19,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 315000.0,
+      "area_ratio": 0.9494,
+      "exact_in_parquet": false,
+      "n_page_nodes": 15,
+      "n_overlap_nodes": 15,
+      "covered_frac": 0.5171,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00673",
+      "doc_id": "b3m5kaeqm2w8n4bwcesw-140602121350-phpapp02_95",
+      "page": 20,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 315000.0,
+      "area_ratio": 0.9494,
+      "exact_in_parquet": false,
+      "n_page_nodes": 12,
+      "n_overlap_nodes": 12,
+      "covered_frac": 0.5996,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00674",
+      "doc_id": "b3m5kaeqm2w8n4bwcesw-140602121350-phpapp02_95",
+      "page": 20,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        430.0
+      ],
+      "page_size": [
+        768.0,
+        432.0
+      ],
+      "area": 315000.0,
+      "area_ratio": 0.9494,
+      "exact_in_parquet": false,
+      "n_page_nodes": 12,
+      "n_overlap_nodes": 12,
+      "covered_frac": 0.5996,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00675",
+      "doc_id": "disciplined-agile-business-analysis-160218012713_95",
+      "page": 0,
+      "bbox": [
+        400.0,
+        10.0,
+        760.0,
+        150.0
+      ],
+      "page_size": [
+        768.0,
+        594.0
+      ],
+      "area": 50400.0,
+      "area_ratio": 0.1105,
+      "exact_in_parquet": false,
+      "n_page_nodes": 3,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0.0,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00678",
+      "doc_id": "disciplined-agile-business-analysis-160218012713_95",
+      "page": 3,
+      "bbox": [
+        10.0,
+        10.0,
+        760.0,
+        550.0
+      ],
+      "page_size": [
+        768.0,
+        594.0
+      ],
+      "area": 405000.0,
+      "area_ratio": 0.8878,
+      "exact_in_parquet": false,
+      "n_page_nodes": 6,
+      "n_overlap_nodes": 6,
+      "covered_frac": 0.4444,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00699",
+      "doc_id": "Guide-for-international-students-web",
+      "page": 2,
+      "bbox": [
+        10.0,
+        350.0,
+        300.0,
+        450.0
+      ],
+      "page_size": [
+        340.1570129394531,
+        467.7170104980469
+      ],
+      "area": 29000.0,
+      "area_ratio": 0.1823,
+      "exact_in_parquet": false,
+      "n_page_nodes": 19,
+      "n_overlap_nodes": 4,
+      "covered_frac": 0.3205,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_00700",
+      "doc_id": "Guide-for-international-students-web",
+      "page": 6,
+      "bbox": [
+        300.0,
+        100.0,
+        300.0,
+        450.0
+      ],
+      "page_size": [
+        340.1570129394531,
+        467.7170104980469
+      ],
+      "area": 0.0,
+      "area_ratio": 0.0,
+      "exact_in_parquet": false,
+      "n_page_nodes": 13,
+      "n_overlap_nodes": 0,
+      "covered_frac": 0,
+      "zero_area": true
+    },
+    {
+      "query_id": "mmdocir_01342",
+      "doc_id": "DOS-FY2023-Agency-Financial-Report-508",
+      "page": 149,
+      "bbox": [
+        36.0,
+        105.0,
+        562.0,
+        733.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 330328.0,
+      "area_ratio": 0.6815,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 7,
+      "covered_frac": 0.7636,
+      "zero_area": false
+    },
+    {
+      "query_id": "mmdocir_01343",
+      "doc_id": "DOS-FY2023-Agency-Financial-Report-508",
+      "page": 149,
+      "bbox": [
+        36.0,
+        105.0,
+        562.0,
+        733.0
+      ],
+      "page_size": [
+        612.0,
+        792.0
+      ],
+      "area": 330328.0,
+      "area_ratio": 0.6815,
+      "exact_in_parquet": false,
+      "n_page_nodes": 8,
+      "n_overlap_nodes": 7,
+      "covered_frac": 0.7636,
+      "zero_area": false
+    }
+  ]
+}

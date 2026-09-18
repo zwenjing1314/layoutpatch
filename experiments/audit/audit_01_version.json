@@ -1,0 +1,29 @@
+{
+  "raw_dir": "data\\raw\\mmdocir_evaluation",
+  "files": [
+    {
+      "name": "MMDocIR_annotations.jsonl",
+      "bytes": 770337,
+      "mtime": 1778309263.26
+    },
+    {
+      "name": "MMDocIR_layouts.parquet",
+      "bytes": 2461590666,
+      "mtime": 1778309723.8
+    },
+    {
+      "name": "MMDocIR_pages.parquet",
+      "bytes": 1599336517,
+      "mtime": 1778309625.63
+    }
+  ],
+  "readme_parquets": [
+    "MMDocIR_pages.parquet",
+    "MMDocIR_layouts.parquet"
+  ],
+  "conclusion": "本地三文件与README两parquet名一致,另含annotations jsonl; 下载2026/5/9, HF commit未知, 后续引用须冻结此快照",
+  "ann_docs": 313,
+  "ann_questions": 1658,
+  "layouts_rows": 170338,
+  "pages_rows": 20395
+}

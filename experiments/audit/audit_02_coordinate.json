@@ -1,0 +1,110 @@
+{
+  "samples": [
+    {
+      "query_id": "mmdocir_00000",
+      "page_id": "PH_2016.06.08_Economy-Final_p4",
+      "label_bbox": [
+        366.0,
+        229.0,
+        514.0,
+        383.0
+      ],
+      "label_page_size": [
+        612.0,
+        792.0
+      ],
+      "image_px_wh": [
+        612,
+        792
+      ],
+      "page_size_eq_image_px": true,
+      "inside_page": true,
+      "order": "x1y1x2y2"
+    },
+    {
+      "query_id": "mmdocir_00001",
+      "page_id": "PH_2016.06.08_Economy-Final_p18",
+      "label_bbox": [
+        64.0,
+        274.0,
+        546.0,
+        389.0
+      ],
+      "label_page_size": [
+        612.0,
+        792.0
+      ],
+      "image_px_wh": [
+        612,
+        792
+      ],
+      "page_size_eq_image_px": true,
+      "inside_page": true,
+      "order": "x1y1x2y2"
+    },
+    {
+      "query_id": "mmdocir_00001",
+      "page_id": "PH_2016.06.08_Economy-Final_p19",
+      "label_bbox": [
+        64.0,
+        410.0,
+        546.0,
+        584.0
+      ],
+      "label_page_size": [
+        612.0,
+        792.0
+      ],
+      "image_px_wh": [
+        612,
+        792
+      ],
+      "page_size_eq_image_px": true,
+      "inside_page": true,
+      "order": "x1y1x2y2"
+    },
+    {
+      "query_id": "mmdocir_00002",
+      "page_id": "PH_2016.06.08_Economy-Final_p13",
+      "label_bbox": [
+        323.0,
+        170.0,
+        543.0,
+        256.0
+      ],
+      "label_page_size": [
+        612.0,
+        792.0
+      ],
+      "image_px_wh": [
+        612,
+        792
+      ],
+      "page_size_eq_image_px": true,
+      "inside_page": true,
+      "order": "x1y1x2y2"
+    },
+    {
+      "query_id": "mmdocir_00002",
+      "page_id": "PH_2016.06.08_Economy-Final_p13",
+      "label_bbox": [
+        315.0,
+        261.0,
+        546.0,
+        600.0
+      ],
+      "label_page_size": [
+        612.0,
+        792.0
+      ],
+      "image_px_wh": [
+        612,
+        792
+      ],
+      "page_size_eq_image_px": true,
+      "inside_page": true,
+      "order": "x1y1x2y2"
+    }
+  ],
+  "conclusion": "5/5 bbox为[x1,y1,x2,y2]且落在page_size内; page为jsonl原始int(0起,例page=4对应_p4,页图_doc_4.jpg); 抽查页page_size==页图像素(如PH_2016_4: [612,792]==(612,792), scale=1.0); 官方metric_eval变量名写top/left/bottom/right但两侧同序, 交集计算与xyxy一致, 属命名错位非计算错"
+}
