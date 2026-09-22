@@ -171,6 +171,18 @@ def main() -> None:
         l2_official[f"oracle_area_recall@{k}_official"] = round(sum(off) / len(off), 4)
         l2_union[f"oracle_area_recall@{k}_union_clipped"] = round(sum(uni) / len(uni), 4)
 
+    # ---- L2 aligned: same denominator as L3 (frozen EVAL1388 picks set), for a fair gap.
+    # Picks are only defined for page-hit queries (1343 matched-A + strict 45 B); L2-full
+    # stays the headline ceiling, L2-eval1388 is the gap-comparison denominator.
+    eval_qids = sorted(picks)
+    l2_eval1388_official: dict[str, float] = {}
+    l2_eval1388_union: dict[str, float] = {}
+    for k in (1, 5, 10):
+        off = [oracle(q, k)[0] for q in eval_qids]
+        uni = [oracle(q, k)[1] for q in eval_qids]
+        l2_eval1388_official[f"oracle_area_recall@{k}_official"] = round(sum(off) / len(off), 4)
+        l2_eval1388_union[f"oracle_area_recall@{k}_union_clipped"] = round(sum(uni) / len(uni), 4)
+
     # ---- L3: frozen 1C Top-1 picks scored with verbatim recall_layout
     # rebuild per-query candidate list deterministically (stable order by node_id)
     cand_list: dict[str, list[tuple[str, list[float]]]] = defaultdict(list)
@@ -183,7 +195,6 @@ def main() -> None:
 
     l3_official: dict[str, dict] = {}
     l3_union: dict[str, dict] = {}
-    eval_qids = sorted(picks)
     for method in methods[:5]:  # fixed-candidate methods only; group boxes are self-drawn (None)
         off_vals: list[float] = []
         uni_vals: list[float] = []
@@ -256,6 +267,8 @@ def main() -> None:
         },
         "L1_page_recall_frozen_EXP001": l1,
         "L2_oracle_full1658": {"official_verbatim": l2_official, "union_clipped_sensitivity": l2_union},
+        "L2_oracle_eval1388_aligned": {"official_verbatim": l2_eval1388_official, "union_clipped_sensitivity": l2_eval1388_union,
+            "note": "same 1388-query denominator as L3 (1343 matched-A + strict 45 B, page-hit only); use this row for the Oracle-minus-actual gap"},
         "L3_actual_top1_frozen_picks": {"official_verbatim": l3_official, "union_clipped_sensitivity": l3_union},
         "auxiliary_old_IoU_only": {
             "EXP-006_top1_accuracy_A_IoU05": old_1c["top1_accuracy_A"],

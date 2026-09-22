@@ -3,6 +3,7 @@
 > 出处：小论文执行规范 `docs/PAPER_SPEC.md` 第 7.3/7.4/8 节；大论文规范 `docs/THESIS_SPEC.md` 第 11.2/11.3 节。
 > 状态：草稿，仅供学生与导师共判，不写论文结论。数字全部可在 `experiments/registry.csv` 追到源头。
 > 禁令：不建 `fusion/` 子包、不写 `train_fusion.py`；训练须学生+导师双确认。
+> 口径注记（2026-09-22，EXP-007 后）：本草稿三数并列与分类 B2-a 均为 **IoU 口径**（单框 IoU≥0.5）。官方口径下：45B 中多数有非零面积交集（`unmapped_only 60` 题 `clip` 均值 0.5421，54/60 非零），“框缺失”应改读为“无精确候选、低 Oracle@1（0.1857）”，详见 `experiments/2026-09-19-exp-007-official-recompute.md` §10。`matched/unmapped` 在此仅为诊断分层，不作官方口径下“可用/不可用”二分；本草稿数字保留为辅助，不删除。
 
 ## 三数并列（同一口径 K=5 / IoU≥0.5）
 
