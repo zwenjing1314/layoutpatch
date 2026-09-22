@@ -7,7 +7,7 @@
 
 ## 2. 环境
 
-- uv `.venv`；CPU 只读重算，无 GPU、无视觉重编码、无训练。
+- 运行环境：本机有 GPU（RTX 3080Ti 12GB）；但本次重算为纯 CPU 只读脚本（bbox 交集几何计算，不加载任何模型），无 GPU 调用、无视觉重编码、无训练。
 - 官方源码唯一事实来源：`C:/Users/WenJing/Documents/WorkTransfer/MMDocIR/metric_eval.py`（`calculate_overlap_score` + `recall_layout` + `top_k_indices` 语义逐行移植，见脚本头部注释）。
 
 ## 3. 数据和 split
