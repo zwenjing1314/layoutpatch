@@ -30,11 +30,7 @@ uv run python scripts/run_phase1c_official_recompute.py
 ```
 
 - 约 16.3 秒；输出 `artifacts/baselines/mmdocir_1c_official/exp007_official_recompute.json`。
-- `./tasks.ps1 check` 原样（本轮未跑新训练；见第 9 节）：
-
-```text
-待本轮提交前补跑（ruff + 44 pytest 全绿才入库）。
-```
+- `./tasks.ps1 check` 原样（2026-09-19 EXP-007 提交前实跑）：ruff 全过 + 44 pytest 全绿（`check: all green`）。
 
 ## 6. 代码 commit
 
