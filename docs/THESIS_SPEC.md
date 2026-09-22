@@ -1,6 +1,7 @@
 # 大论文研究路线与开发说明（THESIS_SPEC）
 
-> Status: stable | Scope: 大论文目标、主线、文献地图、Gate、评测规范、表述边界 | SSOT: 是
+> Status: working（2026-09-19 降级：`a1fbcc2` 官方口径改动为**提案**，未冻新阈值前不转正）
+> | Scope: 大论文目标、主线、文献地图、Gate、评测规范、表述边界 | SSOT: 是
 > 迁移来源：旧仓库 `mmdoc-evidence-rag/docs/THESIS_RESEARCH_ROUTE_DRAFT.md` 全文迁移；
 > 小论文执行引用 `docs/SMALL_PAPER_DEV_SPEC.md`→`docs/PAPER_SPEC.md` 已替换。
 >
@@ -167,7 +168,7 @@ A/B/C/D（辅助）：单框 IoU≥0.5 下的页面–区域四类；不再作�
 
 ### RQ3：能否在不裁剪页面和重复视觉编码的前提下学习更好的 patch 表示？
 
-如果无训练方法仍存在稳定缺口（Oracle 高、实际排序低），训练布局约束的文档侧 patch 融合模块（Phase 2）或轻量候选重排头（Phase 2-R，先行分支），并检验它能否同时保持页面检索能力、改善区域定位能力（官方口径）和控制额外计算成本。
+如果无训练方法仍存在稳定缺口（Oracle 高、实际排序低），训练布局约束的文档侧 patch 融合模块（Phase 2，严格 C1–C3）或轻量候选重排头（Phase 2-R，先行分支；定义与 C3 边界以执行手册 5.7 节为准：用 query 文本相似度即 query-conditioned 探索分支，须配 w/o text_sim 消融），并检验它能否同时保持页面检索能力、改善区域定位能力（官方口径）和控制额外计算成本。
 
 回答形式必须是三指标同报：页级（Recall/MRR/nDCG）+ 区域级（官方 Area Recall 主 + IoU/Text 辅助）+ 效率（向量数/索引/离线融合/在线延迟/显存）。只涨一处不算成。区域监督用 candidate 软标签 `y(c)=Area(c∩G)/Area(G)`，与官方口径对齐。
 
@@ -269,11 +270,11 @@ Gate、残差和零初始化属于训练稳定性设计，不能分别包装成�
 
 目标：判断规则方法在官方 Area Recall 上能解决多少缺口（Oracle–实际 gap），以及剩余错误是否值得训练新模块。若规则已接近 Oracle，论文转向失败类型与效率分析，不强行训练。历史注记：EXP-006 的 0.3187/0-45 为 IoU 口径数，须重算官方口径后再判。
 
-### 阶段 4：训练 patch 融合模块（Phase 2）与轻量重排分支（Phase 2-R，先行）
+### 阶段 4：训练 patch 融合模块（Phase 2，严格 C1–C3）与轻量重排分支（Phase 2-R，先行）
 
 前提：阶段 2 和阶段 3 已完成，且有独立训练或开发数据。MMDocIR evaluation gold 不能同时当训练监督和最终测试。
 
-Phase 2-R（推荐先跑，低风险）：冻结 P 不动，只学框级 reranker 头（patch 分 + 框先验 + 文本相似度），loss 回归 Area 覆盖分；2 周可出数；若 dev 稳定提升且页级不掉，再议全融合。
+Phase 2-R（推荐先跑，低风险；C3 边界与 loss/y(c)/负采样/泄漏审/2 周门槛以执行手册 5.7 节冻结定义为准）：冻结 P 不动，只学框级 reranker 头（patch 分 + 框先验 + 文本相似度）；用 query 文本相似度即 query-conditioned 探索分支，须配 w/o text_sim 消融；loss 首选 pointwise 回归、备选 listwise（dev 二选一）；train 6878 启动前须落盘泄漏审查；2 周 dev 门槛为页级不掉 + 官方 Area@1/5 同向稳定涨，否则转 B1/B2。
 
 训练顺序（Phase 2 全融合）：
 
@@ -318,7 +319,7 @@ L = lambda_page * L_page
 - MRR；
 - nDCG@5、nDCG@10。
 
-### 8.3 区域级指标（2026-09-18 修订：官方口径为主）
+### 8.3 区域级指标（2026-09-18 修订→2026-09-22 降级为提案：与旧 IoU 双轨并列，EXP-007 出数后冻阈值）
 
 - Official Layout Area Recall@1/5/10（主指标；`metric_eval.py: recall_layout`；文档内范围）；
 - Oracle Area Recall（候选覆盖上限；诊断用）；
@@ -407,20 +408,27 @@ Phase 2/2-R 在 dev 有稳定提升（页级不掉 + 官方 Area 涨）
 
 科学风险重申：query-independent 融合可能污染页级匹配（Beyond 消融：去 global 只掉 0.3~0.4；Argus 消融：去 query 条件掉 3~4 分）。我们没有 query 条件，增益天花板必须由 1B/1C 数据回答，不能预设网络一定有效。
 
-### 11.2 Gate 的定量判定口径（2026-09-18 修订：官方口径为准；旧 IoU 唯一 Gate 已废止）
+### 11.2 Gate 的定量判定口径（2026-09-18 修订→2026-09-22 降级为提案：新阈值未冻前不转正）
 
 “稳定存在”“解决大部分缺口”必须落到数字，且必须注明计算条件（文档内范围、Top-K、query 子集）：
 
 ```text
-进 Phase 2/2-R 需同时满足：
+进 Phase 2/2-R 需同时满足（阈值 dev 定、test 不改；当前 EXP-007 只出数，阈值尚未冻结）：
   a. Oracle Area Recall 高（候选覆盖本身足够；阈值 dev 冻结，如均值/中位数下限）；
   b. 最好规则基线的实际 Area Recall 与 Oracle 之间有稳定 gap（gap 下限 dev 冻结；dev/test 趋势一致）；
   c. gap 可归因到排序而非候选全缺（分层与失败归因支持）；
   d. a/b/c 在 dev 与 test 划分上趋势一致（正式划分文件见执行手册）。
 停 Phase 2/2-R（转收缩）为上述任一条不满足的相反面，即：
   Oracle 本身低（候选生成瓶颈），或规则已接近 Oracle，且趋势一致。
-旧 IoU 唯一 Gate（B≥10%/Snappy 消解≤50%）已废止：EXP-005/006 的 B=45、0/45 保留为严格辅助诊断，
-  不再作为准入判据；新判据以官方 Area Recall 三层为准，数值 dev 定、test 不改。
+旧 IoU 唯一 Gate（B≥10%/Snappy 消解≤50%）拟废止（提案）：EXP-005/006 的 B=45、0/45 保留为严格辅助诊断，
+  与 EXP-007 官方口径三层表双轨并列，不再单报判据；新判据以官方 Area Recall 三层为准，数值 dev 定、test 不改。
+对账（冻结，不许改）：行级 2638=2523+115；题级 1598（含 both 2，mmdocir_00036/00491）+60=1658；
+  类级 1343A matched+45B unmapped_only+2A纯unmapped命中（mmdocir_00520/00672）+255D matched+13D unmapped_only=1658；
+  页命中级 unmapped 47=45B+2A；零面积单列 1行1题 mmdocir_00700 [300,100,300,450]（属 unmapped_only 60 之一，置零注明，不进训练分母）。
+EXP-007 三层表（只重算，不改 Gate）：L1 页召回 R@1/5/10=0.5724/0.8384/0.9041；
+  L2 Oracle@1/5/10 官方原样 0.9093/1.1234/1.1542（可超 1 为官方重叠累加缺陷证据），union-clipped 0.9093/0.9714/0.9778；
+  L3 最好冻结规则 Top-1 fixed:iou_mass 官方 0.2791（eval1388）/0.2336（full1658），union 0.3002/0.2513；
+  详见 experiments/2026-09-19-exp-007-official-recompute.md。
 ```
 
 ### 11.3 有序收缩选项（Plan B，按成本从低到高，触发即逐级评估）
