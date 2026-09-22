@@ -65,18 +65,24 @@ uv run python scripts/run_phase1c_official_recompute.py
 | 对齐 1388 | oracle_area_recall@5 | 1.1338 | 0.9725 |
 | 对齐 1388 | oracle_area_recall@10 | 1.1655 | 0.9788 |
 
-- 对齐 1388 = L3 的 1388 题集合（1343 matched-A + 严格 45 B，均为页命中；2 个纯 unmapped 命中 A 不在 picks 内，不在此分母）。L2-full 与 L2-eval1388 只差 0.005，说明页未命中题不改变“候选充足”的全集结论；但算 Oracle−实际 gap 必须用对齐行。
+- 对齐 1388 = **页命中且有冻结 Top-1 picks 的 1388 题**（与 L3 同分母；“1343A/45B”只是该集合在 EXP-006 中的来源名，A/B 标签不参与任何官方口径计算）。来源缺陷承认：该集合按旧口径建成，2 个纯 unmapped 页命中题（`mmdocir_00520/00672`）无 picks 暂缺；官方口径下正确的 L3 集应是全体页命中题，缺的 2 题待回填后再补算，不影响当前 gap 结论（差 2/1390）。
+- L2-full 与 L2-eval1388 只差 0.005，说明页未命中题不改变“候选充足”的全集结论；但算 Oracle−实际 gap 必须用对齐行。
 - 口径警告：官方原样可超 1（重叠候选不去重，同一 gold 可重复计面积），@5/@10 超 1 即证据；union-clipped 截到 [0,1]，两者并列、不混称。
 
 ### 8.3 L3 实际 Top-1（冻结 EXP-006 picks；eval1388 主分母 + full1658 参考分母）
 
-读表方法：**行 = 5 种无训练选框规则**（每题各选 1 个框，见下）；**列 = 同一规则在两种分母、两种口径下的平均面积召回 + ≥0.5 题数**。`eval1388` 是 picks 实际覆盖的 1388 题（1343 matched-A + 严格 45 B）；`full1658` 把剩下 270 题（页未命中 D + 2 纯 unmapped-A）按 0 计入，仅作参考，判 gap 以 eval1388列为准（与 L2 对齐行同分母）。
+读表方法：**行 = 5 种无训练选框规则**（每题各选 1 个框，见下）；**列 = 同一规则在两种分母、两种口径下的平均面积召回 + ≥0.5 题数**。`eval1388` 是 picks 实际覆盖的 1388 题（页命中题集；A/B 只是来源名）；`full1658` 把剩下 270 题按 0 计入，仅作参考，判 gap 以 eval1388列为准（与 L2 对齐行同分母）。
 
-5 种规则（EXP-006 原样，详见 `experiments/2026-09-17-exp-006-phase1c.md`）：
+5 种规则（EXP-006 原样，无训练，共用同一份冻结 patch 分；详见 `experiments/2026-09-17-exp-006-phase1c.md` 与 `src/layoutpatch/retrieval/propagation.py` / `region_pooling.py`）：
 
 ```text
-snappy:max / snappy:mean / snappy:iou：patch 分经 IoU 加权传播到框，三种聚合取 Top-1
-fixed:coverage / fixed:iou_mass：框内 patch 分池化（覆盖归一 / IoU 质量加权），取 Top-1
+共同底座：冻结 ColPali 算 query 对整页的匹配，1024 个 patch 每个得一个分（分高 = 这块小格子与问题相关）。
+snappy:max：每个候选框看压住它的 patch，取最热那一个的分。毛病：大框容易含一个热点，白占便宜。
+snappy:mean：取压住它的 patch 的平均分。毛病：大框被大量冷 patch 稀释。
+snappy:iou：按 patch 与框的 IoU 加权平均。比上面两个均衡，但仍偏向大框。
+fixed:coverage：权重 = 相交面积 / 框面积（“这个框里有多大比例是热的”）。偏向紧致小框。
+fixed:iou_mass：权重 = 相交面积 / 并集面积。大小框都不偏不倚，所以五档里最高（0.2791）。
+group P25/P50/P75：不从候选里选，自己把热 patch 连成片画框（自组框，无 node_id），官方口径下无候选身份，本次未评；旧 IoU 虚高数见附录。
 ```
 
 | 基线 | eval1388 official@1 | full1658 official@1 | eval1388 union@1 | full1658 union@1 | ge05_eval1388 |
