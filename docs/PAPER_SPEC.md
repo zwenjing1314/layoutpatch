@@ -1,7 +1,6 @@
 # 小论文执行规范：布局约束的文档侧 Patch 融合方法（PAPER_SPEC）
 
-> Status: working（2026-09-19 降级：`a1fbcc2` 官方口径改动为**提案**，未冻新阈值前不转正）
-> | Scope: 小论文方法、实验、评测、实现清单 | SSOT: 是
+> Status: stable | Scope: 小论文方法、实验、评测、实现清单 | SSOT: 是
 > 迁移来源：旧仓库 `mmdoc-evidence-rag/docs/SMALL_PAPER_DEV_SPEC.md` 全文迁移；包名 `mmdocrag`→`layoutpatch`、
 > 大论文规范引用 `docs/THESIS_RESEARCH_ROUTE_DRAFT.md`→`docs/THESIS_SPEC.md` 已替换。
 > 分工：`docs/THESIS_SPEC.md` 回答“为什么做、做到哪算完、什么不许做”；本文档回答“具体怎么做、做到什么程度、用什么证明”。
@@ -10,6 +9,8 @@
 > 文献基准：8 篇原文核对结论见 `docs/THESIS_SPEC.md` 第 4 节对照表。旧仓库 `docs/literature/小论文创新点调研.md`
 > 只作防御草稿，不作查重结论（该笔记按 `docs/MIGRATION_BATCHES.md` 批次 6 才迁入，本仓库暂无）。
 > 旧仓库 `docs/literature/12_Bag-of-patches阅读笔记.md` 为空文件，必须补实后才能在 related work 中引用 Beyond。
+
+
 
 ## 0. 阅读指引与文档关系
 
@@ -24,14 +25,18 @@ Documents/论文第三阶段阅读/  8 篇原文 PDF（唯一事实来源，旧�
 
 ## 1. 研究背景与问题
 
+
+
 ### 1.1 一句话问题
 
 > ColPali 的视觉 patch 表示能找到相关页面，但能否在**不裁剪页面、不重复视觉编码、保持 MaxSim 接口**的条件下，利用 OCR/Layout 结构改善**页面内证据区域定位**？
 
+
+
 ### 1.2 三个正式研究问题（2026-09-18 修订：与 MMDocIR 官方口径对齐）
 
-- **RQ1（缺口是否存在）：** 页面命中是否等于证据命中？输出 A/B/C/D 四类统计 + 官方面积召回三层分解（页面召回 / 候选覆盖上限 Oracle Area Recall / 实际排序 Area Recall）。其中 A/B/C/D（单框 IoU≥0.5）降级为严格辅助诊断，不再作为唯一 Gate；主口径为官方 `recall_layout`（交集面积 / gold 面积，可跨框累加，不要求同框）。
-- **RQ2（规则能走多远）：** 固定 OCR/Layout 框聚合 vs patch 显著性动态分组，各解决多少？Snappy 式传播是上限探针。统一用官方 Layout Area Recall@1/5/10 报告，IoU Hit@0.5 与 Text 双轨并列为辅助。
+- **RQ1（缺口是否存在）：** 页面命中是否等于证据命中？输出 A/B/C/D 四类统计 + 官方面积召回三层分解（页面召回 / 候选覆盖上限 Oracle Area Recall / 实际排序 Area Recall）。主口径其中 A/B/C/D（单框 IoU≥0.5）降级为严格辅助诊断，不再作为唯一 Gate；为官方 `recall_layout`（交集面积 / gold 面积，可跨框累加，不要求同框）。
+- **RQ2（规则能走多远）：** 固定 OCR/Layout 框聚合 vs patch 显著性动态分组，各解决多少？Snappy 式传播是上限探针。统一用官方 Layout Area Recall@1/5/10 报告，IoU [Hit@0.5](mailto:Hit@0.5) 与 Text 双轨并列为辅助。
 - **RQ3（学习是否值得）：** 若规则仍有稳定缺口，可学习的文档侧 patch 融合 / 候选重排能否同时做到：页级不掉、区域涨（官方口径）、成本可控？
 
 三指标必须同报（页级 + 区域官方口径 + 效率），只涨一处不算成。IoU 口径结果必须与官方口径并列声明，不许单报 IoU 否定方法。
@@ -44,11 +49,15 @@ C2. 保持 late-interaction / MaxSim 检索接口，patch 数量不变（仍为 
 C3. 文档侧 query-independent：P_fused 离线算好，所有 query 共用，在线只编码 query。
 ```
 
+
+
 ### 1.4 已知的代价（Discussion 必须主动承认）
 
 1. 不能随 query 动态改变文档表示（Argus 的 D(q) 能，我们不能）。
 2. 一个 patch 压住多个主题/框时，统一注入可能互相污染，甚至拉低页级。
 3. OCR 错误会通过交叉注意力污染视觉表示，必须有门控保底和噪声消融。
+
+
 
 ### 1.5 与 MMDocIR 官方口径对齐声明（2026-09-18 新增，SSOT）
 
@@ -57,11 +66,17 @@ C3. 文档侧 query-independent：P_fused 离线算好，所有 query 共用，�
 3. 官方检索范围为文档内（`search.py` 按 `page_indices/layout_indices` 切片打分），与本仓 `search_scope=document` 一致；`layout_topk` 在文档内 layout 切片上取，不强制先截 Top-K 页。级联（先页后面区）为论文概念，代码实现为文档内分别打分。
 4. MMDocIR 原文未来工作建议文本+视觉联合训练/微调（joint training or fine-tuning）。本方法 C1–C3 是该建议的低成本子集（冻视觉主干、只学文档侧融合）；输入层拼接 OCR（image_hybrid 弱于 pure image）是已知坑，我们用门控残差避开，不在输入层拼接。
 
+
+
 ## 2. 创新点章节（写作规范，不是定稿）
+
+
 
 ### 2.1 现在允许写的表述（Gate 通过前）
 
 > 本文设计并实现一种布局约束的稀疏文档侧 patch 融合方法，在不裁剪页面和重复视觉编码的条件下，利用 OCR/Layout 区域信息学习增强的视觉 patch 表示，并在页面检索和证据区域定位任务上进行系统评估。
+
+
 
 ### 2.2 现在不许写的表述
 
@@ -69,16 +84,22 @@ C3. 文档侧 query-independent：P_fused 离线算好，所有 query 共用，�
 - 把 Gate、残差、zero-init、IoU 映射、坐标编码、统一评测、不重复编码**单独列为创新点**。它们是设计细节或工程约束。
 - 把 Phase 1C 的无训练基线（Snappy 式传播、固定聚合、动态分组）说成“复现 Snappy/RegionRAG”。只能叫“受其启发的诊断基线”，除非完整复现其训练。
 
+
+
 ### 2.3 候选贡献清单（每条都要有证据才能进论文）
 
-| 编号 | 候选贡献 | 成立证据 | 若证据不足则降级为 |
-|---|---|---|---|
-| C-a | 问题证据：量化“页面命中但区域未命中”在 MMDocIR 上的规模与结构 | Phase 1B 的官方三层分解（页面召回 / Oracle 覆盖 / 实际排序）+ A/B/C/D 严格辅助 + 按类型/面积/OCR 密度分层 + 10 成功/10 失败可视化 | 引言动机段，不进贡献列表 |
-| C-b | 方法：在 C1–C3 约束下的稀疏局部融合前向结构（W + TopK + 局部交叉注意力 + 门控残差，patch 数不变） | 第 5 节结构实现 + 前向公式 + 离线/在线拆分证明（0 次额外视觉编码） | 方法描述，不称创新 |
-| C-b2 | 轻量候选重排头（2026-09-18 新增备选路径）：冻结 ColPali，只学框级 reranker（patch 分 + 框先验 + 文本相似度），在 Oracle 覆盖高但排序低的子集上验证 | Phase 2-R（重排分支）dev 提升 + 页级不掉 | 若 dev 不涨则删除本条 |
-| C-c | 效果：冻结主干下，页级保持 + 区域提升（官方口径） + 成本可控，三指标同报 | Phase 2/2-R dev 稳定提升 + 最终 test + 与 Snappy/固定聚合/ColMate 对照的对照表 | 若 dev 不涨则删除本条，转失败分析 |
-| C-d | 机理：消融证明每个组件解决哪个观察到的问题（坐标、类型、soft bias、Gate、蒸馏、K） | 第 9 节消融矩阵，每行对应一个 1B/1C 观察 | 只保留涨/跌显著的行，其余放附录 |
-| C-e | 鲁棒性：OCR 噪声下 Gate 自动关小、保底退回原 ColPali 性能 | 噪声扰动曲线（坐标打乱/词替换比例 vs 页级/区域） | 若 Gate 关不小，如实报负结果 |
+
+| 编号   | 候选贡献                                                                                              | 成立证据                                                                                       | 若证据不足则降级为           |
+| ---- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------- |
+| C-a  | 问题证据：量化“页面命中但区域未命中”在 MMDocIR 上的规模与结构                                                              | Phase 1B 的官方三层分解（页面召回 / Oracle 覆盖 / 实际排序）+ A/B/C/D 严格辅助 + 按类型/面积/OCR 密度分层 + 10 成功/10 失败可视化 | 引言动机段，不进贡献列表        |
+| C-b  | 方法：在 C1–C3 约束下的稀疏局部融合前向结构（W + TopK + 局部交叉注意力 + 门控残差，patch 数不变）                                    | 第 5 节结构实现 + 前向公式 + 离线/在线拆分证明（0 次额外视觉编码）                                                    | 方法描述，不称创新           |
+| C-b2 | 轻量候选重排头（2026-09-18 新增备选路径）：冻结 ColPali，只学框级 reranker（patch 分 + 框先验 + 文本相似度），在 Oracle 覆盖高但排序低的子集上验证 | Phase 2-R（重排分支）dev 提升 + 页级不掉                                                               | 若 dev 不涨则删除本条       |
+| C-c  | 效果：冻结主干下，页级保持 + 区域提升（官方口径） + 成本可控，三指标同报                                                           | Phase 2/2-R dev 稳定提升 + 最终 test + 与 Snappy/固定聚合/ColMate 对照的对照表                              | 若 dev 不涨则删除本条，转失败分析 |
+| C-d  | 机理：消融证明每个组件解决哪个观察到的问题（坐标、类型、soft bias、Gate、蒸馏、K）                                                  | 第 9 节消融矩阵，每行对应一个 1B/1C 观察                                                                  | 只保留涨/跌显著的行，其余放附录    |
+| C-e  | 鲁棒性：OCR 噪声下 Gate 自动关小、保底退回原 ColPali 性能                                                            | 噪声扰动曲线（坐标打乱/词替换比例 vs 页级/区域）                                                                | 若 Gate 关不小，如实报负结果   |
+
+
+
 
 ### 2.4 创新成立六条检查项（投稿前逐条勾）
 
@@ -91,20 +112,23 @@ C3. 文档侧 query-independent：P_fused 离线算好，所有 query 共用，�
 [ ] 证明不是“加 OCR 就有效”（无 OCR / 无坐标 / 无类型 / 无 Gate 消融至少一组显著）。
 ```
 
-### 2.5 与 8 篇论文的一句话区分（related work 直接用；2026-09-19 修订：缺页码表号即草稿）
 
-> 状态声明：以下引用页码/表号为草稿占位（旧仓库 `Documents/论文第三阶段阅读` 8 篇原文 PDF 为唯一事实来源，本仓 `docs/literature/` 按批次 6 才迁入）。在逐篇核对页码/公式号/表号并落盘前，本节不许当定稿引用；投稿前核对清单中“第 2.5 节每句区分能在原文找到公式/页码”保持未勾选。
 
-- Snappy：同用 overlap，但它推理期分分数、不改表征；我们离线改表征。它是 1C 最强基线。（页码/公式号：待补）
-- Beyond：自顶向下 global token + 文本监督；我们自底向上坐标级局部融合 + 页内区域评估。（页码/公式号：待补）
-- ColMate：空间只在预训练 loss 的 Bj pooling；我们是前向显式融合层。（页码/公式号：待补）
-- RegionRAG：在线 query 条件 saliency + BFS 组图像 crop；我们离线 query 无关融合，存一份 P_fused。（页码/公式号：待补）
-- LFRAG/ColParse：k+1 次视觉编码换布局/存储；我们 0 次额外编码换定位。（k+1 出处页码/表号：待补；效率表引用值须标原文硬件，不许与 3080Ti 实测混比）
-- Argus：在线 query 条件 D(q) + MoE；我们离线 P_fused。部署 trade-off，Argus 列未来工作。（页码/公式号：待补）
-- MM-Matryoshka/ColChunk/SAP：压缩正交可组合，P_fused 可作其输入。（页码/公式号：待补）
-- MMDocIR 联合训练未来工作句与 hybrid 弱于 pure image 分数证据（原文页码/表号：待补；在补实前，第 1.5 节第 4 条维持草稿表述，不许当已证事实引用）。
+### 2.5 与 8 篇论文的一句话区分（related work 直接用）
+
+- Snappy：同用 overlap，但它推理期分分数、不改表征；我们离线改表征。它是 1C 最强基线。
+- Beyond：自顶向下 global token + 文本监督；我们自底向上坐标级局部融合 + 页内区域评估。
+- ColMate：空间只在预训练 loss 的 Bj pooling；我们是前向显式融合层。
+- RegionRAG：在线 query 条件 saliency + BFS 组图像 crop；我们离线 query 无关融合，存一份 P_fused。
+- LFRAG/ColParse：k+1 次视觉编码换布局/存储；我们 0 次额外编码换定位。
+- Argus：在线 query 条件 D(q) + MoE；我们离线 P_fused。部署 trade-off，Argus 列未来工作。
+- MM-Matryoshka/ColChunk/SAP：压缩正交可组合，P_fused 可作其输入。
+
+
 
 ## 3. 总体网络架构
+
+
 
 ### 3.1 数据流总览
 
@@ -166,6 +190,8 @@ Phase 1C 必须先跑前三行，Phase 2 的涨分才有归因意义。
 
 ## 4. 数据说明
 
+
+
 ### 4.1 主数据集 MMDocIR evaluation（官方双任务主线）
 
 ```text
@@ -177,12 +203,15 @@ config：configs/datasets/mmdocir.yaml（role: main_retrieval）。
 ```
 
 
+
 ### 4.2 训练候选 MMDocIR train（Phase 2 前必须先审）
 
 ```text
 文档 6878（平均 32.6 页）；query 73k+；仅部分子集有布局级标签。
 使用前必须书面回答：标签构造规则是什么？硬负例怎么采的？与 evaluation 有无泄漏？
 ```
+
+
 
 ### 4.3 页级泛化补充 ViDoRe V2（可选）
 
@@ -201,12 +230,16 @@ dev/test 具体划分文件与 query id 列表在执行手册第 7 节登记，�
 
 ## 5. 方法模块与技术细节
 
+
+
 ### 5.1 输入准备
 
 - `P`：ColPali 视觉编码器输出，冻结。`vidore/colpali`，448×448 输入。
 - OCR 文本：区域级字符串，空文本区域保留但标记（表、图可能无文本，靠类型+坐标参与）。
 - BBox：原图绝对像素 `(x1,y1,x2,y2)`，必须先做第 6 节坐标审计再用。
 - 类型：文本/标题/表格/图像/公式等，若 MinerU 不提供则先用“文本/非文本”二分类占位，不许编造细粒度类型。
+
+
 
 ### 5.2 布局节点编码器 TextLayoutEncoder
 
@@ -218,6 +251,8 @@ t_j = Proj( [ TextEmb(ocr_j) ; CoordEmb(bbox_j) ; TypeEmb(type_j) ] )
 - CoordEmb：归一化坐标 `[x1/W, y1/H, x2/W, y2/H, w/W, h/H]` + 正弦 2D 位置编码（LayoutLMv3 式）。消融必须含“无坐标”一组。
 - TypeEmb：可学习 embedding；类型缺失时用 UNK，不许删除该区域（删区域会改变 W 分母）。
 - 输出统一投影到 D=128，与 P 同空间，L2 归一化后再参与注意力。
+
+
 
 ### 5.3 Patch–Region 空间对应矩阵 W（数学定义）
 
@@ -240,6 +275,8 @@ c) W_ij^(iou)   = Area(Pi ∩ Rj) / Area(Pi ∪ Rj)   # 对称版本（小框数
 6. tie-break：TopK 比较时按下标稳定排序；跨界框、越界框按第 6 节审计规则裁剪后计面积。
 ```
 
+
+
 ### 5.4 稀疏局部融合（核心前向，数学定义）
 
 ```text
@@ -256,6 +293,8 @@ P' = L2norm(P')
 - softmax 的 mask 语义：非 N(i) 邻居与 padding 区域在 softmax 前置 -inf，禁止事后置零（事后置零会破坏分母）。
 - TopK 实现必须可复现：tie 时按下标稳定排序；K 大于有效邻居数时按实际数，不补无效位。
 
+
+
 ### 5.5 门控、零初始化与空区域兜底
 
 ```text
@@ -267,6 +306,8 @@ gate_i = sigmoid( Linear([p_i ; delta_i ; coverage_i]) + b0 )
 - 空 patch（W 全 0 行）：跳过注意力，`p_i'=p_i`，不参与任何 softmax 分母；或路由到可学习背景 token（二选一，dev 定，全文统一）。
 - NaN 防护：注意力分母加 eps；W 全 0 行禁止进 softmax；梯度裁剪阈值记录。
 - Gate 是稳定性设计，不单列创新；但“OCR 噪声下 Gate 关小、保底退回原性能”是可以写的实验结论（第 9.3 节）。
+
+
 
 ### 5.6 评分：页级与区域级（2026-09-18 修订：官方口径为主）
 
@@ -291,34 +332,18 @@ Snappy 式 `rel=ΣIoU·s/ΣIoU`（max/mean/IoU 三聚合）降级为内部排序
 区域主指标。BBox 缩放仍用 Snappy 公式 `B'(r)=(x1*I/W, y1*I/H, x2*I/W, y2*I/H)`，
 I=448（仅探针内部用；官方 Area Recall 在原图坐标系直接算交集）。
 
-### 5.7 损失函数（Phase 2 全融合）与 Phase 2-R 轻量重排头（2026-09-19 修订：C3 边界冻结）
+### 5.7 损失函数（Phase 2）
 
 ```text
-Phase 2 全融合 L = λ_page * L_page + λ_region * L_region + λ_distill * L_distill
+L = λ_page * L_page + λ_region * L_region + λ_distill * L_distill
 ```
 
 - `L_page`：页级 InfoNCE（in-batch 负例），保持正确页排序。λ_page 优先保证页级不掉。
-- `L_region`：区域排序回归/对比。candidate 软标签 `y(c)=Area(c∩G)/Area(G)`（与官方 Area Recall 对齐；同页才计；大 gold 被多小框覆盖时各自按覆盖分给分，不判无正样本）。正样本来自独立训练数据的框标注，禁止用 evaluation gold。
+- `L_region`：区域排序回归/对比。candidate 软标签 `y(c)=Area(c∩G)/Area(G)`（与官方 Area Recall 对齐；大 gold 被多小框覆盖时各自按覆盖分给分，不判无正样本）。正样本来自独立训练数据的框标注，禁止用 evaluation gold。另设轻量分支 Phase 2-R：冻结 P，只学框级 reranker 头，loss 为 listwise/pointwise 回归 Area 覆盖分。
 - `L_distill`：约束 P' 不破坏原排序，如对原 ColPali 分数分布的 KL，或正负 margin 保持。权重 dev 定。
 - 三个 λ 全部 dev 网格记录，test 冻结。先只练布局编码器+注意力+投影+门控（主干冻结）；LoRA 动主干是最后手段，需先过显存评估（3080Ti 12GB，batch 1/2/4）。
 
-```text
-Phase 2-R（轻量候选重排分支，先行，2 周窗口；C3 边界声明见下）：
-输入（全部冻结、无梯度回传视觉主干）：
-  x(c) = [ patch_score(c); box_prior(c); text_sim(q,c) ]
-  patch_score(c)：冻结 ColPali 在 EXP-001/006 下的框聚合分（复用 1C 探针口径，如 fixed:iou_mass，不重编码）；
-  box_prior(c)：query 无关几何先验（面积/长宽比/覆盖率/类型 one-hot，全离线）；
-  text_sim(q,c)：query 相关文本相似度（BM25/BGE 对候选 OCR 文本打分；允许 query-conditioned）。
-输出：s(c) = RerankerHead(x(c))，单层 MLP + LayerNorm（参数量 < 10k 量级，dev 冻结层数/维度）。
-排序：同页候选按 s(c) 取 Top-K，再走官方 recall_layout 计分；页级分数不动。
-```
 
-- **C3 边界（冻结声明，不许模糊）：** Phase 2 全融合严格遵守 C3（文档侧 query-independent，P' 离线、在线只编码 query）。Phase 2-R 是**受限松弛的探索分支**：`patch_score + box_prior` 保持 query-independent；仅 `text_sim(q,c)` 一项允许 query-conditioned。若使用 `text_sim`，必须在论文方法节明写“2-R 为 query-conditioned 候选重排探索分支，不属于 C3 主线”，且必须同步报告消融 `w/o text_sim`（纯 query-independent 重排）一行的官方 Area 增益；若去掉 query 项后增益消失，结论只能写“增益来自文本重排”，不许写“布局融合有效”。
-- **loss（二选一，dev 冻结，test 不换）：** 首选 pointwise 回归 `MSE(s(c), y(c))`（与官方 Area 软标签直接对齐，实现最小、2 周可出数）；备选 listwise `ListNet/CE over softmax(s)`（同页候选内排序，y(c) 归一化为分布）。二选一 dev 定，不许 test 期切换。若选 listwise，必须声明同页候选长度动态 padding + mask，不许 padding 进 softmax 分母。
-- **y(c) 定义（冻结）：** `y(c) = Σ_g Area(c∩g) / Σ_g Area(g)`，同页才计，与官方 `recall_layout` 单候选贡献一致；训练与评测同公式，评测 Top-K 累加时严格走官方函数（含重叠可超 1 的原样行为），另报 union-clipped 敏感性。
-- **负采样（冻结）：** 同页候选全量参与（MinerU 页内框数有限，无需采样）；若页内候选 >128，为控显存按 `patch_score` 预筛 Top-128（阈值与截断数 dev 冻结并记录截断率）；跨页负例不进 2-R（2-R 只做页内重排，页级由冻结 EXP-001 保证）。
-- **train 6878 泄漏审（2-R 启动前置，缺一即停）：** MMDocIR train（6878 文档 / 73k+ query / 仅部分有布局标签）使用前必须书面回答并落盘 `experiments/phase2r/train_leakage_review.md`：标签构造规则（布局标签来源 MinerU/人工比例、缺失率）；与 evaluation 313 文档的 doc_id 交集（必须为 0，重合即停）；query 文本近重复审（train/eval query 归一化后完全相同条数，>0 即剔除并记录）；page/layout 图像 md5 级复用审（复用即停）。evaluation gold 永不进训练；dev/test 划分文件先于训练冻结。
-- **2 周门槛（dev 说了算）：** dev 上同时满足“页级不掉（Page Recall@5 波动 ±0.3pp 内）+ 官方 Area Recall@1/5 稳定涨（两档同向，涨幅与 seed 方差同报）”才议全融合 Phase 2；任一不满足即按 THESIS 11.3 转 B1/B2 收缩。2-R 亦不涨的结论同样可写（诊断型负结果）。
 
 ### 5.8 效率承诺（实现时就得记）
 
@@ -327,6 +352,8 @@ Phase 2-R（轻量候选重排分支，先行，2 周窗口；C3 边界声明见
 在线/query：query 编码 1 次 + MaxSim（与原 ColPali 同阶）。
 对比位：LFRAG/ColParse 需 k+1 次视觉编码；Argus 在线路由融合。效率表（第 9.4 节）必须同表列出向量数/索引/离线/在线/显存。
 ```
+
+
 
 ## 6. 坐标审计（Phase 1 前置硬 Gate，不过不许往下走）
 
@@ -347,7 +374,11 @@ PaliGemma 默认 448×448、32×32 网格、s=14；OCR 框是原图绝对像素�
 输出：audit.json（W,H,I,G,s、padding 规则、越界处理、机器门限数值）+ 叠图目录 + 通过/不通过结论 + 确认人。
 ```
 
+
+
 ## 7. 实验部分
+
+
 
 ### 7.1 Phase 0：环境与协议冻结
 
@@ -355,6 +386,8 @@ PaliGemma 默认 448×448、32×32 网格、s=14；OCR 框是原图绝对像素�
 - 数据根路径：本仓库统一用 `LAYOUTPATCH_DATA_ROOT`（见 `docs/01-quickstart.md`；旧仓库名 `MMDOCIR_EVALUATION_ROOT` / `MMDOC_RAG_DATA_ROOT` 已映射到本变量）。
 - 现有可用 config：`mmdocir__phase1a__bm25-page.yaml`（可用）；`mmdocir__phase1a__colpali-page-full.yaml` 头部自述为新命名草稿、tasks.ps1 暂未使用，可用的是旧名 `mmdocir_colpali.yaml`（image/query/score batch=1/2/4，embedding cache 开）。切换命名前必须等价运行验证。
 - ViDoRe V1 官方复现（旧仓库 `docs/reproduction/colpali_vidore_v1_reproduction_20260830.md`，按批次 3 迁入）只证明 `vidore/colpali` 可用，不等于本仓库 Phase 1A 完成。
+
+
 
 ### 7.2 Phase 1A：页级 baseline
 
@@ -366,6 +399,8 @@ PaliGemma 默认 448×448、32×32 网格、s=14；OCR 框是原图绝对像素�
 指标：Recall@1/5/10、MRR、nDCG@5/10。
 登记条件：query 数=1658、commit、耗时、输出目录、指标文件五项齐全，否则不算完成。
 ```
+
+
 
 ### 7.3 Phase 1B：页面–区域缺口诊断（2026-09-18 修订：三层分解为主）
 
@@ -379,6 +414,8 @@ PaliGemma 默认 448×448、32×32 网格、s=14；OCR 框是原图绝对像素�
 判定：L2 高但 L3 低 → 排序问题，值得做融合/重排；L2 本身低 → 候选生成问题，先做候选合并/补框或换口径说明，不直接进 Phase 2。
 历史注记：EXP-002/005 的 B=45（页中但无单框 IoU≥0.5）与 0/45 消解率是严格 IoU 口径结论，已降级为辅助诊断，不作为 Phase 2 唯一 Gate。
 ```
+
+
 
 ### 7.4 Phase 1C：无训练基线（2026-09-18 修订：官方口径重算）
 
@@ -398,20 +435,24 @@ PaliGemma 默认 448×448、32×32 网格、s=14；OCR 框是原图绝对像素�
   agent 只准备决策材料（L1/L2/L3 三层表、Oracle–实际 gap、分布直方图），选择由学生与导师共同确认。
 ```
 
-### 7.5 Phase 2：训练融合模块 + Phase 2-R：轻量重排分支（2026-09-19 修订：2-R 边界冻结）
+
+
+### 7.5 Phase 2：训练融合模块 + Phase 2-R：轻量重排分支（2026-09-18 修订）
 
 ```text
-Phase 2（全融合 P→P'，严格 C1–C3）：
+Phase 2（全融合 P→P'）：
 顺序：冻主干练小模块 → dev 确认稳定 →（必要时）LoRA → 冻结全部（模型+超参+映射规则+K+阈值+λ）→ test 跑一次。
-数据：独立训练集（MMDocIR train 需先审标签规则与泄漏，审稿材料见 5.7 节清单）；evaluation gold 永不进训练。
+数据：独立训练集（MMDocIR train 需先审标签规则与泄漏）；evaluation gold 永不进训练。
 区域监督：candidate 软标签 y(c)=Area(c∩G)/Area(G)，与官方 Area Recall 对齐。
 记录：loss 曲线、梯度范数、Gate 均值（应从≈0 渐变）、页级/区域 dev 曲线、显存峰值、seed。
 
-Phase 2-R（低风险先行分支，推荐先跑；定义以 5.7 节为准）：
-冻结 P 不动，只学框级 reranker 头；C3 主线不自动继承 query 项，用 text_sim 即探索分支并强制 w/o text_sim 消融。
-2 周窗口 dev 门槛：页级不掉（R@5 ±0.3pp）+ 官方 Area@1/5 同向稳定涨；达标才议全融合，否则按 THESIS 11.3 收缩。
-禁令：新阈值未冻前不建 fusion/ 子包、不写 train_fusion.py；训练须学生+导师双确认（见第 11 节）。
+Phase 2-R（低风险先行分支，推荐先跑）：
+冻结 P 不动，只学框级 reranker 头（输入 patch 分 + 框面积/覆盖先验 + 文本相似度），loss 回归 Area 覆盖分或 listwise 排序。
+适用：Oracle Area Recall 高但规则排序低的子集；2 周可出数；显存远低于全融合。
+若 2-R dev 稳定提升且页级不掉，再决定是否做全融合 Phase 2；若 2-R 亦不涨，转 B2 诊断型论文。
 ```
+
+
 
 ### 7.6 最终 test 与记录格式
 
@@ -421,6 +462,8 @@ test 只在冻结后跑一次；任何 test 数不得反向选模型。每次运
 config.json / run_info.json / metrics.json / summary.md / predictions.parquet（如适用）
 + audit.json（1B/1C）/ hyperparams_frozen.json（Phase 2）/ eval_config.json（含 IoU 阈值、Top-K、分母定义）
 ```
+
+
 
 ## 8. 评测指标定义（2026-09-18 修订：官方口径为主，全实验统一）
 
@@ -435,7 +478,11 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 公平：同 query 集、同页面集（含文档内范围声明）、同划分、同脚本、同 Top-K 同表对比。
 ```
 
+
+
 ## 9. 消融、鲁棒性与效率
+
+
 
 ### 9.1 消融矩阵（每行对应一个观察，不堆表）
 
@@ -444,6 +491,8 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
       三种 overlap 定义 / 无 Gate（gate=1）/ 无蒸馏 / K={4,8} / 背景 token 有无。
 记录：每行页级Δ + 区域Δ + 一句话解释（如“去坐标后小表掉分，说明 W 位置信息有效”）。
 ```
+
+
 
 ### 9.2 背景 token 与稳定性
 
@@ -457,6 +506,8 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 结论两种都可写：Gate 有效是贡献；Gate 无效是诚实的负结果 + 未来工作。
 ```
 
+
+
 ### 9.4 效率表（与 LFRAG/ColParse 同表，否则“可控”无意义）
 
 ```text
@@ -465,7 +516,11 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 硬件注：RTX 3080Ti 12GB，batch 如实写（ColPali 1/2/4），不许拿 H200 的数直接比。
 ```
 
+
+
 ## 10. 代码实现清单（按本文档开发缺什么补什么）
+
+
 
 ### 10.1 现状与缺口（旧仓库视角，新仓库按批次 2–6 重建）
 
@@ -475,6 +530,8 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 本仓库缺（按 MIGRATION_BATCHES 补）：布局节点编码器、W 计算、稀疏融合模块、区域评分、IoU/Text 评测、
       坐标审计脚本、Phase 1B/1C/2 的正式脚本与冻结 config、超参冻结表、可视化工具。
 ```
+
+
 
 ### 10.2 新建模块（建议路径，建一个实现一个；包名已改为 layoutpatch）
 
@@ -501,6 +558,8 @@ tests/
   test_region_metrics.py  # IoU + Text 指标、无框 query 分母、跨页排除、超大框防刷分
 ```
 
+
+
 ### 10.3 Config 与 runs 命名（冻结才有效）
 
 ```text
@@ -514,6 +573,8 @@ runs/
   retrieval/mmdocir__phase1a__.../  diagnosis/mmdocir__phase1b__.../
   baseline/mmdocir__phase1c__.../   fusion/mmdocir__phase2__.../
 ```
+
+
 
 ### 10.4 硬件与确定性
 
@@ -530,7 +591,7 @@ Phase 2/2-R dev 稳定提升（页级不掉 + 官方 Area 涨）→ 才冻结跑
 ```
 
 出现任一条即停：审计不通过（机器门限或人工抽查任一不过）；BBox 系统性错位；无独立训练数据又要用 gold 训练；dev 不涨只涨 test；页级掉且区域不涨；复杂融合不如固定聚合；显存超限；1C 判定不满足进 Phase 2/2-R 条件（按 docs/THESIS_SPEC.md 第 11.2/11.3 节定量判定与有序收缩执行）。
-历史注记：旧 IoU 唯一 Gate（B≥10%/Snappy 消解≤50%）拟废止（提案；新阈值未冻前旧 Gate 仍保留为参考，不单方废止）。EXP-005/006 的 IoU 数保留为辅助诊断，与 EXP-007 官方口径三层表双轨并列；Phase 2/2-R 准入判据以冻结后的新阈值为准（见 `docs/THESIS_SPEC.md` 第 11.2 节）。
+历史注记：旧 IoU 唯一 Gate（B≥10%/Snappy 消解≤50%）已废止，EXP-005/006 的 IoU 数保留为辅助诊断，不再作为 Phase 2 准入判据。
 
 ## 12. 实验记录模板与超参冻结表（每次运行必填）
 
@@ -553,6 +614,8 @@ Phase 2/2-R dev 稳定提升（页级不掉 + 官方 Area 涨）→ 才冻结跑
 # gate_numeric_thresholds：11.2 节 10%/50% 的最终数值 + 修正依据（B 类分布直方图路径）
 ```
 
+
+
 ## 附录：投稿前核对清单（2026-09-18 修订）
 
 ```text
@@ -568,3 +631,4 @@ Phase 2/2-R dev 稳定提升（页级不掉 + 官方 Area 涨）→ 才冻结跑
 [ ] OCR 噪声 + 背景 token 有记录；test 只跑一次冻结配置；
 [ ] arXiv 重扫日期已记（Snappy/Beyond 若出可学习变体即更新第 2.5 节）。
 ```
+
