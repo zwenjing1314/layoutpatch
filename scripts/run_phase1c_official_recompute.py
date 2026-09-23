@@ -104,6 +104,15 @@ def main() -> None:
     picks_doc = json.loads(picks_path.read_text(encoding="utf-8"))
     picks = picks_doc["picks"]
     methods = picks_doc["meta"]["methods"]
+    # EXP-006漏选2题回填 (同冻结方法, 见 scripts/backfill_2picks.py): 合并后 1390=页命中全集
+    backfill_path = root / "artifacts" / "baselines" / "mmdocir_1c" / "phase1c_picks_backfill_2.json"
+    n_backfill = 0
+    if backfill_path.exists():
+        backfill = json.loads(backfill_path.read_text(encoding="utf-8"))["picks"]
+        for qid, row in backfill.items():
+            if qid not in picks:
+                picks[qid] = row
+                n_backfill += 1
 
     gold_by_q: dict[str, list[dict]] = defaultdict(list)
     for row in labels:
@@ -171,17 +180,17 @@ def main() -> None:
         l2_official[f"oracle_area_recall@{k}_official"] = round(sum(off) / len(off), 4)
         l2_union[f"oracle_area_recall@{k}_union_clipped"] = round(sum(uni) / len(uni), 4)
 
-    # ---- L2 aligned: same denominator as L3 (frozen EVAL1388 picks set), for a fair gap.
+    # ---- L2 aligned: same denominator as L3 (frozen EVAL1390 picks set (1388 + 2 backfill = page-hit set)), for a fair gap.
     # Picks are only defined for page-hit queries (1343 matched-A + strict 45 B); L2-full
-    # stays the headline ceiling, L2-eval1388 is the gap-comparison denominator.
+    # stays the headline ceiling, L2-eval1390 is the gap-comparison denominator.
     eval_qids = sorted(picks)
-    l2_eval1388_official: dict[str, float] = {}
-    l2_eval1388_union: dict[str, float] = {}
+    l2_eval1390_official: dict[str, float] = {}
+    l2_eval1390_union: dict[str, float] = {}
     for k in (1, 5, 10):
         off = [oracle(q, k)[0] for q in eval_qids]
         uni = [oracle(q, k)[1] for q in eval_qids]
-        l2_eval1388_official[f"oracle_area_recall@{k}_official"] = round(sum(off) / len(off), 4)
-        l2_eval1388_union[f"oracle_area_recall@{k}_union_clipped"] = round(sum(uni) / len(uni), 4)
+        l2_eval1390_official[f"oracle_area_recall@{k}_official"] = round(sum(off) / len(off), 4)
+        l2_eval1390_union[f"oracle_area_recall@{k}_union_clipped"] = round(sum(uni) / len(uni), 4)
 
     # ---- L3: frozen 1C Top-1 picks scored with verbatim recall_layout
     # rebuild per-query candidate list deterministically (stable order by node_id)
@@ -232,12 +241,12 @@ def main() -> None:
         denom_eval = len(eval_qids)
         denom_full = len(gold_by_q)
         l3_official[method] = {
-            "mean_eval1388_official@1": round(sum(off_vals) / denom_eval, 4),
+            "mean_eval1390_official@1": round(sum(off_vals) / denom_eval, 4),
             "mean_full1658_official@1": round(sum(off_vals) / denom_full, 4),
-            "ge05_eval1388": ge05,
+            "ge05_eval1390": ge05,
         }
         l3_union[method] = {
-            "mean_eval1388_union@1": round(sum(uni_vals) / denom_eval, 4),
+            "mean_eval1390_union@1": round(sum(uni_vals) / denom_eval, 4),
             "mean_full1658_union@1": round(sum(uni_vals) / denom_full, 4),
         }
 
@@ -260,15 +269,16 @@ def main() -> None:
             "query_sets": {
                 "full": 1658,
                 "eval_picks": len(eval_qids),
-                "note": "L2 over FULL1658; L3 Top-1 over frozen EVAL1388 picks, also reported with FULL1658 denominator",
+                "backfill_merged": n_backfill,
+                "note": "L2 over FULL1658 headline + aligned eval set; L3 Top-1 over frozen picks incl. backfill",
             },
             "overlap_caveat": "official allows overlap double-count (can exceed 1); union-clipped reported separately, never mixed",
             "decision": "recompute-only; NO gate change; thresholds stay unfrozen; a1fbcc2 stays working proposal",
         },
         "L1_page_recall_frozen_EXP001": l1,
         "L2_oracle_full1658": {"official_verbatim": l2_official, "union_clipped_sensitivity": l2_union},
-        "L2_oracle_eval1388_aligned": {"official_verbatim": l2_eval1388_official, "union_clipped_sensitivity": l2_eval1388_union,
-            "note": "same 1388-query denominator as L3 (1343 matched-A + strict 45 B, page-hit only); use this row for the Oracle-minus-actual gap"},
+        "L2_oracle_eval1390_aligned": {"official_verbatim": l2_eval1390_official, "union_clipped_sensitivity": l2_eval1390_union,
+            "note": "same 1390-query denominator as L3 (1388 frozen picks + 2 backfill, = page-hit set); use this row for the Oracle-minus-actual gap"},
         "L3_actual_top1_frozen_picks": {"official_verbatim": l3_official, "union_clipped_sensitivity": l3_union},
         "auxiliary_old_IoU_only": {
             "EXP-006_top1_accuracy_A_IoU05": old_1c["top1_accuracy_A"],
