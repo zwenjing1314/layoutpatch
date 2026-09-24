@@ -4,6 +4,21 @@
 > 约定：每次会话结束前更新本文件；本文件只写变化的进度，不写不变的规范（规范在 `.cursor/rules/` 与 `docs/RULES.md`）。
 > 配套必读：`docs/MIGRATION_BATCHES.md`（批次清单）→ `docs/00-index.md`（SSOT 导航）→ `docs/PAPER_SPEC.md`（小论文执行规范）。
 
+## 2026-09-23 新窗口接续（本节置顶，旧节在下）
+
+- 当前位置：`master` 最新 `c835627`（B1 补格），`./tasks.ps1 check` 全绿（ruff + 44 pytest），工作区干净。registry 共 10 行：EXP-001~008 + EXP-002-S1 + EXP-007-S1。
+- 自 `447460f` 之后发生的事（旧“一句话总览”不再更新，以本节为准）：
+  1. EXP-007 官方口径重算：`metric_eval.py` 三函数逐行移植（`scripts/run_phase1c_official_recompute.py`），L1 R@5=0.8384，L2 全集 Oracle@1=0.9093（@5/@10 超 1 即官方重叠累加缺陷证据），L3 最好 fixed:iou_mass 0.2787（eval1390）。只出数不改 Gate。
+  2. 口径对齐修正：L2 加对齐行（@1=0.9136，与 L3 同 1390 分母），gap≈0.63；`matched/unmapped` 只作诊断分层，不作官方口径二分；A/B 标签不参与官方计算。
+  3. 2 题回填（00520/00672，同冻结方法，GPU 约 1 分钟）：picks 集 1388→1390 = 页命中全集；记录页 `2026-09-22-backfill-2picks.md`。
+  4. EXP-008 BM25 补登记：9/15 M3 迁移期历史产物（R@5=0.7521，全集 1658），四基准齐（0.7521<0.7750<0.7883<0.8390）。
+  5. B1 补格关闭：k+1 出处页码已补（ColParse 表1 p.7/表8 p.26/图6 p.7；LFRAG 表1 p.4/表3 p.7）；纠错两处（ColParse 5.90 是每文档非每页；LFRAG 是 n+2 非 k+1）；P75 191.7ms 根因代码级确认（组数爆炸 + `patch_boxes` 循环内重建，已 hoist 修，输出一致）；B1 表新增 BM25 行。B1 剩余缺格：全量延迟/显存/文本索引称重/索引 GB，维持缺。
+  6. 阈值提案（待你+导师冻结）：`experiments/2026-09-22-threshold-proposal.md` 提案 A（`T_oracle≥0.5` + `T_gap≥0.5`，当前 gap 0.63 满足）/ B（只冻 Oracle）。未落盘前训练禁令维持。
+  7. 泄漏审查（eval 侧完成）：`experiments/eval313_doc_ids.txt` 已导出；**train 6878 本地无数据**（`data/raw` 只有 evaluation；官方仓库已搬迁为 `MMDocIR_research/`，其 `dataset/` 下也只有 eval 三件）。`phase2r-train-leakage-review.md` 5 项 checklist 全待勾，训练保持禁止。
+- 官方仓库搬迁注意：旧文档中 `C:/.../MMDocIR/metric_eval.py` 路径已失效，现为 `C:/Users/WenJing/Documents/WorkTransfer/MMDocIR_research/metric_eval.py`（dataset/、data/、test/ 均在该目录下）。引用时用新路径。
+- 实验处理约定（新窗口照做）：一次正式 run 一篇记录页（11 段模板 `experiments/templates/experiment-record.md`）+ registry 一行 + commit；`artifacts/`、`runs/`、`data/` 不进 git（JSON 产物只记路径）；`./tasks.ps1 check` 全绿才入库；新阈值未冻前不建 `fusion/`、不写 `train_fusion.py`；训练须用户+导师双确认；旧仓 `mmdoc-evidence-rag` 只读。
+- 下一步（按序）：S1 用户+导师冻阈值（落盘 `threshold-frozen.md`）→ S2 获 train 数据并过泄漏 5 项 → S3 2-R 首跑（2 周窗口，dev 门槛：页级 R@5 ±0.3pp + Area@1/5 同向涨）→ S4 B1 剩余缺格（全量延迟/显存/索引称重）顺手补。S1/S2 任一未完成，禁令维持。
+
 ## 一句话总览（给新窗口的第一段）
 
 - 项目：LayoutPatch（布局约束的文档侧 patch 融合），旧仓库 `mmdoc-evidence-rag` 迁移而来，保持只读，永不修改。
