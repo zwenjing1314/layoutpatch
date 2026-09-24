@@ -19,6 +19,7 @@ from layoutpatch.retrieval.propagation import patch_boxes
 
 def salient_groups(patch_scores: list[float], eta: float, grid: int = 32) -> list[dict]:
     hot = {i for i, s in enumerate(patch_scores) if s >= eta}
+    boxes = patch_boxes(grid)  # hoisted: identical output, was rebuilt per group (P75 cost artifact)
     seen: set[int] = set()
     groups: list[dict] = []
     for seed in sorted(hot):
@@ -39,7 +40,6 @@ def salient_groups(patch_scores: list[float], eta: float, grid: int = 32) -> lis
                     nxt = nr * grid + nc
                     if nxt in hot and nxt not in seen:
                         stack.append(nxt)
-        boxes = patch_boxes(grid)
         xs1 = [boxes[i][0] for i in comp]
         ys1 = [boxes[i][1] for i in comp]
         xs2 = [boxes[i][2] for i in comp]

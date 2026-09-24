@@ -120,7 +120,7 @@ C3. 文档侧 query-independent：P_fused 离线算好，所有 query 共用，�
 - Beyond：自顶向下 global token + 文本监督；我们自底向上坐标级局部融合 + 页内区域评估。
 - ColMate：空间只在预训练 loss 的 Bj pooling；我们是前向显式融合层。
 - RegionRAG：在线 query 条件 saliency + BFS 组图像 crop；我们离线 query 无关融合，存一份 P_fused。
-- LFRAG/ColParse：k+1 次视觉编码换布局/存储；我们 0 次额外编码换定位。
+- LFRAG/ColParse：ColParse k+1 次视觉编码（k 子图 + 1 整页，§3.2.2/Algorithm 1）、LFRAG n+2 次（n 块 + 全局页 + 屏蔽页 Bn+1，§3.2），换布局/存储；我们 0 次额外编码换定位。（出处页码：LFRAG 表1 p.4/表3 p.7/§4.2 p.8，ColParse 表1 p.7/表8 p.26/图6 p.7/§4.2.3-4 p.7-8，旧仓 `Documents/论文第三阶段阅读/` 两 PDF；引用值须标原文硬件 A100/H200，不许与 3080Ti 实测混比；两原文均未单列索引 GB 与检索延迟，B1 该格维持缺）
 - Argus：在线 query 条件 D(q) + MoE；我们离线 P_fused。部署 trade-off，Argus 列未来工作。
 - MM-Matryoshka/ColChunk/SAP：压缩正交可组合，P_fused 可作其输入。
 
