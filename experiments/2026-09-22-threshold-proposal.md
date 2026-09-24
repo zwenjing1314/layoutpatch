@@ -20,6 +20,3 @@ T_gap：Oracle@1 − L3最好@1 ≥ 0.5（当前 0.9136−0.2787=0.63，满足�
 T_oracle 同提案 A；gap 不设线，2-R 跑完看 dev 涨幅再定。
 ```
 
-## 冻结方式
-
-导师选 A 或 B（或改数），落盘为 `experiments/2026-09-22-threshold-frozen.md`（frozen 状态头 + 签字日期），registry 另起一行。未落盘前一切训练禁令维持。
