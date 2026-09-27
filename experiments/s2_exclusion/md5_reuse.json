@@ -1,0 +1,11 @@
+{
+  "hash": "md5 of raw image bytes; no decode",
+  "eval_rows": 20395,
+  "eval_empty": 0,
+  "eval_unique_md5": 20275,
+  "train_rows": 67845,
+  "train_empty": 0,
+  "reuse_count": 0,
+  "reuse_unique_md5": 0,
+  "hits": []
+}

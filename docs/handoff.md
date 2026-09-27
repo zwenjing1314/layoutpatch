@@ -4,7 +4,17 @@
 > 约定：每次会话结束前更新本文件；本文件只写变化的进度，不写不变的规范（规范在 `.cursor/rules/` 与 `docs/RULES.md`）。
 > 配套必读：`docs/MIGRATION_BATCHES.md`（批次清单）→ `docs/00-index.md`（SSOT 导航）→ `docs/PAPER_SPEC.md`（小论文执行规范）。
 
-## 2026-09-24 新窗口接续（本节置顶，2026-09-23 节及更早旧节只作考古）
+## 2026-09-26 新窗口接续（本节置顶，更早节只作考古）
+
+- 当前目标不变：完成一篇标准小论文。B1/B2 只作大论文诊断附录，不单独投稿。
+- S2 审计已完成（`experiments/2026-09-24-s2-train-audit.md`）。文本泄漏剔除已落盘，不是开训许可。
+- 剔除并集：24 个重叠文档的全部 train 题 + 38 句重叠问句（实际 47 条 train 题，有重复）+ 页图 md5 命中。md5 复用数 = 0，未触发停工。剔除前 65319 题 / 30913 文档，剔除 118 题，剔除后 65201 题 / 30889 文档。剔除后文档名交集、问句交集都是空。证据在 `experiments/s2_exclusion/`。
+- 划分已冻结，不是开训许可：`experiments/2026-09-26-dev-test-split-frozen.md`。seed=42，按文档切。四池 id 在 `experiments/s2_splits/`。跨文档正负页剔除 2739 题。test_eval 只记 id，未打分。EXP-001 / EXP-007-S1 全集基线不因划分作废。
+- 训练仍禁止。不建 `fusion/`，不写 `train_fusion.py`，不用 evaluation gold 构造 `y(c)`，不用 `T_oracle≥0.5` 过滤 train。
+- 下一步未批准开训。设计页已确认并冻结：`experiments/2026-09-26-phase2r-design-frozen.md`。确认不是开训许可。不建 `fusion/`，不写 `train_fusion.py`，不读 `test_eval` 分数。
+- 编码未开始。下一步已批但尚未执行：只编 `train_fit` 的 ArxivQA（正负页都至少 1 框，9241 题 / 7112 页 / 外推 7.70 小时），写成 ColPali 页向量 `.pt`。这不是开训。进度叙事见 `docs/paper-progress.md`。
+
+## 2026-09-24 新窗口接续（已归档，不再更新）
 
 - 当前目标（重申）：完成一篇标准小论文（有可训练参数 + 独立训练数据 + dev/test + 三指标同报 + 明确对照，见 `docs/PAPER_SPEC.md` 第 2.4/2.6 节）。B1（效率对比）/ B2（失败分类学）只是大论文内的一节诊断附录，绝不单独作为小论文投稿（见 `docs/THESIS_SPEC.md` 第 11.3 节修订）。
 - 当前位置：S1 已关（导师 2026-09-24 定阈值提案 B，落盘 `experiments/2026-09-22-threshold-frozen.md`，registry 新增 THR-B 行，现共 11 行）。S2 门口：train 6878 本地无数据，`phase2r-train-leakage-review.md` 5 项全待勾，训练禁令维持（不建 `fusion/`、不写 `train_fusion.py`）。

@@ -25,11 +25,13 @@
 - `docs/THESIS_SPEC.md`（stable）：大论文边界——2026-09-15 已用旧仓全文覆盖
 - `docs/PAPER_SPEC.md`（stable）：小论文执行——2026-09-15 已用旧仓全文覆盖
 - `docs/handoff.md`（working）：当前批次、阻塞问题、下一步指令
+- `docs/paper-progress.md`（working）：小论文进度叙事（S2 剔除、划分、2-R 设计、编码未开始）。不是规范 SSOT。
 - `docs/MIGRATION_BATCHES.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）
 
 ## 实验过程
 
-- `experiments/registry.csv`：注册表（EXP-001~006 共 7 行：EXP-001/002/003/004/002-S1-SUPERSEDED/005/006；query_count 全 1658；EXP-006 注 Top-1 口径与 0.8112 不可比）
+- `experiments/registry.csv`：注册表（EXP-001~008 + EXP-002-S1 + EXP-007-S1 + THR-B + S2-AUDIT + SPLIT-FROZEN，共 13 行）。
+- S2 剔除清单（2026-09-26，已落盘，未开训）：`experiments/s2_exclusion/` + `experiments/phase2r-train-leakage-review.md`。划分已冻结：`experiments/2026-09-26-dev-test-split-frozen.md` + `experiments/s2_splits/`。冻结不是开训许可。
 - `experiments/templates/experiment-record.md`：11 段模板（M2 迁入）
 - 关门加固（2026-09-18，全部入库）：`experiments/2026-09-17-eff-b1.md`（B1 效率表 8 行 + 探针清洗 + k+1 页码表号）+ `experiments/2026-09-17-b2-taxonomy-draft.md`（B2 四数并列三类）+ `experiments/2026-09-18-advisor-decision-pack.md`（决策包三问只摆数）+ `scripts/run_text_dual.py`（Text 双轨）+ `scripts/run_phase1c_probes.py`（清洗探针）+ `scripts/run_phase1c.py`（存逐题 picks）
 

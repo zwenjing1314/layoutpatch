@@ -1,0 +1,15 @@
+{
+  "union": "24 overlap docs (all their train questions) + 38 overlap questions + md5 hits",
+  "md5_hits_added": 0,
+  "before_questions": 65319,
+  "before_docs": 30913,
+  "excluded_questions": 118,
+  "excluded_by_doc": 87,
+  "excluded_by_query": 47,
+  "excluded_by_both": 16,
+  "after_questions": 65201,
+  "after_docs": 30889,
+  "doc_intersection_after": [],
+  "query_intersection_after": [],
+  "training_authorized": false
+}

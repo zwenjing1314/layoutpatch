@@ -1,0 +1,778 @@
+[
+  {
+    "normalized": "whataretheusesofindianremotesensingsatelliteconstellation?",
+    "eval_examples": [
+      "What are the uses of Indian remote sensing satellite constellation?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 138,
+        "query_id": 138,
+        "doc_names": [
+          "fdac8d1e9ef56519371df7e6532df27d"
+        ],
+        "normalized_query": "whataretheusesofindianremotesensingsatelliteconstellation?",
+        "query": "What are the uses of Indian remote sensing satellite constellation?"
+      }
+    ]
+  },
+  {
+    "normalized": "wherewasgestaltpsychologyconcieved?",
+    "eval_examples": [
+      "Where was Gestalt psychology concieved?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 534,
+        "query_id": 534,
+        "doc_names": [
+          "0e94b4197b10096b1f4c699701570fbf"
+        ],
+        "normalized_query": "wherewasgestaltpsychologyconcieved?",
+        "query": "Where was Gestalt psychology concieved?"
+      }
+    ]
+  },
+  {
+    "normalized": "accordingtothechartonpage14howmuchtimewasspentwithfamilyandfriendsin2010?",
+    "eval_examples": [
+      "According to the chart on page 14 how much time was spent with family and friends in 2010?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 536,
+        "query_id": 536,
+        "doc_names": [
+          "0e94b4197b10096b1f4c699701570fbf"
+        ],
+        "normalized_query": "accordingtothechartonpage14howmuchtimewasspentwithfamilyandfriendsin2010?",
+        "query": "According to the chart on page 14 how much time was spent with family and friends in 2010?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatistheemailidofthemtrelaurentnahmiash?",
+    "eval_examples": [
+      "what is the email id of the mtre laurent nahmiash ?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 643,
+        "query_id": 643,
+        "doc_names": [
+          "a5879805d70c854ea4361e43a84e3bb2"
+        ],
+        "normalized_query": "whatistheemailidofthemtrelaurentnahmiash?",
+        "query": "what is the email id of the mtre laurent nahmiash ?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisitclimitedlogocolor?",
+    "eval_examples": [
+      "WHAT IS ITC LIMITED LOGO COLOR?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 702,
+        "query_id": 702,
+        "doc_names": [
+          "f86d073b0d735ac873a65d906ba82758"
+        ],
+        "normalized_query": "whatisitclimitedlogocolor?",
+        "query": "WHAT IS ITC LIMITED LOGO COLOR?"
+      }
+    ]
+  },
+  {
+    "normalized": "mentiontabletcapturedevicesusedbysomehospitals?",
+    "eval_examples": [
+      "Mention Tablet Capture Devices used by some hospitals?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 748,
+        "query_id": 748,
+        "doc_names": [
+          "c31e6580d0175ab3f9d99d1ff0bfa000"
+        ],
+        "normalized_query": "mentiontabletcapturedevicesusedbysomehospitals?",
+        "query": "Mention Tablet Capture Devices used by some hospitals?"
+      }
+    ]
+  },
+  {
+    "normalized": "whoproducedthedocumentthatwasrevisedonmay2016?",
+    "eval_examples": [
+      "Who produced the document that was revised on May 2016?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 869,
+        "query_id": 869,
+        "doc_names": [
+          "e79deb02a0c0e87511080836c5d4347b"
+        ],
+        "normalized_query": "whoproducedthedocumentthatwasrevisedonmay2016?",
+        "query": "Who produced the document that was revised on May 2016?"
+      }
+    ]
+  },
+  {
+    "normalized": "writethefillingidandcasenumberinthisdocument?",
+    "eval_examples": [
+      "Write the filling id and case number in this document?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 991,
+        "query_id": 991,
+        "doc_names": [
+          "7c3f6204b3241f142f0f8eb8e1fefe7a"
+        ],
+        "normalized_query": "writethefillingidandcasenumberinthisdocument?",
+        "query": "Write the filling id and case number in this document?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisthefeasrmservicetypeforinstrumentationandtesting?",
+    "eval_examples": [
+      "What is the FEA SRM Service type for Instrumentation and testing?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 1206,
+        "query_id": 1206,
+        "doc_names": [
+          "936c0e2c2e6c8e0c07c51bfaf7fd0a83"
+        ],
+        "normalized_query": "whatisthefeasrmservicetypeforinstrumentationandtesting?",
+        "query": "What is the FEA SRM Service type for Instrumentation and testing?"
+      }
+    ]
+  },
+  {
+    "normalized": "whichofficerverifyandsignedthecomplaint?",
+    "eval_examples": [
+      "Which officer verify and signed the complaint?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 1558,
+        "query_id": 1558,
+        "doc_names": [
+          "3276a5b991c49cf5f9a4af0f7d6fce67"
+        ],
+        "normalized_query": "whichofficerverifyandsignedthecomplaint?",
+        "query": "Which officer verify and signed the complaint?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatistheca,barnoofthereport?",
+    "eval_examples": [
+      "what is the CA, Bar no of the report?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 1560,
+        "query_id": 1560,
+        "doc_names": [
+          "3276a5b991c49cf5f9a4af0f7d6fce67"
+        ],
+        "normalized_query": "whatistheca,barnoofthereport?",
+        "query": "what is the CA, Bar no of the report?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatpercentageoflandareawasrezonedinthebronxfrom2003-2007?",
+    "eval_examples": [
+      "What percentage of land area was rezoned in the Bronx from 2003-2007?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 1728,
+        "query_id": 1728,
+        "doc_names": [
+          "8e7c4cb542ad160f80fb3d795ada35d8"
+        ],
+        "normalized_query": "whatpercentageoflandareawasrezonedinthebronxfrom2003-2007?",
+        "query": "What percentage of land area was rezoned in the Bronx from 2003-2007?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisthefirstsubdivisiontopicinthetitleoftheareasforfutureresearch?",
+    "eval_examples": [
+      "What is the first subdivision topic in the title of the Areas for future research?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 1730,
+        "query_id": 1730,
+        "doc_names": [
+          "8e7c4cb542ad160f80fb3d795ada35d8"
+        ],
+        "normalized_query": "whatisthefirstsubdivisiontopicinthetitleoftheareasforfutureresearch?",
+        "query": "What is the first subdivision topic in the title of the Areas for future research?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisthetitleofthedocument?",
+    "eval_examples": [
+      "What is the title of the document?",
+      "What is the title of the document?",
+      "What is the title of the document?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 2154,
+        "query_id": 2154,
+        "doc_names": [
+          "c25b7b0ebf260a82a23322c2e11a2d13"
+        ],
+        "normalized_query": "whatisthetitleofthedocument?",
+        "query": "What is the title of the Document?"
+      },
+      {
+        "domain": "MP-DocVQA",
+        "line_index": 1945,
+        "query_id": 1945,
+        "doc_names": [
+          "nqnn0081"
+        ],
+        "normalized_query": "whatisthetitleofthedocument?",
+        "query": "What is the Title of the document?"
+      },
+      {
+        "domain": "MP-DocVQA",
+        "line_index": 2168,
+        "query_id": 2168,
+        "doc_names": [
+          "hqcb0079"
+        ],
+        "normalized_query": "whatisthetitleofthedocument?",
+        "query": "What is the title of the document ?"
+      },
+      {
+        "domain": "MP-DocVQA",
+        "line_index": 3809,
+        "query_id": 3809,
+        "doc_names": [
+          "kzng0227"
+        ],
+        "normalized_query": "whatisthetitleofthedocument?",
+        "query": "what is the title of the document ?"
+      },
+      {
+        "domain": "MP-DocVQA",
+        "line_index": 6027,
+        "query_id": 6027,
+        "doc_names": [
+          "kqch0227"
+        ],
+        "normalized_query": "whatisthetitleofthedocument?",
+        "query": "What is the title of the document?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatarethelast4chapterslistedinthetableofcontents?",
+    "eval_examples": [
+      "What are the last 4 chapters listed in the table of contents?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 2223,
+        "query_id": 2223,
+        "doc_names": [
+          "efd88e41c5f2606c57929cac6c1c0605"
+        ],
+        "normalized_query": "whatarethelast4chapterslistedinthetableofcontents?",
+        "query": "What are the last 4 chapters listed in the table of contents?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisthetitleofmodule1?",
+    "eval_examples": [
+      "What is the title of module 1?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 2355,
+        "query_id": 2355,
+        "doc_names": [
+          "52b3137455e7ca4df65021a200aef724"
+        ],
+        "normalized_query": "whatisthetitleofmodule1?",
+        "query": "What is the title of module 1?"
+      }
+    ]
+  },
+  {
+    "normalized": "whoisthedefendantofthiscase?",
+    "eval_examples": [
+      "Who is the defendant of this case?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 2615,
+        "query_id": 2615,
+        "doc_names": [
+          "fba893a8b2d68e35362cc964517bf0c1"
+        ],
+        "normalized_query": "whoisthedefendantofthiscase?",
+        "query": "WHO IS THE DEFENDANT OF THIS CASE?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisuscacasenumber?",
+    "eval_examples": [
+      "WHAT IS USCA CASE NUMBER?"
+    ],
+    "train": [
+      {
+        "domain": "DUDE",
+        "line_index": 2656,
+        "query_id": 2656,
+        "doc_names": [
+          "a4f3ced0696009fec3179f493e4f28c4"
+        ],
+        "normalized_query": "whatisuscacasenumber?",
+        "query": "WHAT IS USCA CASE NUMBER?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatistheaveragesessiondurationfordesktop?",
+    "eval_examples": [
+      "What is the average session duration for desktop?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10017,
+        "query_id": 10017,
+        "doc_names": [
+          "amb-siteaudits-ds15-150204174043-conversion-gate01"
+        ],
+        "normalized_query": "whatistheaveragesessiondurationfordesktop?",
+        "query": "What is the average session duration for desktop?"
+      }
+    ]
+  },
+  {
+    "normalized": "in2014,respondentswhobelievetraditionalvaluesareoutdatedincreasedbyhowmanypercentagepointscomparedto2011?",
+    "eval_examples": [
+      "In 2014, respondents who believe traditional values are outdated increased by how many percentage points compared to 2011?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10174,
+        "query_id": 10174,
+        "doc_names": [
+          "asdaaburson-marstellerarabyouthsurvey2014-140407100615-phpapp01"
+        ],
+        "normalized_query": "in2014,respondentswhobelievetraditionalvaluesareoutdatedincreasedbyhowmanypercentagepointscomparedto2011?",
+        "query": "In 2014, respondents who believe traditional values are outdated increased by how many percentage points compared to 2011?"
+      }
+    ]
+  },
+  {
+    "normalized": "intheyearinwhichpalestinewasaddedtothesurvey,respondentswhobelievetraditionalvaluesareoutdatedincreasedbyhowmanypercentagepointscomparedto2011?",
+    "eval_examples": [
+      "In the year in which Palestine was added to the survey, respondents who believe traditional values are outdated increased by how many percentage points compared to 2011?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10175,
+        "query_id": 10175,
+        "doc_names": [
+          "asdaaburson-marstellerarabyouthsurvey2014-140407100615-phpapp01"
+        ],
+        "normalized_query": "intheyearinwhichpalestinewasaddedtothesurvey,respondentswhobelievetraditionalvaluesareoutdatedincreasedbyhowmanypercentagepointscomparedto2011?",
+        "query": "In the year in which Palestine was added to the survey, respondents who believe traditional values are outdated increased by how many percentage points compared to 2011?"
+      }
+    ]
+  },
+  {
+    "normalized": "whichcountryhadthehighestpercentageofrespondentsforwhomtraditionalvaluesmeanalot?",
+    "eval_examples": [
+      "Which country had the highest percentage of respondents for whom traditional values mean a lot?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10176,
+        "query_id": 10176,
+        "doc_names": [
+          "asdaaburson-marstellerarabyouthsurvey2014-140407100615-phpapp01"
+        ],
+        "normalized_query": "whichcountryhadthehighestpercentageofrespondentsforwhomtraditionalvaluesmeanalot?",
+        "query": "Which country had the highest percentage of respondents for whom traditional values mean a lot?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatyearisprintedonthet-shirtthemaniswearinginthephotographinwhichheisholdingaservingplatefullofwhatgivesautilityof+10fromconsuming1assumingstandardconsumptioneconomics?",
+    "eval_examples": [
+      "What year is printed on the t-shirt the man is wearing in the photograph in which he is holding a serving plate full of what gives a utility of +10 from consuming 1 assuming standard consumption economics?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10715,
+        "query_id": 10715,
+        "doc_names": [
+          "competitiveoutcomes-091006065143-phpapp01"
+        ],
+        "normalized_query": "whatyearisprintedonthet-shirtthemaniswearinginthephotographinwhichheisholdingaservingplatefullofwhatgivesautilityof+10fromconsuming1assumingstandardconsumptioneconomics?",
+        "query": "What year is printed on the t-shirt the man is wearing in the photograph in which he is holding a serving plate full of what gives a utility of +10 from consuming 1 assuming standard consumption economics?"
+      },
+      {
+        "domain": "SlideVQA",
+        "line_index": 10716,
+        "query_id": 10716,
+        "doc_names": [
+          "competitiveoutcomes-091006065143-phpapp01"
+        ],
+        "normalized_query": "whatyearisprintedonthet-shirtthemaniswearinginthephotographinwhichheisholdingaservingplatefullofwhatgivesautilityof+10fromconsuming1assumingstandardconsumptioneconomics?",
+        "query": "What year is printed on the t-shirt the man is wearing in the photograph in which he is holding a serving plate full of what gives a utility of +10 from consuming 1 assuming standard consumption economics?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisthenameofthecompanythatcreatedthispresentation?",
+    "eval_examples": [
+      "What is the name of the company that created this presentation?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10720,
+        "query_id": 10720,
+        "doc_names": [
+          "avalaunchpresentationsthatkickasteriskv3copy-150318114804-conversion-gate01"
+        ],
+        "normalized_query": "whatisthenameofthecompanythatcreatedthispresentation?",
+        "query": "What is the name of the company that created this presentation?"
+      }
+    ]
+  },
+  {
+    "normalized": "accordingtothepresentation,whatarethreebadfonts?",
+    "eval_examples": [
+      "According to the presentation, what are three bad fonts?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10721,
+        "query_id": 10721,
+        "doc_names": [
+          "avalaunchpresentationsthatkickasteriskv3copy-150318114804-conversion-gate01"
+        ],
+        "normalized_query": "accordingtothepresentation,whatarethreebadfonts?",
+        "query": "According to the presentation, what are three bad fonts?"
+      }
+    ]
+  },
+  {
+    "normalized": "howmanyreasonsyourpresentationneedsforasteriskkicked?",
+    "eval_examples": [
+      "How many reasons your presentation needs for asterisk kicked?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10726,
+        "query_id": 10726,
+        "doc_names": [
+          "avalaunchpresentationsthatkickasteriskv3copy-150318114804-conversion-gate01"
+        ],
+        "normalized_query": "howmanyreasonsyourpresentationneedsforasteriskkicked?",
+        "query": "How many reasons your presentation needs for asterisk kicked?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatthreetabscanbeseenongarminconnect'sinterfaceintheimage?",
+    "eval_examples": [
+      "What three tabs can be seen on Garmin Connect's interface in the image?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10740,
+        "query_id": 10740,
+        "doc_names": [
+          "bigdatatrends-120723191058-phpapp02"
+        ],
+        "normalized_query": "whatthreetabscanbeseenongarminconnect'sinterfaceintheimage?",
+        "query": "What three tabs can be seen on Garmin Connect's interface in the image?"
+      }
+    ]
+  },
+  {
+    "normalized": "whichsenseissaidtohavethesamebandwidthasausbkey?",
+    "eval_examples": [
+      "Which sense is said to have the same bandwidth as a USB key?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10743,
+        "query_id": 10743,
+        "doc_names": [
+          "bigdatatrends-120723191058-phpapp02"
+        ],
+        "normalized_query": "whichsenseissaidtohavethesamebandwidthasausbkey?",
+        "query": "Which sense is said to have the same bandwidth as a USB key?"
+      }
+    ]
+  },
+  {
+    "normalized": "theoverlapofwhichtwocapabilitiesisconsideredthedangerzone?",
+    "eval_examples": [
+      "The overlap of which two capabilities is considered the danger zone?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10748,
+        "query_id": 10748,
+        "doc_names": [
+          "catvsdogdlpycon15se-150512122612-lva1-app6891"
+        ],
+        "normalized_query": "theoverlapofwhichtwocapabilitiesisconsideredthedangerzone?",
+        "query": "The overlap of which two capabilities is considered the danger zone?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatpercentageofrespondentsofthesectorinwhich15%aredoingpromotionstocustomersoverwi-fiusewifiatstores?",
+    "eval_examples": [
+      "What percentage of respondents of the sector in which 15% are doing promotions to customers over Wi-Fi use wifi at stores?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10792,
+        "query_id": 10792,
+        "doc_names": [
+          "earthlinkweb-150213112111-conversion-gate02"
+        ],
+        "normalized_query": "whatpercentageofrespondentsofthesectorinwhich15%aredoingpromotionstocustomersoverwi-fiusewifiatstores?",
+        "query": "What percentage of respondents of the sector in which 15% are doing promotions to customers over Wi-Fi use wifi at stores?"
+      },
+      {
+        "domain": "SlideVQA",
+        "line_index": 10793,
+        "query_id": 10793,
+        "doc_names": [
+          "earthlinkweb-150213112111-conversion-gate02"
+        ],
+        "normalized_query": "whatpercentageofrespondentsofthesectorinwhich15%aredoingpromotionstocustomersoverwi-fiusewifiatstores?",
+        "query": "What percentage of respondents of the sector in which 15% are doing promotions to customers over Wi-Fi use wifi at stores?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatistheebay.inlistingforshownintheimage?",
+    "eval_examples": [
+      "What is the ebay.in listing for shown in the image?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10819,
+        "query_id": 10819,
+        "doc_names": [
+          "ecommerceopportunityindia-141124010546-conversion-gate01"
+        ],
+        "normalized_query": "whatistheebay.inlistingforshownintheimage?",
+        "query": "What is the ebay.in listing for shown in the image?"
+      }
+    ]
+  },
+  {
+    "normalized": "intheyearinwhichthenoofinternetuserswas330million,whatpercentageofindiansweredebitcardusers?",
+    "eval_examples": [
+      "In the year in which the No of internet users was 330 million, what percentage of Indians were Debit Card users?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10821,
+        "query_id": 10821,
+        "doc_names": [
+          "ecommerceopportunityindia-141124010546-conversion-gate01"
+        ],
+        "normalized_query": "intheyearinwhichthenoofinternetuserswas330million,whatpercentageofindiansweredebitcardusers?",
+        "query": "In the year in which the No of internet users was 330 million, what percentage of Indians were Debit Card users?"
+      },
+      {
+        "domain": "SlideVQA",
+        "line_index": 10822,
+        "query_id": 10822,
+        "doc_names": [
+          "ecommerceopportunityindia-141124010546-conversion-gate01"
+        ],
+        "normalized_query": "intheyearinwhichthenoofinternetuserswas330million,whatpercentageofindiansweredebitcardusers?",
+        "query": "In the year in which the No of internet users was 330 million, what percentage of Indians were Debit Card users?"
+      }
+    ]
+  },
+  {
+    "normalized": "howmanymoredebitcardusersinmillionswerethereinindiain2015comparedto2014?",
+    "eval_examples": [
+      "How many more debit card users in millions were there in India in 2015 compared to 2014?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 10823,
+        "query_id": 10823,
+        "doc_names": [
+          "ecommerceopportunityindia-141124010546-conversion-gate01"
+        ],
+        "normalized_query": "howmanymoredebitcardusersinmillionswerethereinindiain2015comparedto2014?",
+        "query": "How many more debit card users in millions were there in India in 2015 compared to 2014?"
+      }
+    ]
+  },
+  {
+    "normalized": "howmanyblackarrowsarepartofthedisciplinedagilelogo?",
+    "eval_examples": [
+      "How many black arrows are part of the DISCIPLINED AGILE logo?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 11155,
+        "query_id": 11155,
+        "doc_names": [
+          "disciplined-agile-business-analysis-160218012713"
+        ],
+        "normalized_query": "howmanyblackarrowsarepartofthedisciplinedagilelogo?",
+        "query": "How many black arrows are part of the DISCIPLINED AGILE logo?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisthesourceofthedatafortheaudienceoftheplatformwhosemetricsarepagelikes,postclicks,videoviews,postreach,hide,reportasspam,unlikes,30-secondviews++,posttypes,engagement:reactions,shares,comments,andfbreferraltraffic?",
+    "eval_examples": [
+      "What is the Source of the data for the audience of the platform whose metrics are page likes, post clicks, video views, post reach, hide, report as spam, unlikes, 30-second views++, post types, engagement: reactions, shares, comments, and FB referral traffic?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 11270,
+        "query_id": 11270,
+        "doc_names": [
+          "measuringsuccessonfacebooktwitterlinkedin-160317142140"
+        ],
+        "normalized_query": "whatisthesourceofthedatafortheaudienceoftheplatformwhosemetricsarepagelikes,postclicks,videoviews,postreach,hide,reportasspam,unlikes,30-secondviews++,posttypes,engagement:reactions,shares,comments,andfbreferraltraffic?",
+        "query": "What is the Source of the data for the audience of the platform whose metrics are page likes, post clicks, video views, post reach, hide, report as spam, unlikes, 30-second views++, post types, engagement: reactions, shares, comments, and FB referral traffic?"
+      }
+    ]
+  },
+  {
+    "normalized": "howmanylikesdoesthepostbydisneylandhaveontheplatformwithanaudienceof10.6forage65+?",
+    "eval_examples": [
+      "How many likes does the post by Disneyland have on the platform with an audience of 10.6 for Age 65+?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 11274,
+        "query_id": 11274,
+        "doc_names": [
+          "measuringsuccessonfacebooktwitterlinkedin-160317142140"
+        ],
+        "normalized_query": "howmanylikesdoesthepostbydisneylandhaveontheplatformwithanaudienceof10.6forage65+?",
+        "query": "How many likes does the post by Disneyland have on the platform with an audience of 10.6 for Age 65+?"
+      },
+      {
+        "domain": "SlideVQA",
+        "line_index": 11275,
+        "query_id": 11275,
+        "doc_names": [
+          "measuringsuccessonfacebooktwitterlinkedin-160317142140"
+        ],
+        "normalized_query": "howmanylikesdoesthepostbydisneylandhaveontheplatformwithanaudienceof10.6forage65+?",
+        "query": "How many likes does the post by Disneyland have on the platform with an audience of 10.6 for Age 65+?"
+      }
+    ]
+  },
+  {
+    "normalized": "in2013,whatisthetotalpercentageofonlineadultusersinthe\"white,non-hispanic\"and\"hispanic\"categoriesontheplatformwhosemetricsincludefollowers,tweetclicks,videoviews,tweetreach,engagementrate,completionrate,engagement:mentions,retweets,likes,toptweet,topmention,topfollower,topmediatweet,andtwitterreferraltraffic?",
+    "eval_examples": [
+      "In 2013, what is the total percentage of online adult users in the \"White, Non-Hispanic\" and \"Hispanic\" categories on the platform whose metrics include Followers, Tweet Clicks, Video Views, Tweet Reach, Engagement Rate, Completion Rate, Engagement: Mentions, Retweets, Likes, Top Tweet, Top Mention, Top Follower, Top Media Tweet, and Twitter Referral Traffic?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 11280,
+        "query_id": 11280,
+        "doc_names": [
+          "measuringsuccessonfacebooktwitterlinkedin-160317142140"
+        ],
+        "normalized_query": "in2013,whatisthetotalpercentageofonlineadultusersinthe\"white,non-hispanic\"and\"hispanic\"categoriesontheplatformwhosemetricsincludefollowers,tweetclicks,videoviews,tweetreach,engagementrate,completionrate,engagement:mentions,retweets,likes,toptweet,topmention,topfollower,topmediatweet,andtwitterreferraltraffic?",
+        "query": "In 2013, what is the total percentage of online adult users in the \"White, Non-Hispanic\" and \"Hispanic\" categories on the platform whose metrics include Followers, Tweet Clicks, Video Views, Tweet Reach, Engagement Rate, Completion Rate, Engagement: Mentions, Retweets, Likes, Top Tweet, Top Mention, Top Follower, Top Media Tweet, and Twitter Referral Traffic?"
+      },
+      {
+        "domain": "SlideVQA",
+        "line_index": 11281,
+        "query_id": 11281,
+        "doc_names": [
+          "measuringsuccessonfacebooktwitterlinkedin-160317142140"
+        ],
+        "normalized_query": "in2013,whatisthetotalpercentageofonlineadultusersinthe\"white,non-hispanic\"and\"hispanic\"categoriesontheplatformwhosemetricsincludefollowers,tweetclicks,videoviews,tweetreach,engagementrate,completionrate,engagement:mentions,retweets,likes,toptweet,topmention,topfollower,topmediatweet,andtwitterreferraltraffic?",
+        "query": "In 2013, what is the total percentage of online adult users in the \"White, Non-Hispanic\" and \"Hispanic\" categories on the platform whose metrics include Followers, Tweet Clicks, Video Views, Tweet Reach, Engagement Rate, Completion Rate, Engagement: Mentions, Retweets, Likes, Top Tweet, Top Mention, Top Follower, Top Media Tweet, and Twitter Referral Traffic?"
+      }
+    ]
+  },
+  {
+    "normalized": "whatisthecombinedpercentageofalbumsales%andsongsales%forthecountrygenre?",
+    "eval_examples": [
+      "What is the combined percentage of Album Sales % and Song Sales % for the Country genre?"
+    ],
+    "train": [
+      {
+        "domain": "SlideVQA",
+        "line_index": 11338,
+        "query_id": 11338,
+        "doc_names": [
+          "nielsen2015musicbizpresentation-final-150526143534-lva1-app6891"
+        ],
+        "normalized_query": "whatisthecombinedpercentageofalbumsales%andsongsales%forthecountrygenre?",
+        "query": "What is the combined percentage of Album Sales % and Song Sales % for the Country genre?"
+      }
+    ]
+  }
+]

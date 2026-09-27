@@ -1,0 +1,11 @@
+{
+  "norm_doc": "Path.stem, strip one trailing .pdf case-insensitive",
+  "norm_query": "lowercase; delete U+0020 and U+0009 only",
+  "eval_docs": 313,
+  "eval_questions": 1658,
+  "eval_questions_unique_normalized": 1631,
+  "train_questions": 65319,
+  "train_docs": 30913,
+  "overlap_docs": 24,
+  "overlap_queries": 38
+}

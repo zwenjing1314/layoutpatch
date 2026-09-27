@@ -1,0 +1,50 @@
+{
+  "seed": 42,
+  "shuffle": "sort normalized doc name, then random.Random(42).shuffle",
+  "ratios": {
+    "train_fit_docs": 0.9,
+    "dev_eval_docs": 0.3
+  },
+  "cut_counts": {
+    "train_docs_before_drop": 30889,
+    "train_fit_docs_assigned": 27800,
+    "train_dev_docs_assigned": 3089,
+    "eval_docs": 313,
+    "dev_eval_docs_assigned": 93,
+    "test_eval_docs_assigned": 220
+  },
+  "pools": {
+    "train_fit": {
+      "questions": 57062,
+      "docs": 25577,
+      "with_layout_gold": 0
+    },
+    "train_dev": {
+      "questions": 5400,
+      "docs": 713,
+      "with_layout_gold": 0
+    },
+    "dev_eval": {
+      "questions": 415,
+      "docs": 93,
+      "with_layout_gold": 415
+    },
+    "test_eval": {
+      "questions": 1243,
+      "docs": 220,
+      "with_layout_gold": 1243
+    }
+  },
+  "cross_doc_dropped_questions": 2739,
+  "pairwise_doc_intersections": {
+    "train_fit__train_dev": [],
+    "train_fit__dev_eval": [],
+    "train_fit__test_eval": [],
+    "train_dev__dev_eval": [],
+    "train_dev__test_eval": [],
+    "dev_eval__test_eval": []
+  },
+  "train_pool_vs_eval313_docs": [],
+  "test_eval_scored": false,
+  "training_authorized": false
+}
