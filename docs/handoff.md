@@ -37,6 +37,7 @@
 - 第一次正式融合训练已完成。ArxivQA 单域。`train_fit` 9241 / `train_dev` 1592。最好第 2 轮。dev_eval Area@1 0.29619925776872813、Area@5 0.7147430258823292，低于 geom:area。页级 R@5 371/415。未通过 dev Gate。未读 test_eval。run：`runs/retrieval/mmdocir_fusion_arxivqa/20260929_155042/`。记录：`experiments/2026-09-29-fusion-arxivqa.md`。
 - ArxivQA 融合 dev Gate 未通过；失败审计完成；正式扩展训练未批准；test_eval 未读取。记录：`experiments/2026-09-29-fusion-failure-audit.md`。结论 C：接线正确，页级弱监督未迁移到区域定位。未训练 fusion = fixed:iou_mass。不继续训练。
 - 当前 fusion 已确认是弱监督迁移失败；替代网络路线审计完成；未批准新训练；test_eval 未读取。记录：`experiments/2026-09-29-fusion-route-decision.md`。推荐重定方法（无框级标签）；query 条件 MIL 仅备选；监督排序当前不可行。
+- 现有页级弱监督已确认不足；方法型论文路线审计完成；新训练未批准；test_eval 未读取。记录：`experiments/2026-09-29-method-route-decision.md`。唯一推荐：先在 train_fit 补少量独立框标注，再做面积去偏排序；不同时开 MIL。本地提交 `f946a1d` 未推远程。
 
 ## 2026-09-27 新窗口接续（已归档，不再更新）
 
