@@ -26,3 +26,4 @@
 | `configs/experiments/mmdocir_colpali_smoke.yaml` | working | smoke 限流（2 文档），不进论文 |
 | `configs/experiments/mmdocir_bge_m3_page.yaml` | working | EXP-003 Phase 1A dense 对照（`dense_page/document/BAAI/bge-m3/require_model=true/top_k=20`，禁 TF-IDF 降级） |
 | `configs/experiments/mmdocir_hybrid_page.yaml` | working | EXP-004 Phase 1A Hybrid 对照（`hybrid_page/document/page_methods=[bm25,dense]/RRF k=60/candidate_top_k=20`） |
+| `scripts/train_fusion_arxivqa.py` | working | 第一次正式融合训练（ArxivQA 单域，页级正负监督，一次 `dev_eval` 判定） |

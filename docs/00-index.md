@@ -31,7 +31,7 @@
 
 ## 实验过程
 
-- `experiments/registry.csv`：注册表（EXP-001~011 + EXP-002-S1 + EXP-007-S1 + THR-B + S2-AUDIT + SPLIT-FROZEN）。2-R 缺口证明：`experiments/s2_splits/phase2r_gap_proof.json`。
+- `experiments/registry.csv`：注册表（EXP-001~013 + FUSION-ARXIVQA + EXP-002-S1 + EXP-007-S1 + THR-B + S2-AUDIT + SPLIT-FROZEN）。2-R 缺口证明：`experiments/s2_splits/phase2r_gap_proof.json`。第一次正式融合：`experiments/2026-09-29-fusion-arxivqa.md`。
 - S2 剔除清单（2026-09-26，已落盘，未开训）：`experiments/s2_exclusion/` + `experiments/phase2r-train-leakage-review.md`。划分已冻结：`experiments/2026-09-26-dev-test-split-frozen.md` + `experiments/s2_splits/`。冻结不是开训许可。
 - `experiments/templates/experiment-record.md`：11 段模板（M2 迁入）
 - 关门加固（2026-09-18，全部入库）：`experiments/2026-09-17-eff-b1.md`（B1 效率表 8 行 + 探针清洗 + k+1 页码表号）+ `experiments/2026-09-17-b2-taxonomy-draft.md`（B2 四数并列三类）+ `experiments/2026-09-18-advisor-decision-pack.md`（决策包三问只摆数）+ `scripts/run_text_dual.py`（Text 双轨）+ `scripts/run_phase1c_probes.py`（清洗探针）+ `scripts/run_phase1c.py`（存逐题 picks）

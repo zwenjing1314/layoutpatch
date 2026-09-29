@@ -9,7 +9,7 @@
 - `docs/paper-draft-notes.md`：小论文章节素材。只记可写内容和已有实验数字，不改评测口径。
 - 项目骨架首版：`src/layoutpatch/` 包结构、`tests/`、`configs/`、`docs/`、`experiments/`、`tasks.ps1`、uv 环境三件套（`pyproject.toml` + `.python-version` + 本文件）。
 - `docs/02-commands.md` 新增 `phase2r-dude`：DUDE 2-R 训练与一次 dev_eval 判定。
-- `docs/02-commands.md` 新增只读审计说明：401 与训练差额可复核，不重训。
+- `docs/02-commands.md` 新增 `fusion-arxivqa`：第一次正式融合训练（ArxivQA 单域，一次 `dev_eval` 判定）。
 
 - `docs/RULES.md`（开发规范十条铁律）、`docs/00-index.md`（SSOT 导航）、`docs/handoff.md`（进度交接）。
 - `docs/MIGRATION_BATCHES.md`（旧仓库 `mmdoc-evidence-rag` → 本项目的分批迁移执行清单，按小论文实验阶段切片）。

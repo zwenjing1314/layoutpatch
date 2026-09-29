@@ -177,3 +177,13 @@ uv run python scripts/audit_phase2r_gaps.py
 - 输入：已有 ArxivQA 页缓存。缓存数量不是 8341 就停。不编新页。不读 `test_eval`。
 - 输出：`artifacts/phase2r/arxivqa_notext/ranker.pt`，以及 `runs/retrieval/mmdocir_phase2r_arxivqa_notext/<timestamp>/` 五件套。
 - 检查：历史任务；2-R 已停止；不得重跑，不得读 test_eval。
+
+## fusion-arxivqa（第一次正式融合训练，ArxivQA 单域）
+
+```powershell
+./tasks.ps1 fusion-arxivqa
+```
+
+- 输入：已有 ArxivQA `train_fit`/`train_dev` 页向量与 query 缓存；训练 parquet 真实框；`dev_eval` id。不读 `test_eval`。不编码新页。不加载 ColPali。
+- 输出：`artifacts/fusion/arxivqa/` 的 fusion checkpoint，以及 `runs/retrieval/mmdocir_fusion_arxivqa/<timestamp>/` 五件套。
+- 检查：监督只有页级正负页；不覆盖任何 `ranker.pt`；区域分母 401，页级分母 415；未过 geom:area 则只记 dev 失败，不读 test_eval。

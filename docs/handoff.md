@@ -31,6 +31,12 @@
 - 论文诊断草稿已落盘：`docs/paper-draft-notes.md`。当前头仍是 arxivqa_dude。2-R 保持停止。
 - 失败记录：`experiments/2026-09-29-phase2r-failure-note.md`。融合就绪：`experiments/2026-09-29-fusion-readiness.md`。2-R 保持停止；融合未批准。
 - 融合形状 smoke test 已完成。`./tasks.ps1 check` 被既有 ruff 错误阻塞，pytest 未执行。新增文件单独 ruff 通过。正式训练未批准。test_eval 未读取。
+- 融合显存探针完成/因真实缓存或硬件条件停止；正式训练仍未批准；test_eval 未读取。
+- 融合显存探针已复核；训练数据/监督审计完成；正式训练仍未批准；test_eval 未读取。
+- 融合反向传播 smoke test 已完成。4 对 / 8 页，3 步，loss 有限且下降，梯度非零，空 patch 保持原值。权重只写到 `artifacts/probe/fusion_train_smoke/smoke_state.pt`。未覆盖任何 `ranker.pt`。不是正式训练。未读 test_eval。记录：`experiments/2026-09-29-fusion-train-smoke.md`。
+- 第一次正式融合训练已完成。ArxivQA 单域。`train_fit` 9241 / `train_dev` 1592。最好第 2 轮。dev_eval Area@1 0.29619925776872813、Area@5 0.7147430258823292，低于 geom:area。页级 R@5 371/415。未通过 dev Gate。未读 test_eval。run：`runs/retrieval/mmdocir_fusion_arxivqa/20260929_155042/`。记录：`experiments/2026-09-29-fusion-arxivqa.md`。
+- ArxivQA 融合 dev Gate 未通过；失败审计完成；正式扩展训练未批准；test_eval 未读取。记录：`experiments/2026-09-29-fusion-failure-audit.md`。结论 C：接线正确，页级弱监督未迁移到区域定位。未训练 fusion = fixed:iou_mass。不继续训练。
+- 当前 fusion 已确认是弱监督迁移失败；替代网络路线审计完成；未批准新训练；test_eval 未读取。记录：`experiments/2026-09-29-fusion-route-decision.md`。推荐重定方法（无框级标签）；query 条件 MIL 仅备选；监督排序当前不可行。
 
 ## 2026-09-27 新窗口接续（已归档，不再更新）
 
