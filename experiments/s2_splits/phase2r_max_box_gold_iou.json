@@ -1,0 +1,6 @@
+{
+  "denominator": 401,
+  "best_candidate_is_max_box": 202,
+  "max_box_iou_ge_0_5": 217,
+  "iou_definition": "original-image pixel boxes; IoU=intersection/union; gold page=first matched gold page; best candidate=max IoU against any gold on that page, lower index tie-break; max box=largest pixel area, lower index tie-break"
+}

@@ -1,0 +1,7 @@
+{
+  "denominator": 401,
+  "fixed:iou_mass": 130,
+  "EXP-009": 214,
+  "geom:area": 214,
+  "iou_definition": "original-image pixel boxes; IoU=intersection/union; gold page=first matched gold page; Top-1 index taken unchanged from phase2r_geom_area_match.json; count is max IoU against any gold box on that page >= 0.5"
+}

@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext")]
   [string]$Task = "help"
 )
 
@@ -86,6 +86,9 @@ switch ($Task) {
     Write-Host "  phase1b-stratify      Phase 1B stratification + cases + gate support EXP-005 (1B, CPU)"
     Write-Host "  phase1c-smoke         Phase 1C smoke 2 docs EXP-006 (needs GPU, cache-only pages)"
     Write-Host "  phase1c-baselines     Phase 1C full 1343A/45B EXP-006 (needs GPU, cache-only pages)"
+    Write-Host "  phase2r-arxivqa       Phase 2-R ArxivQA train + one dev_eval judgment"
+    Write-Host "  phase2r-dude          Phase 2-R DUDE train + one dev_eval judgment"
+    Write-Host "  phase2r-arxivqa-notext  ArxivQA no-text control; does not replace the current head"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -166,5 +169,29 @@ switch ($Task) {
     Write-Host "RUN: uv run --extra colpali python scripts/run_phase1c.py --k 5 --iou 0.5"
     & uv run --extra colpali python scripts/run_phase1c.py --k 5 --iou 0.5
     if ($LASTEXITCODE -ne 0) { throw "phase1c baselines failed" }
+  }
+  "phase2r-arxivqa" {
+    Assert-UvColpaliCuda
+    Write-Host "RUN: uv run --extra colpali python scripts/train_phase2r.py"
+    & uv run --extra colpali python scripts/train_phase2r.py
+    if ($LASTEXITCODE -ne 0) { throw "phase2r arxivqa failed" }
+  }
+  "phase2r-dude" {
+    Assert-UvColpaliCuda
+    Write-Host "RUN: uv run --extra colpali python scripts/train_phase2r_dude.py"
+    & uv run --extra colpali python scripts/train_phase2r_dude.py
+    if ($LASTEXITCODE -ne 0) { throw "phase2r dude failed" }
+  }
+  "phase2r-arxivqa-dude" {
+    Assert-UvColpaliCuda
+    Write-Host "RUN: uv run --extra colpali python scripts/train_phase2r_arxivqa_dude.py"
+    & uv run --extra colpali python scripts/train_phase2r_arxivqa_dude.py
+    if ($LASTEXITCODE -ne 0) { throw "phase2r arxivqa dude failed" }
+  }
+  "phase2r-arxivqa-notext" {
+    Assert-UvColpaliCuda
+    Write-Host "RUN: uv run --extra colpali python scripts/train_phase2r_arxivqa_notext.py"
+    & uv run --extra colpali python scripts/train_phase2r_arxivqa_notext.py
+    if ($LASTEXITCODE -ne 0) { throw "phase2r arxivqa notext failed" }
   }
 }

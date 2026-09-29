@@ -111,6 +111,8 @@
 
 完成判据：按 PAPER_SPEC 第 8 节完整评测矩阵 + 效率表与 LFRAG/ColParse 的 k+1 行同表。
 
+2026-09-27 修订：全融合 `fusion/` 仍锁定。现行先行路径是 Phase 2-R 小打分层，不是本批的 `sparse_fusion.py`。设计已冻结在 `experiments/2026-09-26-phase2r-design-frozen.md`。训练仍未开始。下一步只编码，见 `docs/handoff.md` 置顶节。不要因为本批未勾选就删除已有的 `src/layoutpatch/retrieval/rerank/`。
+
 ## 每批通用的"搬完必做"
 
 ```text

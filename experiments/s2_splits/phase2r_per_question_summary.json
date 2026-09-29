@@ -1,0 +1,42 @@
+{
+  "n": 401,
+  "page_hits": 371,
+  "page_n": 415,
+  "base1": 0.28594452702337386,
+  "base5": 0.7441786161356058,
+  "heads": {
+    "EXP-009": {
+      "area1": 0.46726432578302896,
+      "area5": 0.770560608819146
+    },
+    "EXP-010": {
+      "area1": 0.07710372026423774,
+      "area5": 0.4068356330705695
+    },
+    "EXP-011": {
+      "area1": 0.46944212489134424,
+      "area5": 0.7674845426972748
+    }
+  },
+  "metrics_match": {
+    "EXP-009": {
+      "area1": true,
+      "area5": true
+    },
+    "EXP-010": {
+      "area1": true,
+      "area5": true
+    },
+    "EXP-011": {
+      "area1": true,
+      "area5": true
+    }
+  },
+  "weight_sha256": {
+    "EXP-009": "b528ee33de2b733b987d5b8b5f0ba0befea6b39887aa3b8fed575f4ef15bf6e9",
+    "EXP-010": "283c21463717080dbf74f90a36764b512263d666ce6a5c51a95f14db49e95534",
+    "EXP-011": "5343d93ae65c2d8445418355eb7173ea6bdb6a2f4936f183e2a7ea38f62346c4"
+  },
+  "text_feature": "query_vec is None, so feature 5 is 0 for every box",
+  "test_eval": "not_read"
+}

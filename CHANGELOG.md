@@ -6,7 +6,11 @@
 
 ### Added
 
+- `docs/paper-draft-notes.md`：小论文章节素材。只记可写内容和已有实验数字，不改评测口径。
 - 项目骨架首版：`src/layoutpatch/` 包结构、`tests/`、`configs/`、`docs/`、`experiments/`、`tasks.ps1`、uv 环境三件套（`pyproject.toml` + `.python-version` + 本文件）。
+- `docs/02-commands.md` 新增 `phase2r-dude`：DUDE 2-R 训练与一次 dev_eval 判定。
+- `docs/02-commands.md` 新增只读审计说明：401 与训练差额可复核，不重训。
+
 - `docs/RULES.md`（开发规范十条铁律）、`docs/00-index.md`（SSOT 导航）、`docs/handoff.md`（进度交接）。
 - `docs/MIGRATION_BATCHES.md`（旧仓库 `mmdoc-evidence-rag` → 本项目的分批迁移执行清单，按小论文实验阶段切片）。
 - `docs/figures/layoutpatch_network_framework.svg`：依据 `docs/PAPER_SPEC.md` 第 3、5、7–9 节绘制的分格式可编辑网络框架图，覆盖总览数据流、方法组件放大图、在线 MaxSim 检索与贡献/有效性检查。（2026-09-18 关门修正时移除，未入库：框架图非本批实测产物，待收缩方向确定后再按 B1/B2 重画。）

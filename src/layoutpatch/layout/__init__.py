@@ -10,9 +10,14 @@ from layoutpatch.layout.correspondence import (
     scale_bbox_to_model,
     stack_correspondence,
 )
+from layoutpatch.layout.nodes import COORD_DIM, UNK_TYPE_ID, D, TextLayoutEncoder
 
 __all__ = [
+    "COORD_DIM",
     "CorrespondenceResult",
+    "D",
+    "TextLayoutEncoder",
+    "UNK_TYPE_ID",
     "correspondence_row",
     "patch_bbox",
     "row_normalize",

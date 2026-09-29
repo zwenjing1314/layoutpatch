@@ -127,3 +127,53 @@ uv run python -c "from layoutpatch.evaluation.region_diagnosis import diagnose; 
 - 检查（`docs/PAPER_SPEC.md` 第 7.3 节）：A 页中区中 / B 页中区不中 / C 页不中区中 / D 都不中；
   当前值 A=1345/B=45/C=0/D=268，B 占页命中 3.24%；IoU 口径 `bbox_iou`≥0.5（0.3/0.5/0.7 敏感性 0.8154/0.8112/0.8100）；
   与 EXP-001 差 1 题为 gold 页口径差异（`mmdocir_01342`）；记录页 `experiments/2026-09-16-exp-002-abcd-diagnosis.md` + registry 第二行
+
+## phase2r-arxivqa（已实现，方案 A，不是全融合）
+
+```powershell
+./tasks.ps1 phase2r-arxivqa
+```
+
+- 输入：已编码的 ArxivQA `train_fit`/`train_dev` 页向量缓存；`dev_eval` id。不读 `test_eval`。
+- 输出：`artifacts/phase2r/arxivqa/dev_eval.json`
+- 检查：历史任务；2-R 已停止；不得重跑，不得读 test_eval。
+
+## phase2r-dude（已实现，方案 A，不是全融合）
+
+```powershell
+./tasks.ps1 phase2r-dude
+```
+
+- 输入：已编码的 DUDE `train_fit` 3330 页、`train_dev` 422 页。ColPali 与 bge 都必须非空。不读 `test_eval`。
+- 输出：`artifacts/phase2r/dude/ranker.pt`，以及 `runs/retrieval/mmdocir_phase2r_dude/<timestamp>/` 五件套。
+- 检查：历史任务；2-R 已停止；不得重跑，不得读 test_eval。
+
+## phase2r-arxivqa-dude（已实现，方案 A，不是全融合）
+
+```powershell
+./tasks.ps1 phase2r-arxivqa-dude
+```
+
+- 输入：已有缓存里的 ArxivQA 与 DUDE `train_fit`/`train_dev` 页。缺页即停，不新编页。不读 `test_eval`。
+- 输出：`artifacts/phase2r/arxivqa_dude/ranker.pt`，以及 `runs/retrieval/mmdocir_phase2r_arxivqa_dude/<timestamp>/` 五件套。
+- 检查：历史任务；2-R 已停止；不得重跑，不得读 test_eval。
+
+## phase2r-gap-audit（只读，不训练）
+
+```powershell
+uv run python scripts/audit_phase2r_gaps.py
+```
+
+- 输入：三份冻结 `ranker.pt`、`dev_eval_region_401.txt`、当前 `region_labels.parquet`。不读 `test_eval`。
+- 输出：`experiments/s2_splits/phase2r_gap_proof.json`、`phase2r_per_question.jsonl`、`phase2r_per_question_summary.json`。
+- 检查：401 题单等于现行 matched 题；六个 Area 汇总数与三份旧 `metrics.json` 逐位一致。不改权重。
+
+## phase2r-arxivqa-notext（无文本对照，不替换当前头）
+
+```powershell
+./tasks.ps1 phase2r-arxivqa-notext
+```
+
+- 输入：已有 ArxivQA 页缓存。缓存数量不是 8341 就停。不编新页。不读 `test_eval`。
+- 输出：`artifacts/phase2r/arxivqa_notext/ranker.pt`，以及 `runs/retrieval/mmdocir_phase2r_arxivqa_notext/<timestamp>/` 五件套。
+- 检查：历史任务；2-R 已停止；不得重跑，不得读 test_eval。

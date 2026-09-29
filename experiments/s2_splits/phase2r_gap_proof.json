@@ -1,0 +1,44 @@
+{
+  "denominator": {
+    "dev_eval_n": 415,
+    "matched_now": 401,
+    "unmapped_only_now": 14,
+    "no_layout_now": 0,
+    "listed_401": 401,
+    "listed_equals_matched_now": true,
+    "extra_in_list": [],
+    "missing_from_list": [],
+    "historical_391": "EXP-005 recount of an older region_labels.parquet; not a second rule",
+    "accepted_denominator": 401,
+    "rule": "a question enters the region denominator iff it has at least one matched gold"
+  },
+  "count_gap": {
+    "single_head_sum_fit": 11553,
+    "mixed_fit": 11575,
+    "fit_gap": 22,
+    "single_head_sum_dev": 1884,
+    "mixed_dev": 1891,
+    "dev_gap": 7,
+    "pools": {
+      "train_fit": {
+        "kept": 11575,
+        "by_domain": {
+          "ArxivQA": 9246,
+          "DUDE": 2329
+        },
+        "missing_page_refs": 0,
+        "missing_pages": []
+      },
+      "train_dev": {
+        "kept": 1891,
+        "by_domain": {
+          "ArxivQA": 1592,
+          "DUDE": 299
+        },
+        "missing_page_refs": 0,
+        "missing_pages": []
+      }
+    },
+    "note": "single-head counts are domain-script filters; mixed count is the cache-ready union"
+  }
+}

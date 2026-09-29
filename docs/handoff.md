@@ -1,10 +1,96 @@
-# 工作交接记录（变化的进度）
+#   工作交接记录（变化的进度）
 
 > 用途：新开 Cursor 窗口时手动 `@docs/handoff.md`，让新会话接上当前进度。
 > 约定：每次会话结束前更新本文件；本文件只写变化的进度，不写不变的规范（规范在 `.cursor/rules/` 与 `docs/RULES.md`）。
 > 配套必读：`docs/MIGRATION_BATCHES.md`（批次清单）→ `docs/00-index.md`（SSOT 导航）→ `docs/PAPER_SPEC.md`（小论文执行规范）。
 
-## 2026-09-26 新窗口接续（本节置顶，更早节只作考古）
+## 2026-09-28 新窗口接续（本节置顶。2026-09-27 及更早各节保留，只作考古，不要执行里面的旧下一步）
+
+- EXP-009 算涨。范围只写 ArxivQA 单域头，在多域 dev_eval 上这一次。记录：`experiments/2026-09-28-exp-009-phase2r-arxivqa.md`。
+- EXP-010 不算涨。范围只写 DUDE 单域头，在多域 dev_eval 上这一次。记录：`experiments/2026-09-28-exp-010-phase2r-dude.md`。
+- EXP-011 算涨。范围只写 ArxivQA+DUDE 混训头，在多域 dev_eval 上这一次。记录：`experiments/2026-09-28-exp-011-phase2r-arxivqa-dude.md`。Run：`runs/retrieval/mmdocir_phase2r_arxivqa_dude/20260928_151348/`。
+- 当前头是 `artifacts/phase2r/arxivqa_dude/ranker.pt`。不要改 w、b。不要覆盖 `artifacts/phase2r/arxivqa/ranker.pt` 和 `artifacts/phase2r/dude/ranker.pt`。
+- test_eval 未打分。不读 test_eval。不编新页。不建 fusion/。不改四池 id。不改 recall_layout。不改三轮 metrics.json。
+- 比较表已落盘：`experiments/2026-09-28-phase2r-comparison.md`。表用法已写明。
+- 401 是现行 matched 题单，不是第二套口径。391 是旧表重数。证明：`experiments/s2_splits/phase2r_gap_proof.json`。
+- 混训 11575 比 9241+2312 多 22。多的是编码前被“至少一框”筛掉、后来页缓存又齐的题。不是丢页，不删题。
+- 逐题重算与三份旧 Area 逐位一致：`experiments/s2_splits/phase2r_per_question_summary.json`。混训对 ArxivQA 有 398/401 题相同，不能写全面优于。
+- EXP-012 算涨。无文本对照。Run：`runs/retrieval/mmdocir_phase2r_arxivqa_notext/20260928_192725/`。不替换当前头。
+- EXP-013 geom:area Area@1 0.46726432578302896，Area@5 0.7726699451254816，算涨。
+- EXP-013 geom:center Area@1 0.29591024029859686，Area@5 0.6243802678852584，不算涨。页级仍是 371/415。
+- 文本特征不是 Area@1 涨分来源。当前头仍是 arxivqa_dude。
+- EXP-009 与 geom:area：Area@1 分数相同 399，Top-1 下标相同 397，Area@5 分数相同 394，Top-5 下标集合相同 383。文件：`experiments/s2_splits/phase2r_geom_area_match.json`。
+- 独立重放一致题数 401。文件：`experiments/s2_splits/phase2r_geom_area_replay.json`。当前头仍是 arxivqa_dude。
+- 397/401 的 Top-1 是最大框；平均 Area@1 相同来自 01393 与 01408 抵消。当前头仍是 arxivqa_dude。先不打 test_eval。
+- Area@1 结论已冻结。文件：`experiments/2026-09-28-phase2r-area-bias-frozen.md`。
+- 最佳候选框是最大框 202/401。最大框与 gold 的最大 IoU≥0.5 是 217/401。文件：`experiments/s2_splits/phase2r_max_box_gold_iou.json`。当前头仍是 arxivqa_dude。先不打 test_eval。
+- IoU≥0.5：fixed:iou_mass 130/401，EXP-009 214/401，geom:area 214/401。文件：`experiments/s2_splits/phase2r_iou_hit.json`。当前头仍是 arxivqa_dude。先不打 test_eval。
+- IoU 结论已冻结。文件：`experiments/2026-09-28-phase2r-iou-hit-frozen.md`。
+- 2-R 已停止。停止文件：`experiments/2026-09-28-phase2r-stop-frozen.md`。不打 test_eval。当前头仍是 arxivqa_dude。
+- Snappy 三行：max Area@1 0.08253863585117388、Area@5 0.4175999466104787、IoU 45/401；mean Area@1 0.0899524795180662、Area@5 0.4129556803468502、IoU 47/401；iou Area@1 0.22050796570772077、Area@5 0.6880808278948266、IoU 105/401。
+- 论文诊断草稿已落盘：`docs/paper-draft-notes.md`。当前头仍是 arxivqa_dude。2-R 保持停止。
+- 失败记录：`experiments/2026-09-29-phase2r-failure-note.md`。融合就绪：`experiments/2026-09-29-fusion-readiness.md`。2-R 保持停止；融合未批准。
+- 融合形状 smoke test 已完成。`./tasks.ps1 check` 被既有 ruff 错误阻塞，pytest 未执行。新增文件单独 ruff 通过。正式训练未批准。test_eval 未读取。
+
+## 2026-09-27 新窗口接续（已归档，不再更新）
+
+- 当前目标：一篇可投稿小论文。要有可训练参数、独立训练数据、dev/test、三指标同报、明确对照。见 `docs/PAPER_SPEC.md` 第 2.4/2.6 节。B1/B2 只作大论文诊断附录，不单独投稿。
+- 叙事页：`docs/paper-progress.md`。规范仍以 `docs/PAPER_SPEC.md` 为准。数字以 `experiments/registry.csv` 和各证明文件为准。
+- 已冻结、不要重做：泄漏剔除（`experiments/s2_exclusion/`）、四池划分（`experiments/2026-09-26-dev-test-split-frozen.md`）、2-R 设计（`experiments/2026-09-26-phase2r-design-frozen.md`）。
+- 训练仍禁止。不建 `fusion/`，不写 `train_fusion.py`，不用 evaluation gold 构造 `y(c)`，不用 `T_oracle≥0.5` 过滤 train，不读 `test_eval` 分数，不下载新模型。
+- 编码已批、尚未执行：只编 `train_fit` 的 ArxivQA（正负页都至少 1 框，9241 题 / 7112 页 / 外推 7.70 小时），写成 ColPali 页向量 `.pt`。这不是开训。其余域先不编。
+- 给下一个对话的执行令见本节末「交给下一个对话」。旧「下一步」代码块已过期，不要按它重跑 1A/1B/1C，也不要因为它禁止一切训练代码而删掉已有的 `rerank/box_ranker.py`。
+
+### 项目是什么
+
+LayoutPatch 要在 ColPali 的页面小块向量上，利用 OCR 框做页内证据定位。评测集页向量已经算好。现在要训的不是改写这 1024 个小块的大融合网，而是一个小打分层：冻结小块分 + 框几何 + 本机 `BAAI/bge-m3` 文本相似度。训练集没有框级标准答案，所以损失只能是「正页的框整体高于负页的框」。
+
+### 已完成（不要重做）
+
+
+| 步       | 结果                                                                                                          | 证据                                                |
+| ------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| 页级四基准   | ColPali R@5=0.8390，Hybrid 0.7883，BGE-M3 0.7750，BM25 0.7521                                                  | EXP-001/003/004/008                               |
+| 1B / 1C | 旧 IoU 口径 B=45、规则消解 0。现行主口径是官方 Area：Oracle@1=0.9136，fixed:iou_mass=0.2787，gap=0.63 只观察                       | EXP-007-S1，THR-B                                  |
+| 泄漏剔除    | 65319 题删 118，剩 65201。页图 md5 复用 0。剔除后与评测文档名、问句交集都是空                                                          | `experiments/s2_exclusion/exclusion_proof.json`   |
+| 四池      | seed=42，按文档切，不按域切。train_fit 57062/25577，train_dev 5400/713，dev_eval 415/93，test_eval 1243/220。跨文档正负页剔除 2739 | `experiments/s2_splits/split_proof.json`          |
+| 2-R 设计  | 方案 A：三组特征全开，K=4 只进损失，早停 2 轮，batch 32。Area 只在 gold 页全部候选框上重排                                                 | `experiments/2026-09-26-phase2r-design-frozen.md` |
+| 代码骨架    | `src/layoutpatch/retrieval/rerank/box_ranker.py`，`scripts/train_phase2r.py`。缓存不在就退出                         | 未开训                                               |
+| 测速      | 20 页 77.91 秒，每页 3.896 秒，显存 8.10 GiB。全量 68.24 小时不批                                                           | `experiments/2026-09-26-encode-probe.md`          |
+
+
+### 去重不是泄漏
+
+泄漏是训练和评测撞车，已经查完：24 个同名文档、38 句相同问句已剔除；页图像素指纹命中 0。编码去重是另一件事：同一页被很多题共用，按「文档名 + 页号」只算一次向量。文档名只去掉结尾 `.pdf`。旧的 `Path.stem` 会把 `1308.1101` 切成 `1308`，已作废。
+
+### 为什么只编 ArxivQA
+
+有框训练页共 58515，外推 63.33 小时，不批。按域拆开后，ArxivQA 是不超过 12 小时里页最多的整域：7112 页，7.70 小时。SlideVQA 12.92 小时、Wiki-ss 23.67 小时先不动。ArxivQA 编完并训出 `dev_eval` 结果后，涨了再补 DUDE、MP-DocVQA、SciQAG、TAT-DQA。不涨就停，不要把剩下的页也编完。划分不按域重切，已冻结的 id 不要改。
+
+### 交给下一个对话
+
+按顺序做完再停。中间不要改冻结文件，不要问下一步。
+
+```text
+1. 先读本置顶节 + docs/paper-progress.md + experiments/2026-09-26-phase2r-design-frozen.md。
+2. 只编码 train_fit 的 ArxivQA：正负页都至少 1 框的 9241 题、7112 个去重页。
+3. 用现有 ColPaliPageRetriever，模型名 vidore/colpali。权重已在本机缓存。vidore/colpali 是适配器，没有 config.json 是正常的，基座在 vidore/colpaligemma-3b-mix-448-base。不要下载。
+4. 写入 artifacts/colpali/mmdocir_train/。断点续跑。已有 .pt 不重写。不要写入评测缓存目录。
+5. 同时用本机 BAAI/bge-m3 编这些页的框文本向量，写入 artifacts/bge_m3/mmdocir_train_boxes/。空文本记 0，不删框。
+6. 编码完就停。不要启动正式训练，不要读 test_eval，不要建 fusion/。
+7. 回复只写：计划页数、实际写成的 .pt 数、耗时、失败页数。
+```
+
+停机条件：要下载新模型；要读 `test_eval`；要改四池 id；要改 `recall_layout`；显存规划超过 12GB。
+
+### 禁止
+
+- 不把全集 0.2787 当成 `dev_eval` 子集分数。对照必须在同一 gold 页、同一子集上重算。
+- 不把 `bool(layout_mapping)` 当区域分母。`dev_eval` 区域分母按 EXP-005 matched 口径是 391，不是 415。
+- 不把页弱监督不涨改成用 evaluation gold 补标签。失败归因写「页弱监督迁不到框排序」。
+- 成功线以后才用，本轮编码不评：Area@1 涨、Area@5 涨、页级 R@5 变化在 ±0.3 个百分点以内。
+
+## 2026-09-26 新窗口接续（已归档，不再更新）
 
 - 当前目标不变：完成一篇标准小论文。B1/B2 只作大论文诊断附录，不单独投稿。
 - S2 审计已完成（`experiments/2026-09-24-s2-train-audit.md`）。文本泄漏剔除已落盘，不是开训许可。
@@ -37,16 +123,12 @@
 - 实验处理约定（新窗口照做）：一次正式 run 一篇记录页（11 段模板 `experiments/templates/experiment-record.md`）+ registry 一行 + commit；`artifacts/`、`runs/`、`data/` 不进 git（JSON 产物只记路径）；`./tasks.ps1 check` 全绿才入库；S2 未完成前不建 `fusion/`、不写 `train_fusion.py`（S1 已关，旧“新阈值未冻前”禁令已转为 S2 禁令）；训练须用户+导师双确认；旧仓 `mmdoc-evidence-rag` 只读。
 - 下一步（按序，以 2026-09-24 置顶节为准，旧 S1→S4 作废）：S2 获 train 数据并过泄漏 5 项 + 标签审计 → S3 2-R 首跑（2 周窗口，dev 门槛：页级 R@5 ±0.3pp + Area@1/5 同向涨；ColMate-TopKSim 只作 2-R loss 变体）→ 过则议全融合，不过则 B1/B2 只作大论文章节、小论文判失败 → S4 B1 缺格最后补。S2 未完成，禁令维持。
 
-
-
 ## 一句话总览（给新窗口的第一段）
 
 - 项目：LayoutPatch（布局约束的文档侧 patch 融合），旧仓库 `mmdoc-evidence-rag` 迁移而来，保持只读，永不修改。
 - 目标：ColPali 页级已达 R@5=0.8390，在此之上长出页内区域定位能力，约束见 `docs/PAPER_SPEC.md` 第 5 节（单次编码/不裁剪/MaxSim 接口不动）。
 - 关键结论速记：EXP-001 复验通过（R@5=0.8390 逐位一致）→ 叠图曾因"页号差一"全错，已修（`c7a817c`）→ 机器审计 Gate 通过（越界 1/170338）→ EXP-002 A/B/C/D 首次诊断：B 类仅 3.24%（45/1390），Top-K 内 C=0 为定义性结果（区域命中要求页命中，不许写成发现） → EXP-003 BGE-M3（R@5=0.7750）/ EXP-004 Hybrid（R@5=0.7883）补齐第 7.2 节四基准 → EXP-005 关门：matched 1598=1343A+255D含2 both归A（`mmdocir_00036/00491`）；unmapped_only 60=45B+13D+2A纯unmapped命中（`mmdocir_00520/00672`）；47=45B+2A；可寻址 B 双分母均为 0.0（离 10% 线低 10pp）；oracle 页命中内 96.76%/全量 96.50%；自匹配 5 题 IoU 全 1.0（行级抽样已避开 both 编号；候选召回上限非排序能力；B 是 oracle 未中 58 题真子集） → EXP-006 实测 1C：1343A Top-1 最高 0.3187，45B 固定五档消解全 0.0，不进 Phase 2 转收缩 → 关门加固（`bd24fcb/c29b2ff/5356ba9/6b17287/88334aa/ded49bf/4bbc40c/447460f`）：registry EXP-006 回填 query_count=1658（region 格为 Top-1 口径 0.3187，与 0.8112 不可比）；`pyproject.toml` 显式声明 `matplotlib`；`docs/figures/` 白名单两张代表压缩图（`case_A_success.jpg` 114920B + `case_M_middle.jpg` 71830B，SVG 已删）；Text 双轨同一 picks 方法分 + 探针清洗 + 决策包三问摆数已定稿。
 - 当前位置：`docs/MIGRATION_BATCHES.md` 批次 5 已跑完并关门加固完（Phase 1C + Text 双轨 + B1/B2/决策包，registry 为 EXP-006）；`./tasks.ps1 check` 44 绿，干净树 `447460f`；下一步是与导师按 11.2/11.3 共判收缩（B1/B2），agent 只摆数不选择。
-
-
 
 ## 当前 Phase 与 Gate 状态
 
@@ -67,8 +149,6 @@
 阻塞问题：无（旧仓库保持只读，不做修改；GPU 当前空闲）
 ```
 
-
-
 ## 最近 runs（本地产物，不进 git）
 
 
@@ -80,8 +160,6 @@
 | EXP-004 | `runs/retrieval/mmdocir_hybrid_page/20260917_115238`                                                                                                                          | Phase 1A Hybrid RRF k=60（CPU 约 13.5 分钟）：R@5=0.7883 高于 BM25/BGE 单路，低于 ColPali                                                                                                      | 是（融合对照基线）                |
 | EXP-005 | `artifacts/diagnosis/mmdocir_evaluation/crosstab.json` + `addressability.json` + `oracle.json` + `strat_*_hist.png/json` + `overlays_cases/`（20）+ `overlays_cases_mid/`（10）   | Phase 1B 关门：matched 1598=1343A+255D含2 both归A；unmapped_only 60=45B+13D+2A纯unmapped命中；47=45B+2A；可寻址 B 双分母 0.0（离 10% 线低 10pp）；oracle 页命中内 96.76%/全量 96.50%；自匹配 5 题全 1.0（行级抽样避开 both） | 是（第 7.3 节关门证据；30 张待抽查）   |
 | EXP-006 | `artifacts/baselines/mmdocir_1c/phase1c.json`（全量 1343A/45B，约 225 秒）+ `phase1c_smoke.json`（冒烟 10A/0B）+ `phase1c_picks.json`（1388 题逐题五档 picks）+ `phase1c_probes.json`（20 题清洗探针） | Phase 1C 实测：A Top-1 最高 0.3187（fixed:iou_mass）；B 固定五档消解全 0.0（group 碰框虚高不计）；不进 Phase 2 转收缩                                                                                          | 是（第 7.4 节决策材料；B 分母严格 45） |
-
-
 
 
 ## 关门加固产出（2026-09-18 全部入库，新窗口直接引用）
@@ -98,8 +176,6 @@
 | figures      | `docs/figures/case_A_success.jpg`（114920B）+ `case_M_middle.jpg`（71830B）              | 两张代表压缩图已入库（长边 800px quality65）；SVG 框架图已删（待收缩方向确定后按 B1/B2 重画）；白名单见 `.gitignore`                                                                                                                                                                                                                                                                                         |
 
 
-
-
 ## 配置与分支状态
 
 - 当前分支：`master`，最新 `447460f docs(decision):决策包三问摆数更新禁令重申`；工作区干净（`git status --short` 空），`docs/figures/` 两张代表图已入库（SVG 已删，白名单见 `.gitignore` 末尾两行 `!docs/figures/case_A_success.jpg` / `!docs/figures/case_M_middle.jpg`）。
@@ -108,16 +184,12 @@
 - 最近 commits（关门链）：`447460f`（决策包三问摆数）← `4bbc40c`（page_size 字段冻结指引）← `ded49bf`（超大框降级猜测/page_size 三用途/行级抽样注记）← `88334aa`（Text 分母拆档+恒空声明+B1 探针解释）← `6b17287`（术语终结+Text 方法分+清洗探针）← `5356ba9`（figures 入库+术语修正+B1B2 决策包）← `c29b2ff`（两张代表图记账）← `bd24fcb`（EXP-006 回填 1658+Top-1 口径+B1B2 草稿）← `dbde18f`（handoff 同步）← `7312bb8`（EXP-003~006 登记）。
 - 质量门：`./tasks.ps1 check` 44 绿（ruff + 44 pytest，2026-09-18 最新一轮）。
 
-
-
 ## 实验讲解规则（新窗口必读，docs/RULES.md 第 0.2 节）
 
 - 只要回复涉及实验，必须按小白模式展开：白话目标 → 输入是什么 → 处理逻辑 → 输出落在哪 → 怎么验证对错 → 失败会怎样 → 对应哪个文档哪一节。
 - 首次出现缩写必须写全称出处（如"迁移批次清单 `docs/MIGRATION_BATCHES.md` 批次 4，对应小论文执行规范 `docs/PAPER_SPEC.md` 第 7.3 节 Phase 1B"），之后才可用"批次 4/Phase 1B"。
 - 每次回复的操作步骤后另附「本轮指令说明」：逐条贴本轮实际命令原文 + 一句话作用；未跑命令写"本轮未执行任何命令"。
 - 实验五问模板（Phase 1A 四基准 / 坐标审计 / A/B/C/D / 1C 三基线 / Phase 2 训练动机）见 `docs/02-commands.md` 各节"判据"行。
-
-
 
 ## 数据链地图（新窗口查数用）
 
@@ -136,8 +208,6 @@ runs/retrieval/mmdocir_bge_m3_page/20260917_113452/  EXP-003 五件套（R@5=0.7
 runs/retrieval/mmdocir_hybrid_page/20260917_115238/  EXP-004 五件套（R@5=0.7883）
 ```
 
-
-
 ## 未解决问题
 
 1. ~~Phase 1A 四基准缺 BGE-M3 dense 与 Hybrid~~已关（2026-09-17，EXP-003/EXP-004）：四基准同表为 ColPali R@5=0.8390 / Hybrid R@5=0.7883 / BGE-M3 R@5=0.7750 / BM25 R@5=0.7521（同 query 集 1658、同文档内范围、同 Top-20、同脚本）。
@@ -145,8 +215,6 @@ runs/retrieval/mmdocir_hybrid_page/20260917_115238/  EXP-004 五件套（R@5=0.7
 3. 坐标审计判读口径：已固定为"框围内容、不看网格"，用户已按此口径确认 p69 通过；其余 19 张待抽查（建议表格页优先看 `NYSE_IBM_2020_p126`、`ACTIVISIONBLIZZARD_2019_10K_p113`）。EXP-005 的 30 张案例图（`overlays_cases/` 20 + `overlays_cases_mid/` 10，黄粗框=gold）待用户按同口径抽查，重点看 `M_mmdocir_00522`（IoU 0.4036、仅 2 候选）黄框内是否有文字但框偏小/偏大。
 4. 134 页无官方布局节点（占 0.66%）：属官方标注稀疏，页图与缓存正常，检索可用；区域审计分母天然排除，不影响结论。
 5. 1C 已跑完（EXP-006 实测）：1343A Top-1 最高 0.3187（fixed:iou_mass），Snappy-iou 0.2621；45B Snappy/固定五档消解全 0.0（group 碰框虚高不计）；B 占比 3.24% 且可寻址 0 → 不进 Phase 2，转 11.3 收缩（B1 效率/B2 失败学）。禁令：未过 1C Gate 不建 `fusion/` 子包、不写 `train_fusion.py`。
-
-
 
 ## 下一步（给新会话的指令，按序执行）
 
@@ -157,8 +225,6 @@ runs/retrieval/mmdocir_hybrid_page/20260917_115238/  EXP-004 五件套（R@5=0.7
 4. ~~批次 5（Phase 1C）~~已跑完（EXP-006，2026-09-17）：`./tasks.ps1 phase1c-smoke`（冒烟 10A/0B 约 23 秒）+ `./tasks.ps1 phase1c-baselines`（全量 1343A/45B 约 225 秒）；新建 propagation.py / region_pooling.py / region_grouping.py + run_phase1c.py + test_phase1c.py；决策材料交导师按 11.2/11.3 判收缩（B1/B2）。
 5. 批次 6（Phase 2）禁令重申：未过 1C Gate 不得新建 fusion/ 子包与训练代码、不写 train_fusion.py；训练前须用户+导师双确认。
 ```
-
-
 
 ## 更新记录
 

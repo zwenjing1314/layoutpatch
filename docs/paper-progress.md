@@ -1,13 +1,18 @@
 # 小论文进度（叙事，不是规范）
 
-> 状态：working。2026-09-26 写。规范以 `docs/PAPER_SPEC.md` 为准，数字以 `experiments/registry.csv` 和各证明文件为准。本页只帮新窗口看懂做到哪、下一步是什么。
+> 状态：working。2026-09-28 更新。规范以 `docs/PAPER_SPEC.md` 为准，数字以 `experiments/registry.csv` 和各证明文件为准。
 > 交接用 `docs/handoff.md`。本页不替代它。
+> 2-R 已停止。停止文件：`experiments/2026-09-28-phase2r-stop-frozen.md`。不再训练，不再编码，不读 test_eval。
 
 ## 现在在哪
 
-设计已冻结，训练没开始。下一步是把 `train_fit` 里 ArxivQA 的页面用 ColPali 编成视觉向量文件（`.pt`）。编完才能训那个小打分层。
+EXP-009 算涨。EXP-010 不算涨。EXP-011 算涨。当前头是 `artifacts/phase2r/arxivqa_dude/ranker.pt`。test_eval 未打分。
 
-还没做：正式编码、正式训练、`dev_eval` 一次判定、`test_eval` 打分。
+EXP-011：训练 11575，早停 1891，第 5 轮停，最好第 3 轮。同一 401 题 Area@1 0.46944212489134424，对照 0.28594452702337386；Area@5 0.7674845426972748，对照 0.7441786161356058。页级 371/415，差值 0。范围只写 ArxivQA+DUDE 混训头，在多域 dev_eval 上这一次。和 EXP-009 同表：混训 Area@1 高 0.0022，Area@5 低 0.0031。不是混训全面更好。
+
+数字出处：`runs/retrieval/mmdocir_phase2r_arxivqa_dude/20260928_151348/metrics.json`。记录页：`experiments/2026-09-28-exp-011-phase2r-arxivqa-dude.md`。
+
+比较表已落盘。分域结果已落盘。test_eval 未打分。表用法已写明。
 
 ## 去重是什么，不是什么
 
@@ -30,10 +35,10 @@
 5. 代码骨架：`src/layoutpatch/retrieval/rerank/box_ranker.py`、`scripts/train_phase2r.py`。缓存不在就退出，不开训。
 6. 20 页测速：每页 3.896 秒，显存 8.10 GiB。全量 63064 页要 68 小时，不批。`experiments/2026-09-26-encode-probe.md`。
 
-## 已批、还没执行的下一步
+## 已停止
 
-只编 `train_fit` 的 ArxivQA，正页和负页都至少有 1 个框：9241 题，7112 个去重页，外推 7.70 小时。
+2-R 已停止。停止文件：`experiments/2026-09-28-phase2r-stop-frozen.md`。不再训练，不再编码。
 
-产物应写入 `artifacts/colpali/mmdocir_train/`，断点续跑，已有 `.pt` 不重写。不要编 Wiki-ss（23.67 小时）和 SlideVQA（12.92 小时）。不要读 `test_eval`。不要下载新模型。
+## 2026-09-27 补充
 
-编码完成并另批之后，才训练小层，再在 `dev_eval` 上判一次：Area@1 涨、Area@5 涨、页级 R@5 变化在 ±0.3 个百分点以内。对照是同一子集上重算的 `fixed:iou_mass`，不是全集 0.2787。
+执行令已写进 `docs/handoff.md` 置顶节。本页仍是叙事，不替代那一节。划分不按域重切。其余域是否编码，等 ArxivQA 的 `dev_eval` 结果，不预先排全量。
