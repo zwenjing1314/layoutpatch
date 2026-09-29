@@ -38,6 +38,10 @@
 - ArxivQA 融合 dev Gate 未通过；失败审计完成；正式扩展训练未批准；test_eval 未读取。记录：`experiments/2026-09-29-fusion-failure-audit.md`。结论 C：接线正确，页级弱监督未迁移到区域定位。未训练 fusion = fixed:iou_mass。不继续训练。
 - 当前 fusion 已确认是弱监督迁移失败；替代网络路线审计完成；未批准新训练；test_eval 未读取。记录：`experiments/2026-09-29-fusion-route-decision.md`。推荐重定方法（无框级标签）；query 条件 MIL 仅备选；监督排序当前不可行。
 - 现有页级弱监督已确认不足；方法型论文路线审计完成；新训练未批准；test_eval 未读取。记录：`experiments/2026-09-29-method-route-decision.md`。唯一推荐：先在 train_fit 补少量独立框标注，再做面积去偏排序；不同时开 MIL。本地提交 `f946a1d` 未推远程。
+- 独立区域标注方案已落盘，不是开标许可，不是开训许可。协议：`experiments/2026-09-29-region-annotation-plan.md`。待标清单 400 题全是 `pending`：`experiments/region_annotation/arxivqa_train_fit_manifest.jsonl`。空模板：`label_schema.json` / `label_template.jsonl`。未开始人工标注。未训练。未读 test_eval。
+- 40 题区域标注 pilot 材料已准备；尚未完成人工标注；未训练；test_eval 未读取。清单：`experiments/region_annotation/arxivqa_pilot_manifest.jsonl`。材料：`experiments/region_annotation/pilot_materials/`。说明：`experiments/region_annotation/annotation_protocol_v0.md`。记录：`experiments/2026-09-29-region-annotation-pilot.md`。
+- 40 题本地标注流程已准备并做过格式检查。独立待填文件：`experiments/region_annotation/labels_annotator_A.jsonl`。工作簿：`experiments/region_annotation/pilot_materials/workbook.html`。40 题仍全部 `pending`。未开始人工标注。未训练。test_eval 未读取。
+- 40 题 HTML 标注工具已可给 A/B 两位初学者分开使用：复选框、cover_ok、无合适候选、跨框、备注、导入/导出 JSONL。浏览器不写回仓库。协议仍是 `region-ann-v0`。不确定保持 pending。未训练。test_eval 未读取。
 
 ## 2026-09-27 新窗口接续（已归档，不再更新）
 

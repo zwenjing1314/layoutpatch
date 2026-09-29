@@ -1,0 +1,31 @@
+{
+  "n_pilot": 40,
+  "n_label_rows": 40,
+  "missing_fields": [],
+  "duplicate_sample_ids": [],
+  "illegal_box_ids": [],
+  "protocol_errors": [],
+  "status_errors": [],
+  "type_errors": [],
+  "conflict_errors": [],
+  "extra_sample_ids": [],
+  "missing_sample_ids": [],
+  "pending": 40,
+  "labeled": 0,
+  "skipped": 0,
+  "unlabeled": 40,
+  "ok": true,
+  "test_eval_ids_opened": false,
+  "evaluation_gold_used": false,
+  "auto_labels_written": false,
+  "training_started": false,
+  "images": {
+    "n_questions": 40,
+    "png_opened": 80,
+    "png_expected": 80,
+    "failures": [],
+    "complete": true
+  },
+  "labels_path": "C:\\Users\\WenJing\\Documents\\WorkTransfer\\layoutpatch\\experiments\\region_annotation\\labels_annotator_A.jsonl",
+  "created_utc": "2026-09-29T13:16:13Z"
+}

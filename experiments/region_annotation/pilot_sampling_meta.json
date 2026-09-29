@@ -1,0 +1,85 @@
+{
+  "protocol_version": "region-ann-v0",
+  "pilot_seed": 42,
+  "created_utc": "2026-09-29T10:03:11Z",
+  "source_manifest": "experiments/region_annotation/arxivqa_train_fit_manifest.jsonl",
+  "n_source": 400,
+  "n_pilot": 40,
+  "domain": "ArxivQA",
+  "pool": "train_fit",
+  "alloc": {
+    "image|low|high": 4,
+    "image|low|mid": 2,
+    "text|low|low": 1,
+    "text|mid|mid": 5,
+    "text|high|mid": 4,
+    "text|mid|high": 3,
+    "text|low|high": 4,
+    "text|high|low": 9,
+    "image|low|low": 1,
+    "text|high|high": 1,
+    "text|low|mid": 3,
+    "text|mid|low": 3,
+    "other|low|mid": 0,
+    "other|low|high": 0,
+    "image|mid|mid": 0,
+    "other|high|mid": 0
+  },
+  "stratum_counts": {
+    "text|mid|mid": 5,
+    "text|high|low": 9,
+    "text|mid|high": 3,
+    "text|high|mid": 4,
+    "text|low|high": 4,
+    "image|low|high": 4,
+    "text|low|mid": 3,
+    "text|mid|low": 3,
+    "image|low|low": 1,
+    "text|low|low": 1,
+    "image|low|mid": 2,
+    "text|high|high": 1
+  },
+  "layout_bin": {
+    "text": 33,
+    "image": 7
+  },
+  "nbox_bin": {
+    "mid": 11,
+    "high": 14,
+    "low": 15
+  },
+  "area_bin": {
+    "mid": 14,
+    "low": 14,
+    "high": 12
+  },
+  "ann_split": {
+    "annot_fit": 33,
+    "annot_val": 7
+  },
+  "unique_pos_docs": 39,
+  "unique_pos_pages": 40,
+  "checks": {
+    "n_pilot": 40,
+    "every_page_image": true,
+    "every_candidate": true,
+    "box_id_maps_to_layouts": true,
+    "coord_issues": [],
+    "duplicate_or_empty": [],
+    "missing_page_image": [],
+    "missing_candidates": [],
+    "layout_mismatch": [],
+    "missing_page_cache": [],
+    "chosen_box_ids_filled": 0,
+    "no_candidate_filled": 0,
+    "eval313_doc_overlap": 0,
+    "train_dev_line_overlap": 0,
+    "test_eval_ids_opened": false,
+    "evaluation_gold_used": false,
+    "auto_labels_written": false
+  },
+  "test_eval_ids_opened": false,
+  "evaluation_gold_used": false,
+  "human_annotation_started": false,
+  "training_started": false
+}

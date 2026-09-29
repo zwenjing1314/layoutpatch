@@ -1,0 +1,68 @@
+{
+  "sample_id": "ann-0103",
+  "query_id": 2953,
+  "line_index": 2953,
+  "pos_doc": "2203.02438",
+  "pos_page": 4,
+  "page_w": 612.0,
+  "page_h": 792.0,
+  "candidates": [
+    {
+      "box_id": 0,
+      "bbox": [
+        70.0,
+        97.0,
+        443.0,
+        422.0
+      ],
+      "type": "image",
+      "rel_area": 0.25010109262560243
+    },
+    {
+      "box_id": 1,
+      "bbox": [
+        71.0,
+        458.4830017089844,
+        442.0,
+        504.31158447265625
+      ],
+      "type": "text",
+      "rel_area": 0.03507791189122075
+    },
+    {
+      "box_id": 2,
+      "bbox": [
+        71.0,
+        528.0,
+        442.0,
+        561.95458984375
+      ],
+      "type": "text",
+      "rel_area": 0.02598937254908408
+    },
+    {
+      "box_id": 3,
+      "bbox": [
+        116.0,
+        583.0,
+        422.0,
+        637.0
+      ],
+      "type": "interline_equation",
+      "rel_area": 0.03409090909090909
+    },
+    {
+      "box_id": 4,
+      "bbox": [
+        71.0,
+        660.0,
+        442.0,
+        695.0
+      ],
+      "type": "text",
+      "rel_area": 0.026789545784643824
+    }
+  ],
+  "chosen_box_ids": [],
+  "note": "Human must pick boxes. Do not auto-fill."
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LayoutPatch independent region annotation (empty template, no labels)",
+  "protocol_version": "region-ann-v0",
+  "description": "Human labels are filled later. This schema must not be populated from evaluation gold.",
+  "type": "object",
+  "required": [
+    "sample_id",
+    "annotator_id",
+    "protocol_version",
+    "chosen_box_ids",
+    "cover_ok",
+    "no_candidate",
+    "label_status"
+  ],
+  "properties": {
+    "sample_id": {
+      "type": "string"
+    },
+    "annotator_id": {
+      "type": "string",
+      "description": "Stable annotator handle, not a personal account secret"
+    },
+    "protocol_version": {
+      "type": "string",
+      "const": "region-ann-v0"
+    },
+    "chosen_box_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "description": "Candidate box_id values on the positive page. Empty until labeled."
+    },
+    "cover_levels": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "full",
+          "partial"
+        ]
+      },
+      "description": "Optional per selected box_id. Unselected boxes are implicit none."
+    },
+    "cover_ok": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "no_candidate": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "cross_box": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "True if evidence spans multiple selected boxes"
+    },
+    "note": {
+      "type": "string"
+    },
+    "labeled_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "label_status": {
+      "enum": [
+        "pending",
+        "labeled",
+        "skipped",
+        "adjudicated"
+      ]
+    }
+  }
+}

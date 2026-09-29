@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot")]
   [string]$Task = "help"
 )
 
@@ -90,6 +90,7 @@ switch ($Task) {
     Write-Host "  phase2r-dude          Phase 2-R DUDE train + one dev_eval judgment"
     Write-Host "  phase2r-arxivqa-notext  ArxivQA no-text control; does not replace the current head"
     Write-Host "  fusion-arxivqa         Phase 2 ArxivQA fusion train + one dev_eval judgment"
+    Write-Host "  region-ann-pilot       40-question local annotation workbook + format check; not training"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -202,5 +203,15 @@ switch ($Task) {
     Write-Host "RUN: uv run python scripts/train_fusion_arxivqa.py"
     & uv run python scripts/train_fusion_arxivqa.py
     if ($LASTEXITCODE -ne 0) { throw "fusion arxivqa failed" }
+  }
+  "region-ann-pilot" {
+    Show-ExpHeader -ExpId "REGION-ANN-PILOT" -Config "scripts/region_ann_pilot.py" `
+      -Dataset "ArxivQA train_fit 40-question annotation materials" -Output "experiments/region_annotation/pilot_materials/workbook.html"
+    Write-Host "RUN: uv run python scripts/region_ann_pilot.py prepare"
+    & uv run python scripts/region_ann_pilot.py prepare
+    if ($LASTEXITCODE -ne 0) { throw "region-ann-pilot prepare failed" }
+    Write-Host "RUN: uv run python scripts/region_ann_pilot.py check --annotator A"
+    & uv run python scripts/region_ann_pilot.py check --annotator A
+    if ($LASTEXITCODE -ne 0) { throw "region-ann-pilot check failed" }
   }
 }

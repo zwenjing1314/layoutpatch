@@ -1,0 +1,112 @@
+{
+  "protocol_version": "region-ann-v0",
+  "sampling_seed": 42,
+  "created_utc": "2026-09-29T09:19:33Z",
+  "source_pool": "ArxivQA train_fit only; positive and negative pages both cached; n_boxes>=1",
+  "eligible_questions_cached": 9246,
+  "unique_pos_pages": 4054,
+  "sampled_questions": 400,
+  "sampled_unique_pos_pages": 400,
+  "sampled_unique_pos_docs": 356,
+  "one_question_per_pos_page": true,
+  "nbox_cuts": {
+    "p33": 5,
+    "p66": 9,
+    "rule": "low<=p33, high>=p66, else mid"
+  },
+  "area_cuts": {
+    "p33": 0.17254954011640838,
+    "p66": 0.26097577077969236,
+    "rule": "low<=p33, high>=p66, else mid"
+  },
+  "layout_bins": "image if dominant=image; other if table/title/interline_equation; else text",
+  "ann_split": {
+    "annot_fit": 320,
+    "annot_val": 80
+  },
+  "ann_split_docs": {
+    "annot_fit": 285,
+    "annot_val": 71
+  },
+  "double_annotate": 80,
+  "double_by_split": {
+    "annot_fit": 66,
+    "annot_val": 14
+  },
+  "leak_checks": {
+    "sampled_line_index_subset_of_arxivqa_train_fit": true,
+    "sampled_line_index_vs_arxivqa_train_dev": 0,
+    "sampled_full_doc_names_vs_eval313": 0,
+    "train_fit_ids_arxivqa_doc_names_are_truncated_stems": true,
+    "test_eval_ids_opened": false,
+    "evaluation_gold_used": false
+  },
+  "stratum_sampled": {
+    "image|low|high": 44,
+    "image|low|low": 7,
+    "image|low|mid": 15,
+    "image|mid|mid": 1,
+    "other|high|mid": 1,
+    "other|low|high": 2,
+    "other|low|mid": 1,
+    "text|high|high": 14,
+    "text|high|low": 86,
+    "text|high|mid": 42,
+    "text|low|high": 43,
+    "text|low|low": 10,
+    "text|low|mid": 28,
+    "text|mid|high": 31,
+    "text|mid|low": 28,
+    "text|mid|mid": 47
+  },
+  "stratum_pool": {
+    "image|high|low": 3,
+    "image|low|high": 441,
+    "image|low|low": 73,
+    "image|low|mid": 148,
+    "image|mid|high": 1,
+    "image|mid|low": 4,
+    "image|mid|mid": 6,
+    "other|high|high": 2,
+    "other|high|low": 2,
+    "other|high|mid": 5,
+    "other|low|high": 19,
+    "other|low|low": 1,
+    "other|low|mid": 12,
+    "other|mid|low": 2,
+    "text|high|high": 141,
+    "text|high|low": 874,
+    "text|high|mid": 420,
+    "text|low|high": 435,
+    "text|low|low": 105,
+    "text|low|mid": 279,
+    "text|mid|high": 313,
+    "text|mid|low": 288,
+    "text|mid|mid": 480
+  },
+  "alloc": {
+    "image|high|low": 0,
+    "image|low|high": 44,
+    "image|low|low": 7,
+    "image|low|mid": 15,
+    "image|mid|high": 0,
+    "image|mid|low": 0,
+    "image|mid|mid": 1,
+    "other|high|high": 0,
+    "other|high|low": 0,
+    "other|high|mid": 1,
+    "other|low|high": 2,
+    "other|low|low": 0,
+    "other|low|mid": 1,
+    "other|mid|low": 0,
+    "text|high|high": 14,
+    "text|high|low": 86,
+    "text|high|mid": 42,
+    "text|low|high": 43,
+    "text|low|low": 10,
+    "text|low|mid": 28,
+    "text|mid|high": 31,
+    "text|mid|low": 28,
+    "text|mid|mid": 47
+  }
+}

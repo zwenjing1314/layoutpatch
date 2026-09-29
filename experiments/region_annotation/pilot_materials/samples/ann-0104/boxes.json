@@ -1,0 +1,24 @@
+{
+  "sample_id": "ann-0104",
+  "query_id": 2997,
+  "line_index": 2997,
+  "pos_doc": "1907.08801",
+  "pos_page": 2,
+  "page_w": 595.2760009765625,
+  "page_h": 841.8900146484375,
+  "candidates": [
+    {
+      "box_id": 0,
+      "bbox": [
+        55.0,
+        176.0,
+        541.0,
+        659.0
+      ],
+      "type": "image",
+      "rel_area": 0.46839221425167654
+    }
+  ],
+  "chosen_box_ids": [],
+  "note": "Human must pick boxes. Do not auto-fill."
+}

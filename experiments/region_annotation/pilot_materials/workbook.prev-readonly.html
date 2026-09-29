@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang='zh-CN'><head><meta charset='utf-8'>
+<title>ArxivQA region-ann-v0 pilot workbook</title>
+<style>
+body{font-family:sans-serif;max-width:1100px;margin:24px auto;line-height:1.4}
+img{max-width:100%;height:auto;border:1px solid #ccc}
+table{border-collapse:collapse;margin:8px 0 24px}
+td,th{border:1px solid #bbb;padding:4px 8px;font-size:14px}
+.warn{background:#fff3cd;padding:12px}
+section{border-top:2px solid #333;padding-top:16px;margin-top:24px}
+</style></head><body>
+<h1>40 题本地标注工作簿（region-ann-v0）</h1>
+<p class='warn'>不要自动填框。不要打开 dev_eval / test_eval。不要新画框。
+记录写到 <code>experiments/region_annotation/labels_annotator_A.jsonl</code>，
+不要改 template 或 manifest。叠图上的数字就是 box_id。</p>
+<p>协议：<code>experiments/region_annotation/annotation_protocol_v0.md</code></p>
+<ol>
+<li>打开正页 <code>page.png</code> 和叠图 <code>overlay.png</code>。</li>
+<li>把承载答案的候选框 id 写入 <code>chosen_box_ids</code>。</li>
+<li>跨框则全部选择并设 <code>cross_box=true</code>。</li>
+<li>没有任何候选能承载答案时设 <code>no_candidate=true</code>，<code>chosen_box_ids=[]</code>，<code>cover_ok=false</code>，<code>label_status=skipped</code>。</li>
+<li>不确定只写 <code>remark</code>，不要猜。</li>
+<li>填完一题后把 <code>label_status</code> 改为 <code>labeled</code> 或 <code>skipped</code>，并写 UTC <code>labeled_at</code>。</li>
+</ol>
+<section id='ann-0004'>
+<h2>1/40 ann-0004</h2>
+<ul>
+<li>query_id: <code>58</code></li>
+<li>line_index: <code>58</code></li>
+<li>pos_doc: <code>1004.2704</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：What is the likely physical phenomenon being represented by this vector field?</p>
+<p>正页</p><p><img src='samples/ann-0004/page.png' alt='ann-0004 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0004/overlay.png' alt='ann-0004 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>53.000</td><td>54.565</td><td>299.000</td><td>250.065</td></tr>
+<tr><td>1</td><td>text</td><td>317.000</td><td>88.118</td><td>562.000</td><td>132.452</td></tr>
+<tr><td>2</td><td>text</td><td>317.000</td><td>141.869</td><td>562.000</td><td>163.289</td></tr>
+<tr><td>3</td><td>image</td><td>315.000</td><td>161.250</td><td>559.000</td><td>232.000</td></tr>
+<tr><td>4</td><td>image</td><td>54.000</td><td>247.250</td><td>564.000</td><td>493.750</td></tr>
+<tr><td>5</td><td>text</td><td>54.000</td><td>519.725</td><td>299.000</td><td>591.457</td></tr>
+<tr><td>6</td><td>text</td><td>317.000</td><td>493.822</td><td>562.000</td><td>595.442</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0014'>
+<h2>2/40 ann-0014</h2>
+<ul>
+<li>query_id: <code>280</code></li>
+<li>line_index: <code>280</code></li>
+<li>pos_doc: <code>1410.8530</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：What process is illustrated as occurring between the capture layers and the target layer in the figure?</p>
+<p>正页</p><p><img src='samples/ann-0014/page.png' alt='ann-0014 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0014/overlay.png' alt='ann-0014 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>52.000</td><td>57.000</td><td>300.000</td><td>287.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>300.547</td><td>299.000</td><td>482.365</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>484.223</td><td>299.000</td><td>585.843</td></tr>
+<tr><td>3</td><td>text</td><td>53.000</td><td>587.701</td><td>299.000</td><td>689.320</td></tr>
+<tr><td>4</td><td>text</td><td>53.000</td><td>691.178</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>5</td><td>text</td><td>316.000</td><td>54.000</td><td>562.000</td><td>167.641</td></tr>
+<tr><td>6</td><td>text</td><td>316.000</td><td>171.330</td><td>562.000</td><td>318.776</td></tr>
+<tr><td>7</td><td>text</td><td>316.000</td><td>322.355</td><td>562.000</td><td>481.369</td></tr>
+<tr><td>8</td><td>text</td><td>316.000</td><td>485.059</td><td>562.000</td><td>598.134</td></tr>
+<tr><td>9</td><td>text</td><td>316.000</td><td>601.823</td><td>562.000</td><td>669.070</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0018'>
+<h2>3/40 ann-0018</h2>
+<ul>
+<li>query_id: <code>359</code></li>
+<li>line_index: <code>359</code></li>
+<li>pos_doc: <code>0803.4508</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：What does the descending part of the curve in Figure (A) most likely represent?</p>
+<p>正页</p><p><img src='samples/ann-0018/page.png' alt='ann-0018 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0018/overlay.png' alt='ann-0018 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>52.000</td><td>55.000</td><td>563.000</td><td>313.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>344.809</td><td>299.000</td><td>722.730</td></tr>
+<tr><td>2</td><td>text</td><td>316.000</td><td>346.167</td><td>563.000</td><td>493.649</td></tr>
+<tr><td>3</td><td>text</td><td>316.000</td><td>495.087</td><td>563.000</td><td>609.449</td></tr>
+<tr><td>4</td><td>interline_equation</td><td>322.000</td><td>624.000</td><td>544.000</td><td>660.000</td></tr>
+<tr><td>5</td><td>text</td><td>316.000</td><td>668.247</td><td>563.000</td><td>724.049</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0059'>
+<h2>4/40 ann-0059</h2>
+<ul>
+<li>query_id: <code>1691</code></li>
+<li>line_index: <code>1691</code></li>
+<li>pos_doc: <code>1807.10956</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：In panel A, what is the difference between G1, G2, and G3 in the two illustrations?</p>
+<p>正页</p><p><img src='samples/ann-0059/page.png' alt='ann-0059 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0059/overlay.png' alt='ann-0059 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>47.000</td><td>42.818</td><td>300.000</td><td>192.944</td></tr>
+<tr><td>1</td><td>text</td><td>47.000</td><td>193.920</td><td>300.000</td><td>217.107</td></tr>
+<tr><td>2</td><td>interline_equation</td><td>90.000</td><td>222.000</td><td>258.000</td><td>276.000</td></tr>
+<tr><td>3</td><td>text</td><td>47.000</td><td>284.000</td><td>300.000</td><td>342.298</td></tr>
+<tr><td>4</td><td>interline_equation</td><td>100.000</td><td>350.000</td><td>248.000</td><td>403.000</td></tr>
+<tr><td>5</td><td>text</td><td>47.000</td><td>411.000</td><td>300.000</td><td>526.521</td></tr>
+<tr><td>6</td><td>text</td><td>47.000</td><td>527.497</td><td>300.000</td><td>746.864</td></tr>
+<tr><td>7</td><td>image</td><td>311.000</td><td>41.000</td><td>565.000</td><td>437.000</td></tr>
+<tr><td>8</td><td>title</td><td>311.000</td><td>456.000</td><td>482.000</td><td>468.000</td></tr>
+<tr><td>9</td><td>text</td><td>311.000</td><td>471.681</td><td>565.000</td><td>575.648</td></tr>
+<tr><td>10</td><td>table</td><td>343.000</td><td>584.000</td><td>533.000</td><td>652.000</td></tr>
+<tr><td>11</td><td>text</td><td>311.000</td><td>660.510</td><td>565.000</td><td>683.696</td></tr>
+<tr><td>12</td><td>title</td><td>311.000</td><td>697.000</td><td>379.000</td><td>709.000</td></tr>
+<tr><td>13</td><td>text</td><td>311.000</td><td>712.138</td><td>565.000</td><td>746.865</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0062'>
+<h2>5/40 ann-0062</h2>
+<ul>
+<li>query_id: <code>1746</code></li>
+<li>line_index: <code>1746</code></li>
+<li>pos_doc: <code>1705.08334</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：Which of the following best describes the trend observed as the parameter &quot;σ&quot; is increased?</p>
+<p>正页</p><p><img src='samples/ann-0062/page.png' alt='ann-0062 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0062/overlay.png' alt='ann-0062 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>54.000</td><td>47.000</td><td>564.000</td><td>627.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>651.000</td><td>299.000</td><td>720.985</td></tr>
+<tr><td>2</td><td>text</td><td>317.000</td><td>651.246</td><td>562.000</td><td>720.985</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0066'>
+<h2>6/40 ann-0066</h2>
+<ul>
+<li>query_id: <code>1875</code></li>
+<li>line_index: <code>1875</code></li>
+<li>pos_doc: <code>1609.02129</code></li>
+<li>pos_page: <code>12</code></li>
+</ul>
+<p><strong>题目</strong>：Which panel depicts a scenario where input from multiple sources is being considered?</p>
+<p>正页</p><p><img src='samples/ann-0066/page.png' alt='ann-0066 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0066/overlay.png' alt='ann-0066 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>70.000</td><td>69.000</td><td>541.000</td><td>748.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0073'>
+<h2>7/40 ann-0073</h2>
+<ul>
+<li>query_id: <code>1978</code></li>
+<li>line_index: <code>1978</code></li>
+<li>pos_doc: <code>2105.01155</code></li>
+<li>pos_page: <code>5</code></li>
+</ul>
+<p><strong>题目</strong>：What does the depth of the optical trap depend on according to figure a)?</p>
+<p>正页</p><p><img src='samples/ann-0073/page.png' alt='ann-0073 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0073/overlay.png' alt='ann-0073 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>54.000</td><td>52.000</td><td>299.000</td><td>559.000</td></tr>
+<tr><td>1</td><td>text</td><td>54.000</td><td>582.585</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>2</td><td>text</td><td>316.000</td><td>54.565</td><td>562.000</td><td>148.215</td></tr>
+<tr><td>3</td><td>text</td><td>316.000</td><td>150.207</td><td>562.000</td><td>315.587</td></tr>
+<tr><td>4</td><td>text</td><td>316.000</td><td>313.964</td><td>562.000</td><td>375.363</td></tr>
+<tr><td>5</td><td>text</td><td>316.000</td><td>377.355</td><td>562.000</td><td>459.049</td></tr>
+<tr><td>6</td><td>text</td><td>316.000</td><td>457.426</td><td>562.000</td><td>638.377</td></tr>
+<tr><td>7</td><td>title</td><td>403.000</td><td>671.000</td><td>475.000</td><td>683.000</td></tr>
+<tr><td>8</td><td>text</td><td>316.000</td><td>702.137</td><td>562.000</td><td>724.055</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0091'>
+<h2>8/40 ann-0091</h2>
+<ul>
+<li>query_id: <code>2581</code></li>
+<li>line_index: <code>2581</code></li>
+<li>pos_doc: <code>2005.13892</code></li>
+<li>pos_page: <code>4</code></li>
+</ul>
+<p><strong>题目</strong>：What does the parameter β_ICU represent in Figure A?</p>
+<p>正页</p><p><img src='samples/ann-0091/page.png' alt='ann-0091 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0091/overlay.png' alt='ann-0091 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>52.000</td><td>51.000</td><td>564.000</td><td>302.000</td></tr>
+<tr><td>1</td><td>text</td><td>54.000</td><td>326.137</td><td>251.469</td><td>336.100</td></tr>
+<tr><td>2</td><td>text</td><td>54.000</td><td>342.531</td><td>299.000</td><td>616.005</td></tr>
+<tr><td>3</td><td>text</td><td>54.000</td><td>622.436</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>4</td><td>text</td><td>316.000</td><td>326.000</td><td>562.000</td><td>474.351</td></tr>
+<tr><td>5</td><td>text</td><td>316.000</td><td>473.494</td><td>562.000</td><td>724.055</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0098'>
+<h2>9/40 ann-0098</h2>
+<ul>
+<li>query_id: <code>2778</code></li>
+<li>line_index: <code>2778</code></li>
+<li>pos_doc: <code>1905.00884</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：What does the dual y-axis represent in the graph?</p>
+<p>正页</p><p><img src='samples/ann-0098/page.png' alt='ann-0098 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0098/overlay.png' alt='ann-0098 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>interline_equation</td><td>71.000</td><td>71.000</td><td>268.000</td><td>126.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>135.434</td><td>299.000</td><td>248.510</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>250.263</td><td>299.000</td><td>335.389</td></tr>
+<tr><td>3</td><td>interline_equation</td><td>110.000</td><td>354.000</td><td>242.000</td><td>409.000</td></tr>
+<tr><td>4</td><td>text</td><td>53.000</td><td>418.029</td><td>299.000</td><td>470.177</td></tr>
+<tr><td>5</td><td>text</td><td>53.000</td><td>458.924</td><td>299.000</td><td>630.000</td></tr>
+<tr><td>6</td><td>title</td><td>53.000</td><td>652.000</td><td>274.000</td><td>664.000</td></tr>
+<tr><td>7</td><td>text</td><td>53.000</td><td>679.721</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>8</td><td>text</td><td>316.000</td><td>54.565</td><td>562.000</td><td>133.270</td></tr>
+<tr><td>9</td><td>image</td><td>315.000</td><td>176.000</td><td>563.000</td><td>409.000</td></tr>
+<tr><td>10</td><td>text</td><td>316.000</td><td>426.578</td><td>562.000</td><td>711.509</td></tr>
+<tr><td>11</td><td>text</td><td>326.000</td><td>714.092</td><td>562.000</td><td>724.055</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0103'>
+<h2>10/40 ann-0103</h2>
+<ul>
+<li>query_id: <code>2953</code></li>
+<li>line_index: <code>2953</code></li>
+<li>pos_doc: <code>2203.02438</code></li>
+<li>pos_page: <code>4</code></li>
+</ul>
+<p><strong>题目</strong>：What is indicated by the green lines in the &#x27;Excitatory Bump Wandering&#x27; in panel D?</p>
+<p>正页</p><p><img src='samples/ann-0103/page.png' alt='ann-0103 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0103/overlay.png' alt='ann-0103 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>70.000</td><td>97.000</td><td>443.000</td><td>422.000</td></tr>
+<tr><td>1</td><td>text</td><td>71.000</td><td>458.483</td><td>442.000</td><td>504.312</td></tr>
+<tr><td>2</td><td>text</td><td>71.000</td><td>528.000</td><td>442.000</td><td>561.955</td></tr>
+<tr><td>3</td><td>interline_equation</td><td>116.000</td><td>583.000</td><td>422.000</td><td>637.000</td></tr>
+<tr><td>4</td><td>text</td><td>71.000</td><td>660.000</td><td>442.000</td><td>695.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0104'>
+<h2>11/40 ann-0104</h2>
+<ul>
+<li>query_id: <code>2997</code></li>
+<li>line_index: <code>2997</code></li>
+<li>pos_doc: <code>1907.08801</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：What inference can be made about the &#x27;Read-out neurons&#x27; in the context of the recurrent network model shown in the figure?</p>
+<p>正页</p><p><img src='samples/ann-0104/page.png' alt='ann-0104 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0104/overlay.png' alt='ann-0104 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>55.000</td><td>176.000</td><td>541.000</td><td>659.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0108'>
+<h2>12/40 ann-0108</h2>
+<ul>
+<li>query_id: <code>3082</code></li>
+<li>line_index: <code>3082</code></li>
+<li>pos_doc: <code>1802.08265</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：What can be inferred about the time evolution of the cascade model in comparison to the exact dynamics for the parameter W0?</p>
+<p>正页</p><p><img src='samples/ann-0108/page.png' alt='ann-0108 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0108/overlay.png' alt='ann-0108 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>53.000</td><td>54.568</td><td>299.000</td><td>121.771</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>124.288</td><td>299.000</td><td>191.491</td></tr>
+<tr><td>2</td><td>interline_equation</td><td>85.000</td><td>196.000</td><td>266.000</td><td>252.000</td></tr>
+<tr><td>3</td><td>text</td><td>53.000</td><td>267.000</td><td>299.000</td><td>305.729</td></tr>
+<tr><td>4</td><td>text</td><td>53.000</td><td>294.808</td><td>299.000</td><td>316.171</td></tr>
+<tr><td>5</td><td>interline_equation</td><td>108.000</td><td>326.000</td><td>244.000</td><td>352.000</td></tr>
+<tr><td>6</td><td>text</td><td>53.000</td><td>364.000</td><td>299.000</td><td>408.811</td></tr>
+<tr><td>7</td><td>text</td><td>63.000</td><td>411.208</td><td>193.884</td><td>421.171</td></tr>
+<tr><td>8</td><td>interline_equation</td><td>70.000</td><td>425.000</td><td>265.000</td><td>464.000</td></tr>
+<tr><td>9</td><td>text</td><td>53.000</td><td>469.168</td><td>299.000</td><td>491.000</td></tr>
+<tr><td>10</td><td>interline_equation</td><td>58.000</td><td>495.000</td><td>294.000</td><td>530.000</td></tr>
+<tr><td>11</td><td>text</td><td>53.000</td><td>541.000</td><td>299.000</td><td>642.810</td></tr>
+<tr><td>12</td><td>text</td><td>53.000</td><td>645.055</td><td>299.000</td><td>724.050</td></tr>
+<tr><td>13</td><td>text</td><td>316.000</td><td>54.568</td><td>562.000</td><td>110.371</td></tr>
+<tr><td>14</td><td>text</td><td>316.000</td><td>112.168</td><td>562.000</td><td>169.000</td></tr>
+<tr><td>15</td><td>image</td><td>315.000</td><td>179.000</td><td>564.000</td><td>488.000</td></tr>
+<tr><td>16</td><td>text</td><td>316.000</td><td>500.608</td><td>562.000</td><td>567.811</td></tr>
+<tr><td>17</td><td>interline_equation</td><td>401.000</td><td>577.000</td><td>478.000</td><td>591.000</td></tr>
+<tr><td>18</td><td>text</td><td>316.000</td><td>602.008</td><td>562.000</td><td>637.291</td></tr>
+<tr><td>19</td><td>interline_equation</td><td>394.000</td><td>646.000</td><td>484.000</td><td>662.000</td></tr>
+<tr><td>20</td><td>text</td><td>316.000</td><td>666.199</td><td>562.000</td><td>708.000</td></tr>
+<tr><td>21</td><td>interline_equation</td><td>400.000</td><td>712.000</td><td>478.000</td><td>724.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0119'>
+<h2>13/40 ann-0119</h2>
+<ul>
+<li>query_id: <code>3370</code></li>
+<li>line_index: <code>3370</code></li>
+<li>pos_doc: <code>1308.4987</code></li>
+<li>pos_page: <code>14</code></li>
+</ul>
+<p><strong>题目</strong>：What does the red line with markers in the graph most likely represent?</p>
+<p>正页</p><p><img src='samples/ann-0119/page.png' alt='ann-0119 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0119/overlay.png' alt='ann-0119 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>70.000</td><td>178.000</td><td>543.000</td><td>583.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0121'>
+<h2>14/40 ann-0121</h2>
+<ul>
+<li>query_id: <code>3425</code></li>
+<li>line_index: <code>3425</code></li>
+<li>pos_doc: <code>1806.01142</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：Based on Figure e, which device has the highest transconductance (Gm) at 4.2K?</p>
+<p>正页</p><p><img src='samples/ann-0121/page.png' alt='ann-0121 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0121/overlay.png' alt='ann-0121 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>47.000</td><td>53.000</td><td>569.000</td><td>359.000</td></tr>
+<tr><td>1</td><td>image</td><td>47.000</td><td>374.000</td><td>567.000</td><td>539.000</td></tr>
+<tr><td>2</td><td>text</td><td>48.000</td><td>559.106</td><td>300.000</td><td>666.753</td></tr>
+<tr><td>3</td><td>title</td><td>71.000</td><td>677.000</td><td>279.000</td><td>689.000</td></tr>
+<tr><td>4</td><td>text</td><td>48.000</td><td>695.285</td><td>300.000</td><td>719.245</td></tr>
+<tr><td>5</td><td>text</td><td>311.000</td><td>559.107</td><td>563.000</td><td>714.601</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0133'>
+<h2>15/40 ann-0133</h2>
+<ul>
+<li>query_id: <code>3845</code></li>
+<li>line_index: <code>3845</code></li>
+<li>pos_doc: <code>astro-ph9506003</code></li>
+<li>pos_page: <code>4</code></li>
+</ul>
+<p><strong>题目</strong>：How do the graphs indicate the relationship between the critical density (δc) and the variable n?</p>
+<p>正页</p><p><img src='samples/ann-0133/page.png' alt='ann-0133 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0133/overlay.png' alt='ann-0133 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>23.000</td><td>115.000</td><td>544.000</td><td>348.000</td></tr>
+<tr><td>1</td><td>text</td><td>41.000</td><td>369.000</td><td>281.000</td><td>488.841</td></tr>
+<tr><td>2</td><td>text</td><td>41.000</td><td>493.075</td><td>281.000</td><td>556.881</td></tr>
+<tr><td>3</td><td>text</td><td>41.000</td><td>561.115</td><td>281.000</td><td>745.401</td></tr>
+<tr><td>4</td><td>text</td><td>41.000</td><td>749.755</td><td>281.000</td><td>780.561</td></tr>
+<tr><td>5</td><td>text</td><td>304.000</td><td>370.315</td><td>544.000</td><td>412.161</td></tr>
+<tr><td>6</td><td>text</td><td>304.000</td><td>414.235</td><td>544.000</td><td>543.682</td></tr>
+<tr><td>7</td><td>title</td><td>305.000</td><td>574.000</td><td>388.000</td><td>585.000</td></tr>
+<tr><td>8</td><td>text</td><td>304.000</td><td>592.676</td><td>544.000</td><td>623.602</td></tr>
+<tr><td>9</td><td>title</td><td>305.000</td><td>653.000</td><td>377.000</td><td>664.000</td></tr>
+<tr><td>10</td><td>text</td><td>304.000</td><td>672.383</td><td>539.000</td><td>780.313</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0148'>
+<h2>16/40 ann-0148</h2>
+<ul>
+<li>query_id: <code>4385</code></li>
+<li>line_index: <code>4385</code></li>
+<li>pos_doc: <code>1410.2821</code></li>
+<li>pos_page: <code>5</code></li>
+</ul>
+<p><strong>题目</strong>：What can be inferred about the force between the flake and the surface at 0 K from figure (a)?</p>
+<p>正页</p><p><img src='samples/ann-0148/page.png' alt='ann-0148 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0148/overlay.png' alt='ann-0148 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>298.084</td><td>72.185</td><td>473.376</td><td>82.148</td></tr>
+<tr><td>1</td><td>image</td><td>36.000</td><td>136.000</td><td>289.000</td><td>624.000</td></tr>
+<tr><td>2</td><td>text</td><td>297.000</td><td>97.192</td><td>548.000</td><td>238.661</td></tr>
+<tr><td>3</td><td>title</td><td>297.000</td><td>263.000</td><td>458.000</td><td>278.000</td></tr>
+<tr><td>4</td><td>text</td><td>297.000</td><td>291.324</td><td>548.000</td><td>373.018</td></tr>
+<tr><td>5</td><td>text</td><td>297.000</td><td>375.010</td><td>548.000</td><td>480.614</td></tr>
+<tr><td>6</td><td>text</td><td>297.000</td><td>482.606</td><td>548.000</td><td>647.987</td></tr>
+<tr><td>7</td><td>text</td><td>298.000</td><td>646.363</td><td>548.000</td><td>695.807</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0150'>
+<h2>17/40 ann-0150</h2>
+<ul>
+<li>query_id: <code>4391</code></li>
+<li>line_index: <code>4391</code></li>
+<li>pos_doc: <code>0911.2745</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：Which panel shows the Fourier amplitude as a function of frequency?</p>
+<p>正页</p><p><img src='samples/ann-0150/page.png' alt='ann-0150 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0150/overlay.png' alt='ann-0150 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>53.000</td><td>52.383</td><td>299.000</td><td>291.677</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>292.151</td><td>299.000</td><td>448.000</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>448.232</td><td>299.000</td><td>641.199</td></tr>
+<tr><td>3</td><td>text</td><td>53.000</td><td>640.179</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>4</td><td>image</td><td>315.000</td><td>67.000</td><td>563.000</td><td>551.000</td></tr>
+<tr><td>5</td><td>text</td><td>317.000</td><td>556.899</td><td>562.000</td><td>678.135</td></tr>
+<tr><td>6</td><td>interline_equation</td><td>323.000</td><td>684.000</td><td>555.000</td><td>711.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0158'>
+<h2>18/40 ann-0158</h2>
+<ul>
+<li>query_id: <code>4574</code></li>
+<li>line_index: <code>4574</code></li>
+<li>pos_doc: <code>1902.10195</code></li>
+<li>pos_page: <code>9</code></li>
+</ul>
+<p><strong>题目</strong>：Which statement best describes the trend in empirical power for the MW test in the Normal II distribution?</p>
+<p>正页</p><p><img src='samples/ann-0158/page.png' alt='ann-0158 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0158/overlay.png' alt='ann-0158 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>56.000</td><td>59.774</td><td>538.000</td><td>273.941</td></tr>
+<tr><td>1</td><td>image</td><td>54.000</td><td>285.000</td><td>541.000</td><td>650.000</td></tr>
+<tr><td>2</td><td>text</td><td>56.000</td><td>660.734</td><td>538.000</td><td>788.260</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0160'>
+<h2>19/40 ann-0160</h2>
+<ul>
+<li>query_id: <code>4656</code></li>
+<li>line_index: <code>4656</code></li>
+<li>pos_doc: <code>2303.08805</code></li>
+<li>pos_page: <code>0</code></li>
+</ul>
+<p><strong>题目</strong>：Based on the energy diagram in figure (b), what is the consequence of bringing two Rydberg atoms closer together?</p>
+<p>正页</p><p><img src='samples/ann-0160/page.png' alt='ann-0160 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0160/overlay.png' alt='ann-0160 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>108.000</td><td>75.358</td><td>503.000</td><td>146.969</td></tr>
+<tr><td>1</td><td>text</td><td>108.000</td><td>155.437</td><td>507.000</td><td>248.090</td></tr>
+<tr><td>2</td><td>text</td><td>54.000</td><td>270.008</td><td>299.000</td><td>471.253</td></tr>
+<tr><td>3</td><td>text</td><td>54.000</td><td>475.113</td><td>299.000</td><td>628.539</td></tr>
+<tr><td>4</td><td>text</td><td>54.000</td><td>632.399</td><td>299.000</td><td>726.048</td></tr>
+<tr><td>5</td><td>image</td><td>314.000</td><td>265.000</td><td>565.000</td><td>541.000</td></tr>
+<tr><td>6</td><td>text</td><td>317.000</td><td>569.620</td><td>562.000</td><td>651.314</td></tr>
+<tr><td>7</td><td>text</td><td>317.000</td><td>656.309</td><td>562.000</td><td>726.048</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0163'>
+<h2>20/40 ann-0163</h2>
+<ul>
+<li>query_id: <code>4698</code></li>
+<li>line_index: <code>4698</code></li>
+<li>pos_doc: <code>1605.03373</code></li>
+<li>pos_page: <code>12</code></li>
+</ul>
+<p><strong>题目</strong>：What does the shaded area around the &#x27;Decoding&#x27; curve most likely represent?</p>
+<p>正页</p><p><img src='samples/ann-0163/page.png' alt='ann-0163 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0163/overlay.png' alt='ann-0163 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>53.000</td><td>94.000</td><td>300.000</td><td>371.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0181'>
+<h2>21/40 ann-0181</h2>
+<ul>
+<li>query_id: <code>5364</code></li>
+<li>line_index: <code>5364</code></li>
+<li>pos_doc: <code>1410.2500</code></li>
+<li>pos_page: <code>4</code></li>
+</ul>
+<p><strong>题目</strong>：What does the point \( h(x) \) represent in this figure?</p>
+<p>正页</p><p><img src='samples/ann-0181/page.png' alt='ann-0181 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0181/overlay.png' alt='ann-0181 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>113.000</td><td>410.000</td><td>124.000</td><td>418.000</td></tr>
+<tr><td>1</td><td>image</td><td>162.000</td><td>173.000</td><td>431.000</td><td>447.000</td></tr>
+<tr><td>2</td><td>text</td><td>90.000</td><td>499.200</td><td>522.000</td><td>634.288</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0218'>
+<h2>22/40 ann-0218</h2>
+<ul>
+<li>query_id: <code>6385</code></li>
+<li>line_index: <code>6385</code></li>
+<li>pos_doc: <code>2101.12538</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：What is the scale of the feature shown in the micrograph in figure (b)?</p>
+<p>正页</p><p><img src='samples/ann-0218/page.png' alt='ann-0218 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0218/overlay.png' alt='ann-0218 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>54.000</td><td>50.000</td><td>563.000</td><td>291.000</td></tr>
+<tr><td>1</td><td>text</td><td>54.000</td><td>315.149</td><td>298.000</td><td>485.511</td></tr>
+<tr><td>2</td><td>text</td><td>54.000</td><td>496.409</td><td>298.000</td><td>724.055</td></tr>
+<tr><td>3</td><td>text</td><td>317.000</td><td>315.150</td><td>562.000</td><td>336.570</td></tr>
+<tr><td>4</td><td>text</td><td>317.000</td><td>342.765</td><td>562.000</td><td>558.955</td></tr>
+<tr><td>5</td><td>text</td><td>317.000</td><td>565.000</td><td>562.000</td><td>724.055</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0219'>
+<h2>23/40 ann-0219</h2>
+<ul>
+<li>query_id: <code>6387</code></li>
+<li>line_index: <code>6387</code></li>
+<li>pos_doc: <code>2101.12538</code></li>
+<li>pos_page: <code>8</code></li>
+</ul>
+<p><strong>题目</strong>：Based on the graph, what can be inferred about the critical current (I_c)?</p>
+<p>正页</p><p><img src='samples/ann-0219/page.png' alt='ann-0219 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0219/overlay.png' alt='ann-0219 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>title</td><td>54.000</td><td>53.000</td><td>152.000</td><td>64.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>67.481</td><td>299.000</td><td>226.384</td></tr>
+<tr><td>2</td><td>title</td><td>53.000</td><td>242.000</td><td>276.000</td><td>253.000</td></tr>
+<tr><td>3</td><td>text</td><td>53.000</td><td>259.262</td><td>299.000</td><td>463.993</td></tr>
+<tr><td>4</td><td>text</td><td>53.000</td><td>465.488</td><td>299.000</td><td>556.000</td></tr>
+<tr><td>5</td><td>text</td><td>57.000</td><td>597.686</td><td>299.000</td><td>713.988</td></tr>
+<tr><td>6</td><td>text</td><td>317.000</td><td>54.565</td><td>358.000</td><td>64.527</td></tr>
+<tr><td>7</td><td>text</td><td>317.000</td><td>62.407</td><td>562.000</td><td>133.269</td></tr>
+<tr><td>8</td><td>text</td><td>317.000</td><td>139.492</td><td>562.000</td><td>252.568</td></tr>
+<tr><td>9</td><td>image</td><td>316.000</td><td>277.000</td><td>563.000</td><td>535.000</td></tr>
+<tr><td>10</td><td>text</td><td>317.000</td><td>600.413</td><td>562.000</td><td>713.988</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0232'>
+<h2>24/40 ann-0232</h2>
+<ul>
+<li>query_id: <code>6660</code></li>
+<li>line_index: <code>6660</code></li>
+<li>pos_doc: <code>2208.13624</code></li>
+<li>pos_page: <code>6</code></li>
+</ul>
+<p><strong>题目</strong>：What does the area between the &#x27;AUC+&#x27; and &#x27;AUC-&#x27; curves in the leftmost graph indicate?</p>
+<p>正页</p><p><img src='samples/ann-0232/page.png' alt='ann-0232 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0232/overlay.png' alt='ann-0232 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>105.000</td><td>73.000</td><td>506.000</td><td>318.000</td></tr>
+<tr><td>1</td><td>image</td><td>106.000</td><td>330.000</td><td>506.000</td><td>507.000</td></tr>
+<tr><td>2</td><td>title</td><td>107.000</td><td>526.000</td><td>206.000</td><td>539.000</td></tr>
+<tr><td>3</td><td>text</td><td>107.000</td><td>546.666</td><td>505.000</td><td>580.490</td></tr>
+<tr><td>4</td><td>text</td><td>107.000</td><td>590.957</td><td>505.000</td><td>722.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0234'>
+<h2>25/40 ann-0234</h2>
+<ul>
+<li>query_id: <code>6724</code></li>
+<li>line_index: <code>6724</code></li>
+<li>pos_doc: <code>2009.03950</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：Based on the color intensity in the graphs (e), (f), (g), and (h), what does the brightness signify in relation to the magnon-like and cavity-like modes?</p>
+<p>正页</p><p><img src='samples/ann-0234/page.png' alt='ann-0234 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0234/overlay.png' alt='ann-0234 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>53.000</td><td>50.000</td><td>299.000</td><td>521.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>544.987</td><td>299.000</td><td>724.363</td></tr>
+<tr><td>2</td><td>image</td><td>315.000</td><td>51.000</td><td>563.000</td><td>425.000</td></tr>
+<tr><td>3</td><td>text</td><td>315.000</td><td>448.716</td><td>562.000</td><td>717.995</td></tr>
+<tr><td>4</td><td>text</td><td>326.000</td><td>712.000</td><td>562.000</td><td>724.364</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0267'>
+<h2>26/40 ann-0267</h2>
+<ul>
+<li>query_id: <code>7552</code></li>
+<li>line_index: <code>7552</code></li>
+<li>pos_doc: <code>2007.00523</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：What does the dotted line from the function \( g \) to the function \( f \) in panel b represent?</p>
+<p>正页</p><p><img src='samples/ann-0267/page.png' alt='ann-0267 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0267/overlay.png' alt='ann-0267 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>41.000</td><td>42.000</td><td>293.000</td><td>303.000</td></tr>
+<tr><td>1</td><td>text</td><td>62.000</td><td>322.218</td><td>292.000</td><td>505.739</td></tr>
+<tr><td>2</td><td>text</td><td>52.000</td><td>515.095</td><td>292.000</td><td>683.045</td></tr>
+<tr><td>3</td><td>text</td><td>42.000</td><td>694.394</td><td>292.000</td><td>802.569</td></tr>
+<tr><td>4</td><td>text</td><td>302.000</td><td>43.148</td><td>552.000</td><td>115.457</td></tr>
+<tr><td>5</td><td>text</td><td>302.000</td><td>114.879</td><td>552.000</td><td>223.053</td></tr>
+<tr><td>6</td><td>title</td><td>302.000</td><td>238.000</td><td>489.000</td><td>250.000</td></tr>
+<tr><td>7</td><td>text</td><td>302.000</td><td>256.494</td><td>552.000</td><td>364.668</td></tr>
+<tr><td>8</td><td>text</td><td>312.000</td><td>372.316</td><td>552.000</td><td>516.356</td></tr>
+<tr><td>9</td><td>interline_equation</td><td>384.000</td><td>530.000</td><td>491.000</td><td>545.000</td></tr>
+<tr><td>10</td><td>text</td><td>322.000</td><td>551.898</td><td>552.000</td><td>612.252</td></tr>
+<tr><td>11</td><td>text</td><td>312.000</td><td>618.949</td><td>552.000</td><td>739.079</td></tr>
+<tr><td>12</td><td>interline_equation</td><td>366.000</td><td>752.000</td><td>509.000</td><td>771.000</td></tr>
+<tr><td>13</td><td>text</td><td>322.000</td><td>778.080</td><td>552.000</td><td>804.063</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0310'>
+<h2>27/40 ann-0310</h2>
+<ul>
+<li>query_id: <code>8596</code></li>
+<li>line_index: <code>8596</code></li>
+<li>pos_doc: <code>1609.07569</code></li>
+<li>pos_page: <code>11</code></li>
+</ul>
+<p><strong>题目</strong>：In the Office 2013 figure, which statement accurately describes the behavior of the frequency \( f_{PTR}^{+} - f_{PTR}^{sol} \) for the group size g=100 as Δt increases?</p>
+<p>正页</p><p><img src='samples/ann-0310/page.png' alt='ann-0310 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0310/overlay.png' alt='ann-0310 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>70.000</td><td>71.000</td><td>541.000</td><td>591.000</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0317'>
+<h2>28/40 ann-0317</h2>
+<ul>
+<li>query_id: <code>8729</code></li>
+<li>line_index: <code>8729</code></li>
+<li>pos_doc: <code>1204.2642</code></li>
+<li>pos_page: <code>3</code></li>
+</ul>
+<p><strong>题目</strong>：What relationship is depicted in figure &#x27;f&#x27;?</p>
+<p>正页</p><p><img src='samples/ann-0317/page.png' alt='ann-0317 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0317/overlay.png' alt='ann-0317 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>53.000</td><td>51.000</td><td>300.000</td><td>490.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>519.929</td><td>300.000</td><td>589.651</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>594.569</td><td>300.000</td><td>724.051</td></tr>
+<tr><td>3</td><td>text</td><td>316.000</td><td>54.000</td><td>562.000</td><td>160.172</td></tr>
+<tr><td>4</td><td>text</td><td>316.000</td><td>163.169</td><td>562.000</td><td>304.651</td></tr>
+<tr><td>5</td><td>text</td><td>316.000</td><td>307.375</td><td>562.000</td><td>365.371</td></tr>
+<tr><td>6</td><td>text</td><td>316.000</td><td>411.475</td><td>562.000</td><td>723.801</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0319'>
+<h2>29/40 ann-0319</h2>
+<ul>
+<li>query_id: <code>8785</code></li>
+<li>line_index: <code>8785</code></li>
+<li>pos_doc: <code>2206.04488</code></li>
+<li>pos_page: <code>0</code></li>
+</ul>
+<p><strong>题目</strong>：Which method depicted in the figure uses a variable phase (U(ϕk)) in the process?</p>
+<p>正页</p><p><img src='samples/ann-0319/page.png' alt='ann-0319 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0319/overlay.png' alt='ann-0319 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>title</td><td>98.000</td><td>51.000</td><td>516.000</td><td>66.000</td></tr>
+<tr><td>1</td><td>text</td><td>136.000</td><td>76.878</td><td>479.579</td><td>152.947</td></tr>
+<tr><td>2</td><td>text</td><td>108.000</td><td>163.905</td><td>507.000</td><td>225.176</td></tr>
+<tr><td>3</td><td>text</td><td>53.000</td><td>246.595</td><td>299.000</td><td>371.129</td></tr>
+<tr><td>4</td><td>text</td><td>53.000</td><td>372.623</td><td>299.000</td><td>485.699</td></tr>
+<tr><td>5</td><td>text</td><td>53.000</td><td>487.193</td><td>299.000</td><td>611.726</td></tr>
+<tr><td>6</td><td>text</td><td>53.000</td><td>613.220</td><td>299.000</td><td>669.012</td></tr>
+<tr><td>7</td><td>image</td><td>314.000</td><td>242.000</td><td>564.000</td><td>529.000</td></tr>
+<tr><td>8</td><td>text</td><td>316.000</td><td>555.188</td><td>562.000</td><td>725.550</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0328'>
+<h2>30/40 ann-0328</h2>
+<ul>
+<li>query_id: <code>9003</code></li>
+<li>line_index: <code>9003</code></li>
+<li>pos_doc: <code>1703.09442</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：What is the common feature of all three processes depicted in the figures?</p>
+<p>正页</p><p><img src='samples/ann-0328/page.png' alt='ann-0328 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0328/overlay.png' alt='ann-0328 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>52.000</td><td>54.000</td><td>300.000</td><td>214.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>247.825</td><td>299.000</td><td>354.924</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>355.845</td><td>299.000</td><td>509.269</td></tr>
+<tr><td>3</td><td>interline_equation</td><td>63.000</td><td>522.000</td><td>277.000</td><td>572.000</td></tr>
+<tr><td>4</td><td>text</td><td>53.000</td><td>580.854</td><td>299.000</td><td>626.682</td></tr>
+<tr><td>5</td><td>text</td><td>53.000</td><td>629.097</td><td>299.000</td><td>675.000</td></tr>
+<tr><td>6</td><td>interline_equation</td><td>68.000</td><td>682.000</td><td>282.000</td><td>727.000</td></tr>
+<tr><td>7</td><td>text</td><td>316.000</td><td>51.828</td><td>563.000</td><td>113.843</td></tr>
+<tr><td>8</td><td>text</td><td>316.000</td><td>114.341</td><td>563.000</td><td>327.542</td></tr>
+<tr><td>9</td><td>text</td><td>316.000</td><td>329.534</td><td>563.000</td><td>518.825</td></tr>
+<tr><td>10</td><td>text</td><td>316.000</td><td>520.817</td><td>563.000</td><td>569.390</td></tr>
+<tr><td>11</td><td>interline_equation</td><td>343.000</td><td>574.000</td><td>535.000</td><td>587.000</td></tr>
+<tr><td>12</td><td>text</td><td>316.000</td><td>594.541</td><td>563.000</td><td>725.550</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0346'>
+<h2>31/40 ann-0346</h2>
+<ul>
+<li>query_id: <code>9467</code></li>
+<li>line_index: <code>9467</code></li>
+<li>pos_doc: <code>1311.3984</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：What does the dashed horizontal line at the value of 0.5 on the y-axis in the graphs represent?</p>
+<p>正页</p><p><img src='samples/ann-0346/page.png' alt='ann-0346 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0346/overlay.png' alt='ann-0346 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>title</td><td>54.000</td><td>53.000</td><td>298.000</td><td>74.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>90.656</td><td>299.000</td><td>318.302</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>319.797</td><td>299.000</td><td>490.158</td></tr>
+<tr><td>3</td><td>interline_equation</td><td>101.000</td><td>496.000</td><td>252.000</td><td>510.000</td></tr>
+<tr><td>4</td><td>text</td><td>53.000</td><td>519.322</td><td>299.000</td><td>564.000</td></tr>
+<tr><td>5</td><td>text</td><td>53.000</td><td>565.151</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>6</td><td>text</td><td>316.000</td><td>54.565</td><td>562.000</td><td>133.270</td></tr>
+<tr><td>7</td><td>image</td><td>315.000</td><td>142.000</td><td>564.000</td><td>519.000</td></tr>
+<tr><td>8</td><td>text</td><td>316.000</td><td>542.237</td><td>562.000</td><td>724.055</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0352'>
+<h2>32/40 ann-0352</h2>
+<ul>
+<li>query_id: <code>9646</code></li>
+<li>line_index: <code>9646</code></li>
+<li>pos_doc: <code>0805.2585</code></li>
+<li>pos_page: <code>2</code></li>
+</ul>
+<p><strong>题目</strong>：Based on figure b, what can be said about the relationship between bias voltage and gate voltage at the points indicated by the yellow triangles?</p>
+<p>正页</p><p><img src='samples/ann-0352/page.png' alt='ann-0352 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0352/overlay.png' alt='ann-0352 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>52.000</td><td>52.000</td><td>300.000</td><td>353.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>376.040</td><td>299.000</td><td>471.872</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>472.807</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>3</td><td>text</td><td>316.000</td><td>52.384</td><td>562.000</td><td>282.378</td></tr>
+<tr><td>4</td><td>text</td><td>316.000</td><td>280.196</td><td>562.000</td><td>531.443</td></tr>
+<tr><td>5</td><td>text</td><td>316.000</td><td>531.919</td><td>562.000</td><td>687.525</td></tr>
+<tr><td>6</td><td>text</td><td>316.000</td><td>688.000</td><td>562.000</td><td>725.549</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0357'>
+<h2>33/40 ann-0357</h2>
+<ul>
+<li>query_id: <code>9729</code></li>
+<li>line_index: <code>9729</code></li>
+<li>pos_doc: <code>1107.4273</code></li>
+<li>pos_page: <code>3</code></li>
+</ul>
+<p><strong>题目</strong>：What physical quantity is represented by the y-axis labeled &#x27;ε²&#x27; in Figure D?</p>
+<p>正页</p><p><img src='samples/ann-0357/page.png' alt='ann-0357 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0357/overlay.png' alt='ann-0357 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>54.000</td><td>51.000</td><td>562.000</td><td>320.000</td></tr>
+<tr><td>1</td><td>text</td><td>53.000</td><td>344.414</td><td>299.000</td><td>498.000</td></tr>
+<tr><td>2</td><td>text</td><td>53.000</td><td>499.831</td><td>299.000</td><td>546.000</td></tr>
+<tr><td>3</td><td>text</td><td>53.000</td><td>547.652</td><td>299.000</td><td>641.300</td></tr>
+<tr><td>4</td><td>title</td><td>123.000</td><td>664.000</td><td>230.000</td><td>674.000</td></tr>
+<tr><td>5</td><td>text</td><td>53.000</td><td>690.182</td><td>299.000</td><td>724.055</td></tr>
+<tr><td>6</td><td>text</td><td>317.000</td><td>344.414</td><td>562.000</td><td>485.883</td></tr>
+<tr><td>7</td><td>text</td><td>317.000</td><td>487.876</td><td>562.000</td><td>533.704</td></tr>
+<tr><td>8</td><td>title</td><td>378.000</td><td>556.000</td><td>500.000</td><td>566.000</td></tr>
+<tr><td>9</td><td>text</td><td>317.000</td><td>582.585</td><td>562.000</td><td>724.054</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0363'>
+<h2>34/40 ann-0363</h2>
+<ul>
+<li>query_id: <code>9942</code></li>
+<li>line_index: <code>9942</code></li>
+<li>pos_doc: <code>2109.10809</code></li>
+<li>pos_page: <code>1</code></li>
+</ul>
+<p><strong>题目</strong>：In the context of magnetic materials, what does the interaction term \( JS_i \cdot S_j \) most likely describe?</p>
+<p>正页</p><p><img src='samples/ann-0363/page.png' alt='ann-0363 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0363/overlay.png' alt='ann-0363 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>52.000</td><td>50.000</td><td>300.000</td><td>246.000</td></tr>
+<tr><td>1</td><td>text</td><td>52.000</td><td>261.490</td><td>299.000</td><td>342.238</td></tr>
+<tr><td>2</td><td>title</td><td>73.000</td><td>366.000</td><td>281.000</td><td>377.000</td></tr>
+<tr><td>3</td><td>text</td><td>52.000</td><td>390.959</td><td>299.000</td><td>528.992</td></tr>
+<tr><td>4</td><td>text</td><td>52.000</td><td>528.745</td><td>299.000</td><td>712.606</td></tr>
+<tr><td>5</td><td>text</td><td>63.000</td><td>712.000</td><td>299.000</td><td>724.364</td></tr>
+<tr><td>6</td><td>text</td><td>315.000</td><td>52.833</td><td>562.000</td><td>272.275</td></tr>
+<tr><td>7</td><td>text</td><td>315.000</td><td>273.000</td><td>562.000</td><td>493.208</td></tr>
+<tr><td>8</td><td>text</td><td>315.000</td><td>492.920</td><td>562.000</td><td>630.952</td></tr>
+<tr><td>9</td><td>text</td><td>315.000</td><td>632.000</td><td>562.000</td><td>724.363</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0365'>
+<h2>35/40 ann-0365</h2>
+<ul>
+<li>query_id: <code>9961</code></li>
+<li>line_index: <code>9961</code></li>
+<li>pos_doc: <code>0802.4407</code></li>
+<li>pos_page: <code>10</code></li>
+</ul>
+<p><strong>题目</strong>：What is the likely relationship between \( w_F^a \) and \( w_F^0 \) as indicated by the contour lines?</p>
+<p>正页</p><p><img src='samples/ann-0365/page.png' alt='ann-0365 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0365/overlay.png' alt='ann-0365 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>83.000</td><td>82.000</td><td>527.880</td><td>95.000</td></tr>
+<tr><td>1</td><td>text</td><td>83.000</td><td>96.514</td><td>559.000</td><td>209.641</td></tr>
+<tr><td>2</td><td>image</td><td>168.000</td><td>234.000</td><td>426.000</td><td>486.000</td></tr>
+<tr><td>3</td><td>text</td><td>83.000</td><td>509.074</td><td>536.000</td><td>593.281</td></tr>
+<tr><td>4</td><td>text</td><td>83.000</td><td>605.914</td><td>536.000</td><td>661.321</td></tr>
+<tr><td>5</td><td>text</td><td>83.000</td><td>659.434</td><td>536.000</td><td>734.000</td></tr>
+<tr><td>6</td><td>text</td><td>83.000</td><td>735.000</td><td>536.000</td><td>770.838</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0373'>
+<h2>36/40 ann-0373</h2>
+<ul>
+<li>query_id: <code>10203</code></li>
+<li>line_index: <code>10203</code></li>
+<li>pos_doc: <code>nucl-ex0307017</code></li>
+<li>pos_page: <code>7</code></li>
+</ul>
+<p><strong>题目</strong>：What does the scaling factor indicated by &#x27;x10^n&#x27; in the figure represent?</p>
+<p>正页</p><p><img src='samples/ann-0373/page.png' alt='ann-0373 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0373/overlay.png' alt='ann-0373 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>138.000</td><td>90.000</td><td>399.000</td><td>413.000</td></tr>
+<tr><td>1</td><td>text</td><td>71.000</td><td>431.618</td><td>538.000</td><td>511.527</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0378'>
+<h2>37/40 ann-0378</h2>
+<ul>
+<li>query_id: <code>10255</code></li>
+<li>line_index: <code>10255</code></li>
+<li>pos_doc: <code>0802.2100</code></li>
+<li>pos_page: <code>3</code></li>
+</ul>
+<p><strong>题目</strong>：Based on the density of points in both graphs, what CCD value range seems to have the highest frequency of occurrences?</p>
+<p>正页</p><p><img src='samples/ann-0378/page.png' alt='ann-0378 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0378/overlay.png' alt='ann-0378 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>97.000</td><td>133.000</td><td>489.000</td><td>563.000</td></tr>
+<tr><td>1</td><td>text</td><td>105.000</td><td>599.608</td><td>488.000</td><td>633.211</td></tr>
+<tr><td>2</td><td>text</td><td>105.000</td><td>635.968</td><td>488.000</td><td>716.731</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0380'>
+<h2>38/40 ann-0380</h2>
+<ul>
+<li>query_id: <code>10276</code></li>
+<li>line_index: <code>10276</code></li>
+<li>pos_doc: <code>1501.03461</code></li>
+<li>pos_page: <code>87</code></li>
+</ul>
+<p><strong>题目</strong>：Comparing the normal sample to the AML sample, what change is observed in the myeloid cells population?</p>
+<p>正页</p><p><img src='samples/ann-0380/page.png' alt='ann-0380 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0380/overlay.png' alt='ann-0380 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>image</td><td>119.000</td><td>66.000</td><td>522.000</td><td>341.000</td></tr>
+<tr><td>1</td><td>text</td><td>108.000</td><td>373.691</td><td>503.084</td><td>385.658</td></tr>
+<tr><td>2</td><td>text</td><td>108.000</td><td>407.315</td><td>540.000</td><td>527.626</td></tr>
+<tr><td>3</td><td>text</td><td>108.000</td><td>537.327</td><td>540.000</td><td>700.976</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0389'>
+<h2>39/40 ann-0389</h2>
+<ul>
+<li>query_id: <code>10473</code></li>
+<li>line_index: <code>10473</code></li>
+<li>pos_doc: <code>2007.04436</code></li>
+<li>pos_page: <code>3</code></li>
+</ul>
+<p><strong>题目</strong>：What is the relationship between t_p and P(t_p) for the highest angular velocity of 37.7 rad s^-1?</p>
+<p>正页</p><p><img src='samples/ann-0389/page.png' alt='ann-0389 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0389/overlay.png' alt='ann-0389 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>interline_equation</td><td>85.000</td><td>69.000</td><td>252.000</td><td>96.000</td></tr>
+<tr><td>1</td><td>text</td><td>41.000</td><td>103.831</td><td>296.000</td><td>163.673</td></tr>
+<tr><td>2</td><td>text</td><td>41.000</td><td>166.495</td><td>296.000</td><td>250.882</td></tr>
+<tr><td>3</td><td>interline_equation</td><td>75.000</td><td>258.000</td><td>262.000</td><td>286.000</td></tr>
+<tr><td>4</td><td>text</td><td>41.000</td><td>294.320</td><td>296.000</td><td>329.616</td></tr>
+<tr><td>5</td><td>interline_equation</td><td>120.000</td><td>336.000</td><td>217.000</td><td>366.000</td></tr>
+<tr><td>6</td><td>text</td><td>41.000</td><td>374.367</td><td>296.000</td><td>472.363</td></tr>
+<tr><td>7</td><td>title</td><td>42.000</td><td>480.000</td><td>106.000</td><td>494.000</td></tr>
+<tr><td>8</td><td>title</td><td>41.000</td><td>503.000</td><td>171.000</td><td>514.000</td></tr>
+<tr><td>9</td><td>text</td><td>41.000</td><td>516.736</td><td>296.000</td><td>662.487</td></tr>
+<tr><td>10</td><td>text</td><td>41.000</td><td>665.308</td><td>296.000</td><td>737.423</td></tr>
+<tr><td>11</td><td>image</td><td>314.000</td><td>50.000</td><td>570.000</td><td>300.000</td></tr>
+<tr><td>12</td><td>text</td><td>314.000</td><td>333.945</td><td>569.000</td><td>467.423</td></tr>
+<tr><td>13</td><td>text</td><td>314.000</td><td>468.945</td><td>569.000</td><td>737.423</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+<section id='ann-0395'>
+<h2>40/40 ann-0395</h2>
+<ul>
+<li>query_id: <code>10545</code></li>
+<li>line_index: <code>10545</code></li>
+<li>pos_doc: <code>1003.1801</code></li>
+<li>pos_page: <code>4</code></li>
+</ul>
+<p><strong>题目</strong>：What does the main trend depicted in the figure indicate?</p>
+<p>正页</p><p><img src='samples/ann-0395/page.png' alt='ann-0395 page'></p>
+<p>候选框叠图</p><p><img src='samples/ann-0395/overlay.png' alt='ann-0395 overlay'></p>
+<table><tr><th>box_id</th><th>type</th><th>x1</th><th>y1</th><th>x2</th><th>y2</th></tr>
+<tr><td>0</td><td>text</td><td>71.000</td><td>40.528</td><td>540.000</td><td>122.131</td></tr>
+<tr><td>1</td><td>image</td><td>69.000</td><td>133.000</td><td>543.000</td><td>428.000</td></tr>
+<tr><td>2</td><td>text</td><td>71.000</td><td>440.848</td><td>540.000</td><td>631.000</td></tr>
+<tr><td>3</td><td>interline_equation</td><td>253.000</td><td>635.000</td><td>358.000</td><td>648.000</td></tr>
+<tr><td>4</td><td>text</td><td>71.000</td><td>654.568</td><td>540.000</td><td>689.971</td></tr>
+</table>
+<p>本页没有预选框。请把选择写进独立标注文件，不要改这张 HTML。</p>
+</section>
+</body></html>

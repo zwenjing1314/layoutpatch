@@ -1,0 +1,35 @@
+{
+  "sample_id": "ann-0373",
+  "query_id": 10203,
+  "line_index": 10203,
+  "pos_doc": "nucl-ex0307017",
+  "pos_page": 7,
+  "page_w": 612.0,
+  "page_h": 792.0,
+  "candidates": [
+    {
+      "box_id": 0,
+      "bbox": [
+        138.0,
+        90.0,
+        399.0,
+        413.0
+      ],
+      "type": "image",
+      "rel_area": 0.17392676767676768
+    },
+    {
+      "box_id": 1,
+      "bbox": [
+        71.0,
+        431.6180114746094,
+        538.0,
+        511.527099609375
+      ],
+      "type": "text",
+      "rel_area": 0.07699037796043677
+    }
+  ],
+  "chosen_box_ids": [],
+  "note": "Human must pick boxes. Do not auto-fill."
+}
