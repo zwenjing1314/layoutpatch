@@ -1,0 +1,7 @@
+source_path=C:\Users\WenJing\Downloads\labels_annotator_B_v1.jsonl
+sha256=7209e3bf497c80cf8dc2f142af68df2d32c7c7dfaadf8c161fb57cc1a26fb964
+bytes=58080
+copied_to=experiments\region_annotation\archive\2026-09-30_annotator_B_v1\labels_annotator_B_v1.jsonl
+independent_copy=experiments\region_annotation\labels_annotator_B_v1.jsonl
+old_file_not_overwritten=true
+manifest_not_written=true

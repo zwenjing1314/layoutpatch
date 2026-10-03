@@ -27,7 +27,7 @@ PILOT = REPO / "experiments/region_annotation/arxivqa_pilot_manifest.jsonl"
 MATERIALS = REPO / "experiments/region_annotation/pilot_materials"
 SAMPLES = MATERIALS / "samples"
 WORKBOOK = MATERIALS / "workbook.html"
-PROTOCOL = "region-ann-v0"
+PROTOCOL = "region-ann-v1"
 UTC_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 REQUIRED = (
     "sample_id",
@@ -138,6 +138,46 @@ def _as_int_box(value) -> int | None:
     return value
 
 
+def _num_eq(left, right, eps: float = 1e-6) -> bool:
+    try:
+        return abs(float(left) - float(right)) <= eps
+    except (TypeError, ValueError):
+        return False
+
+
+def metadata_errors(row: dict, rec: dict) -> list[str]:
+    sid = rec.get("sample_id")
+    errors: list[str] = []
+    for key in ("query_id", "line_index", "query", "pos_doc", "pos_page"):
+        if key in rec and rec.get(key) != row.get(key):
+            errors.append(f"{sid}: metadata {key} changed")
+    rec_boxes = rec.get("candidates")
+    if rec_boxes is None:
+        return errors
+    if not isinstance(rec_boxes, list):
+        errors.append(f"{sid}: candidates must be list")
+        return errors
+    pilot_boxes = row.get("candidates") or []
+    if len(rec_boxes) != len(pilot_boxes):
+        errors.append(f"{sid}: candidate count changed")
+        return errors
+    for rec_box, pilot_box in zip(rec_boxes, pilot_boxes, strict=True):
+        if int(rec_box.get("box_id")) != int(pilot_box.get("box_id")):
+            errors.append(f"{sid}: candidate box_id changed")
+        if rec_box.get("type") != pilot_box.get("type"):
+            errors.append(f"{sid}: candidate type changed")
+        rec_bbox = rec_box.get("bbox")
+        pilot_bbox = pilot_box.get("bbox")
+        if not (
+            isinstance(rec_bbox, list)
+            and isinstance(pilot_bbox, list)
+            and len(rec_bbox) == len(pilot_bbox) == 4
+            and all(_num_eq(a, b) for a, b in zip(rec_bbox, pilot_bbox, strict=True))
+        ):
+            errors.append(f"{sid}: candidate bbox changed")
+    return errors
+
+
 def record_errors(row: dict, rec: dict, annotator: str | None) -> list[str]:
     sid = rec.get("sample_id")
     errors: list[str] = []
@@ -197,10 +237,16 @@ def record_errors(row: dict, rec: dict, annotator: str | None) -> list[str]:
     if status == "pending":
         if labeled_at not in {None, ""}:
             errors.append(f"{sid}: pending labeled_at must be null")
-        if rec.get("no_candidate") is True:
-            errors.append(f"{sid}: uncertain/pending cannot be no_candidate")
         if chosen_ids:
             errors.append(f"{sid}: pending cannot have chosen_box_ids")
+        if rec.get("cover_ok") is not None:
+            errors.append(f"{sid}: pending cover_ok must be null")
+        if rec.get("no_candidate") is not None:
+            errors.append(f"{sid}: pending no_candidate must be null")
+        if rec.get("cross_box") is not None:
+            errors.append(f"{sid}: pending cross_box must be null")
+        if levels:
+            errors.append(f"{sid}: pending cover_levels must be empty")
     elif labeled_at not in {None, ""} and not (isinstance(labeled_at, str) and UTC_RE.match(labeled_at)):
         errors.append(f"{sid}: labeled_at must be UTC like 2026-09-29T10:19:36Z")
     if rec.get("no_candidate") is True:
@@ -217,8 +263,6 @@ def record_errors(row: dict, rec: dict, annotator: str | None) -> list[str]:
             errors.append(f"{sid}: labeled cannot be no_candidate")
         if rec.get("cover_ok") is None:
             errors.append(f"{sid}: labeled needs cover_ok")
-        if len(chosen_ids) >= 2 and rec.get("cross_box") is not True:
-            errors.append(f"{sid}: multiple boxes require cross_box=true")
         if len(chosen_ids) == 1 and rec.get("cross_box") is True:
             errors.append(f"{sid}: one box cannot be cross_box=true")
     if status == "skipped":
@@ -226,6 +270,12 @@ def record_errors(row: dict, rec: dict, annotator: str | None) -> list[str]:
             errors.append(f"{sid}: skipped requires no_candidate=true")
         if chosen_ids:
             errors.append(f"{sid}: skipped cannot have chosen_box_ids")
+        if rec.get("cover_ok") is not False:
+            errors.append(f"{sid}: skipped cover_ok must be false")
+        if rec.get("cross_box") is not False:
+            errors.append(f"{sid}: skipped cross_box must be false")
+        if levels:
+            errors.append(f"{sid}: skipped cover_levels must be empty")
     return errors
 
 
@@ -241,12 +291,29 @@ def check_labels(pilot: list[dict], labels: list[dict], annotator: str | None = 
     type_errors: list[dict] = []
     conflict_errors: list[dict] = []
     extra_ids: list[str] = []
+    review_conflicts: list[dict] = []
+    metadata_errors_found: list[dict] = []
     for rec in labels:
         sid = rec.get("sample_id")
         if sid not in expected_set:
             extra_ids.append(str(sid))
             continue
         seen.append(sid)
+        levels = rec.get("cover_levels") or {}
+        if (
+            rec.get("cover_ok") is True
+            and rec.get("cross_box") is True
+            and isinstance(levels, dict)
+            and any(value == "full" for value in levels.values())
+        ):
+            review_conflicts.append(
+                {
+                    "sample_id": sid,
+                    "error": f"{sid}: full and cross_box=true needs human review",
+                }
+            )
+        for msg in metadata_errors(by_id[sid], rec):
+            metadata_errors_found.append({"sample_id": sid, "error": msg})
         for msg in record_errors(by_id[sid], rec, annotator):
             if "missing" in msg:
                 missing_fields.append({"sample_id": sid, "error": msg})
@@ -266,7 +333,18 @@ def check_labels(pilot: list[dict], labels: list[dict], annotator: str | None = 
     pending = sum(1 for rec in labels if rec.get("sample_id") in expected_set and rec.get("label_status") == "pending")
     labeled = sum(1 for rec in labels if rec.get("sample_id") in expected_set and rec.get("label_status") == "labeled")
     skipped = sum(1 for rec in labels if rec.get("sample_id") in expected_set and rec.get("label_status") == "skipped")
-    problems = missing_fields + duplicates + illegal_box_ids + protocol_errors + status_errors + type_errors + conflict_errors + extra_ids + missing_ids
+    problems = (
+        missing_fields
+        + duplicates
+        + illegal_box_ids
+        + protocol_errors
+        + status_errors
+        + type_errors
+        + conflict_errors
+        + extra_ids
+        + missing_ids
+        + metadata_errors_found
+    )
     return {
         "n_pilot": len(expected),
         "n_label_rows": len(labels),
@@ -277,6 +355,8 @@ def check_labels(pilot: list[dict], labels: list[dict], annotator: str | None = 
         "status_errors": status_errors,
         "type_errors": type_errors,
         "conflict_errors": conflict_errors,
+        "review_conflicts": review_conflicts,
+        "metadata_errors": metadata_errors_found,
         "extra_sample_ids": extra_ids,
         "missing_sample_ids": missing_ids,
         "pending": pending,

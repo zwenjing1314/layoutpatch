@@ -8,9 +8,11 @@
 
 - `docs/paper-draft-notes.md`：小论文章节素材。只记可写内容和已有实验数字，不改评测口径。
 - 项目骨架首版：`src/layoutpatch/` 包结构、`tests/`、`configs/`、`docs/`、`experiments/`、`tasks.ps1`、uv 环境三件套（`pyproject.toml` + `.python-version` + 本文件）。
-- `docs/02-commands.md` 新增 `phase2r-dude`：DUDE 2-R 训练与一次 dev_eval 判定。
+- `docs/02-commands.md` 新增 `phase2r-dude`：DUDE 2-R 训练与一次 `dev_eval` 判定。
 - `docs/02-commands.md` 新增 `fusion-arxivqa`：第一次正式融合训练（ArxivQA 单域，一次 `dev_eval` 判定）。
 - `docs/02-commands.md` 新增 `region-ann-pilot`：40 题本地区域标注工作簿与格式检查。不训练，不读 `test_eval`。工作簿支持 A/B 导入导出；浏览器不写回仓库。
+- A 的 40 题 `region-ann-v1` 标签已按字节归档到独立目录；不覆盖旧 `labels_annotator_A.jsonl`，不写入 manifest，不开训。
+- A/B 40 题只读验收、B 按字节归档、裁定前一致率与无训练排序诊断已落盘；不扩标，不开训。记录：`experiments/2026-09-30-region-ann-ab-diagnosis.md`。
 
 - `docs/RULES.md`（开发规范十条铁律）、`docs/00-index.md`（SSOT 导航）、`docs/handoff.md`（进度交接）。
 - `docs/MIGRATION_BATCHES.md`（旧仓库 `mmdoc-evidence-rag` → 本项目的分批迁移执行清单，按小论文实验阶段切片）。

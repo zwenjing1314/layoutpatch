@@ -6,6 +6,9 @@
 
 ## 2026-09-28 新窗口接续（本节置顶。2026-09-27 及更早各节保留，只作考古，不要执行里面的旧下一步）
 
+- A/B 40 题 `region-ann-v1` 已只读验收并按字节归档，不是开训许可，不扩到 400。A 哈希未变，复用 `experiments/region_annotation/archive/2026-09-30_annotator_A_v1/`。B 新归档 `experiments/region_annotation/archive/2026-09-30_annotator_B_v1/`。独立副本：`labels_annotator_A_v1.jsonl`、`labels_annotator_B_v1.jsonl`。两边格式都未过：A 的 ann-0378/0380 pending 字段非 null；B 的 ann-0317 pending 带已选框，ann-0373 skipped 却 cross_box=true。独立 Jaccard 均值 0.8357（分母 35，校准 ann-0004/0018 除外），完全一致 26/35。无训练对照里面积 Hit@1 仍高于 iou_mass / region MaxSim。唯一下一步：先修标签/协议。诊断：`experiments/2026-09-30-region-ann-ab-diagnosis.md`。未训练。未读 `dev_eval`/`test_eval`。
+- A 的 40 题 `region-ann-v1` 先前已单独验收归档；本轮哈希复核相同，不重当新来源。旧 `labels_annotator_A.jsonl` 仍未覆盖，manifest 未写入。
+
 - EXP-009 算涨。范围只写 ArxivQA 单域头，在多域 dev_eval 上这一次。记录：`experiments/2026-09-28-exp-009-phase2r-arxivqa.md`。
 - EXP-010 不算涨。范围只写 DUDE 单域头，在多域 dev_eval 上这一次。记录：`experiments/2026-09-28-exp-010-phase2r-dude.md`。
 - EXP-011 算涨。范围只写 ArxivQA+DUDE 混训头，在多域 dev_eval 上这一次。记录：`experiments/2026-09-28-exp-011-phase2r-arxivqa-dude.md`。Run：`runs/retrieval/mmdocir_phase2r_arxivqa_dude/20260928_151348/`。
@@ -254,3 +257,7 @@ runs/retrieval/mmdocir_hybrid_page/20260917_115238/  EXP-004 五件套（R@5=0.7
 | 2026-09-17 | 重绘分格式论文网络框架图：`docs/figures/layoutpatch_network_framework.svg`，参考用户提供的三分格论文图风格，依据 `docs/PAPER_SPEC.md` 第 3、5、7–9 节展示总览数据流、方法组件放大图与贡献/有效性检查；SVG XML 校验通过。                                                                                        |
 
 
+
+## 2026-09-30 标注口径更新
+
+当前人工标注使用 `experiments/region_annotation/annotation_protocol_v1.md`，替代旧v0和历史标注方案的选择/辅助流程：选全可核实的直接证据候选，不采用最小充分集合。A/B分别模型辅助、人工独立审核；ann-0004为校准题。旧标签不自动迁移；v1工具导出独立文件，检查需用 `--labels` 指定。多框不强制cross_box=true。二值标签不是官方Area软标签。未修改冻结划分/评测/权重，未训练、未读test_eval。

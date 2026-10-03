@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
+from pathlib import Path
 
 
 def radios(name: str, options: list[tuple[str, str]], checked: str) -> str:
@@ -53,7 +55,7 @@ def build_workbook(rows: list[dict]) -> str:
     blocks = [
         "<!DOCTYPE html>",
         "<html lang='zh-CN'><head><meta charset='utf-8'>",
-        "<title>ArxivQA region-ann-v0 本地标注</title>",
+        "<title>ArxivQA region-ann-v1 本地标注</title>",
         "<style>",
         "body{font-family:sans-serif;max-width:1100px;margin:24px auto;line-height:1.45}",
         "img{max-width:100%;height:auto;border:1px solid #ccc}",
@@ -67,10 +69,10 @@ def build_workbook(rows: list[dict]) -> str:
         "label{margin-right:12px}",
         "</style></head><body>",
         "<div class='sticky'>",
-        "<h1>40 题本地标注工作簿（region-ann-v0）</h1>",
+        "<h1>40 题本地标注工作簿（region-ann-v1）</h1>",
         "<p class='warn'>浏览器<strong>不会</strong>写回仓库里的 jsonl。每次填完必须点「导出 JSONL」下载，再手动保存为 ",
-        "<code>experiments/region_annotation/labels_annotator_A.jsonl</code> 或 ",
-        "<code>labels_annotator_B.jsonl</code>。不要改 template 或 manifest。不要打开另一位标注者的文件。不自动推荐框。</p>",
+        "<code>experiments/region_annotation/labels_annotator_A_v1.jsonl</code> 或 ",
+        "<code>labels_annotator_B_v1.jsonl</code>。不要改 template 或 manifest。不要打开另一位标注者的文件。不自动推荐框。</p>",
         "<p>标注者：<select id='session-annotator'><option value=''>请选择</option><option value='A'>A</option><option value='B'>B</option></select>",
         " <button type='button' id='btn-import'>导入已有 JSONL</button>",
         " <input id='file-import' type='file' accept='.jsonl,application/jsonl,text/plain' hidden>",
@@ -78,10 +80,11 @@ def build_workbook(rows: list[dict]) -> str:
         " <button type='button' id='btn-export'>导出 JSONL</button></p>",
         "<pre id='io-status'></pre>",
         "</div>",
-        "<p>协议：<code>experiments/region_annotation/annotation_protocol_v0.md</code>。协议版本仍是 <code>region-ann-v0</code>，本页只把规则写清楚，不改版本号。</p>",
+        "<p>协议：<code>experiments/region_annotation/annotation_protocol_v1.md</code>。协议版本仍是 <code>region-ann-v1</code>，按v1重新审阅；不要覆盖旧标签。</p>",
+        "<p><strong>选全直接证据框，不只选最小集合；多个独立充分框都选，cross_box=false。请先阅读v1协议和模型辅助记录要求。</strong></p>",
         "<ul>",
         "<li><strong>不确定</strong>：看不准该选哪些框。保持 <code>pending</code>，在备注写原因。不要勾「无合适候选」，不要猜框。</li>",
-        "<li><strong>候选无法覆盖证据</strong>：看完全部框后，现有候选都盖不住答案。勾「无合适候选」，状态变为 <code>skipped</code>。</li>",
+        "<li><strong>候选无法覆盖证据</strong>：没有任何候选包含可确认的直接证据。部分覆盖时选已有证据、cover_ok填否。勾「无合适候选」，状态变为 <code>skipped</code>。</li>",
         "<li><code>full</code>：该框单独已经盖住答题所需证据。</li>",
         "<li><code>partial</code>：该框只盖住一部分，需要和其他已选框一起看。</li>",
         "</ul>",
@@ -121,17 +124,19 @@ def build_workbook(rows: list[dict]) -> str:
         blocks.append("</table>")
         blocks.append(
             f"<p><label><input class='nc-check' id='nc-{sid}' data-sample-id='{sid}' type='checkbox'> "
-            "无合适候选（现有框都盖不住证据）</label></p>"
+            "无合适候选（没有任何可确认的直接证据候选）</label></p>"
         )
         blocks.append(f"<p>no_candidate：{radios(f'ncflag-{sid}', bool_opts, 'null')}</p>")
         blocks.append(f"<p>cover_ok 已选框合在一起够不够答题：{radios(f'coverok-{sid}', bool_opts, 'null')}</p>")
-        blocks.append(f"<p>cross_box 证据跨多个已选框：{radios(f'cross-{sid}', bool_opts, 'null')}</p>")
+        blocks.append(f"<p>cross_box 必须联合多个框才能回答（多个独立充分框填否）：{radios(f'cross-{sid}', bool_opts, 'null')}</p>")
         blocks.append(f"<p>状态：{radios(f'status-{sid}', status_opts, 'pending')}</p>")
-        blocks.append(f"<p>备注 remark（不确定时必填原因）<br><textarea id='remark-{sid}' rows='3' cols='80'></textarea></p>")
+        blocks.append(f"<p>备注 remark（每题记录证据依据；不确定写原因）<br><textarea id='remark-{sid}' rows='3' cols='80'></textarea></p>")
         blocks.append("<p>本页没有预选框。导出前请再点一次「本页校验」。</p>")
         blocks.append("</section>")
     payload = json.dumps(question_payload(rows), ensure_ascii=False)
     blocks.append(f"<script id='pilot-questions' type='application/json'>{payload}</script>")
-    blocks.append("<script src='workbook.js'></script>")
+    script = Path(__file__).resolve().parents[1] / "experiments/region_annotation/pilot_materials/workbook.js"
+    revision = hashlib.sha256(script.read_bytes()).hexdigest()[:12]
+    blocks.append(f"<script src='workbook.js?v={revision}'></script>")
     blocks.append("</body></html>")
     return "\n".join(blocks) + "\n"

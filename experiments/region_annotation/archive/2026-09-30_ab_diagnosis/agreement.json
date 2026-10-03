@@ -1,0 +1,1499 @@
+{
+  "n_total": 40,
+  "n_calibration": 2,
+  "calibration_ids": [
+    "ann-0004",
+    "ann-0018"
+  ],
+  "n_pending_either": 3,
+  "pending_ids": [
+    "ann-0317",
+    "ann-0378",
+    "ann-0380"
+  ],
+  "n_comparable": 35,
+  "comparable_ids": [
+    "ann-0014",
+    "ann-0059",
+    "ann-0062",
+    "ann-0066",
+    "ann-0073",
+    "ann-0091",
+    "ann-0098",
+    "ann-0103",
+    "ann-0104",
+    "ann-0108",
+    "ann-0119",
+    "ann-0121",
+    "ann-0133",
+    "ann-0148",
+    "ann-0150",
+    "ann-0158",
+    "ann-0160",
+    "ann-0163",
+    "ann-0181",
+    "ann-0218",
+    "ann-0219",
+    "ann-0232",
+    "ann-0234",
+    "ann-0267",
+    "ann-0310",
+    "ann-0319",
+    "ann-0328",
+    "ann-0346",
+    "ann-0352",
+    "ann-0357",
+    "ann-0363",
+    "ann-0365",
+    "ann-0373",
+    "ann-0389",
+    "ann-0395"
+  ],
+  "n_both_empty_excluded_from_jaccard": 0,
+  "both_empty_ids": [],
+  "jaccard_denominator": 35,
+  "jaccard_mean": 0.8357142857142859,
+  "exact_match_rate": 0.7428571428571429,
+  "exact_match_count": 26,
+  "no_candidate_agreement": 0.9428571428571428,
+  "no_candidate_denominator": 35,
+  "cover_ok_disagreements": 2,
+  "cross_box_disagreements": 1,
+  "shared_box_level_n": 40,
+  "shared_box_level_agree": 38,
+  "rows": [
+    {
+      "sample_id": "ann-0004",
+      "query": "What is the likely physical phenomenon being represented by this vector field?",
+      "ann_split": "annot_fit",
+      "bucket": "calibration",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0,
+        4,
+        5
+      ],
+      "b_chosen": [
+        0,
+        5
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full",
+        "4": "full",
+        "5": "full"
+      },
+      "b_levels": {
+        "0": "full",
+        "5": "full"
+      },
+      "a_remark": "框0和框5分别直接解释Figure 4的磁场含义。框4跨栏包含向量图及Figure 5关于弦坍缩留下残余磁场的图注，可支持本题答案；该候选合并了额外正文和公式，粒度较粗。",
+      "b_remark": "box 5 图注与 box 0 正文末尾均直接指出图4矢量场为双弦衰变遗留的磁场形态。",
+      "jaccard": 0.6666666666666666,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0004/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0004/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0014",
+      "query": "What process is illustrated as occurring between the capture layers and the target layer in the figure?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.1及图注；图注明确正电子从目标层前往相邻捕获层并湮灭。",
+      "b_remark": "box 0包含图1及图注，图注文字明确描述了图中目标层发生IBD以及粒子进入捕获层湮灭/被捕获的过程。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0014/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0014/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0018",
+      "query": "What does the descending part of the curve in Figure (A) most likely represent?",
+      "ann_split": "annot_fit",
+      "bucket": "calibration",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        1
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "1": "full"
+      },
+      "a_remark": "按从左向右读图，图A峰值右侧下降段表示能量增加时构型数量减少。框0含曲线、坐标轴及图注，可独立支持回答；框1主要解释零能量附近与低能基态的构型数量，不作为该下降段的直接证据。",
+      "b_remark": "box 1 正文明确指出图1(A)展示了基态与高能态间存在巨大熵势垒，并描述了简并度从10^7下降到1的现象，直接解释了曲线下降部分的物理意义。",
+      "jaccard": 0.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0018/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0018/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0059",
+      "query": "In panel A, what is the difference between G1, G2, and G3 in the two illustrations?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        7
+      ],
+      "b_chosen": [
+        7
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "7": "full"
+      },
+      "b_levels": {
+        "7": "full"
+      },
+      "a_remark": "候选7过粗，含Fig.1(A)及图注；图注明确第三种方式中G1与G2、G2与G3重叠，第二方式为非重叠分组。",
+      "b_remark": "box 7 包含图1(A)及图注，图中直接标注了'Non-overlapping groups'与'Overlapping groups'，图注进一步说明了第三种方式中G1/G2及G2/G3是重叠的。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0059/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0059/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0062",
+      "query": "Which of the following best describes the trend observed as the parameter \"σ\" is increased?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 3及图注；图注明确低张力形成树状、中间张力形成周期纤维、高张力形成块体。",
+      "b_remark": "box 0 包含图表顶部的 σ 递增坐标以及底部图注，图注明确写出形态随张力增加由 Trees(低) 变为 fibers(中) 再到 Bulks(高) 的趋势。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0062/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0062/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0066",
+      "query": "Which panel depicts a scenario where input from multiple sources is being considered?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含全部面板与图注；图注(a)明确单顶点由四个双势阱钉扎位点围绕，对应多来源输入。",
+      "b_remark": "候选过粗。box 0包含面板b及图注，明确标出了'3-in'状态(红色顶点，三个粒子汇聚)，对应多个来源的输入场景。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0066/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0066/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0073",
+      "query": "What does the depth of the optical trap depend on according to figure a)?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.3 a/b及图注；图注a说明532nm束捕获Ba+、Rb主要由1064nm存储，图注b补充调节相对激光功率可调光阱深度。",
+      "b_remark": "box 0 包含图注，图注明确写道调节相对激光功率(relative laser power)可以调节光学陷阱的深度。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0073/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0073/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0091",
+      "query": "What does the parameter β_ICU represent in Figure A?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.3及图注；图注直接说明β_icu为ICU床位数与城市人口在对数尺度上的超线性缩放指数。",
+      "b_remark": "box 0 包含图注，图注文字明确将 β_icu 作为 ICU 床位数量随城市规模进行超线性缩放(scales super-linearly)的参数。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0091/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0091/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0098",
+      "query": "What does the dual y-axis represent in the graph?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        9
+      ],
+      "b_chosen": [
+        9
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "9": "full"
+      },
+      "b_levels": {
+        "9": "full"
+      },
+      "a_remark": "候选9过粗，含FIG.2及图注；图中左轴为Displacement (pixel)、右轴为Displacement (μm)，图注给出标定系数(3.11±0.03) μm/pixel。",
+      "b_remark": "box 9 包含图2及图注，图中左右y轴直接标明了'Displacement (pixel)'和'Displacement (μm)'，且图注解释了两者间的校准关系。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0098/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0098/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0103",
+      "query": "What is indicated by the green lines in the 'Excitatory Bump Wandering' in panel D?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.1及图注；图注(D)明确绿色轨迹表示center of mass。",
+      "b_remark": "候选过粗。box 0 包含了面板D中间的图例以及底部的图注，两者均明确指出绿色代表 Center of Mass。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0103/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0103/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0104",
+      "query": "What inference can be made about the 'Read-out neurons' in the context of the recurrent network model shown in the figure?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Fig.1及图注；图注明确兴奋性神经元全对全投射到读出神经元，且读出神经元不互连；D说明读出突触可塑性线性依赖权重。",
+      "b_remark": "候选过粗。box 0包含图注，图注文字明确陈述读出神经元接收全连接投射且它们彼此之间不互连（not interconnected）",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0104/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0104/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0108",
+      "query": "What can be inferred about the time evolution of the cascade model in comparison to the exact dynamics for the parameter W0?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        12,
+        13,
+        15
+      ],
+      "b_chosen": [
+        12,
+        13,
+        15
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "12": "full",
+        "15": "full"
+      },
+      "b_levels": {
+        "12": "full",
+        "13": "full",
+        "15": "full"
+      },
+      "a_remark": "候选13明确数值与解析结果在整个演化直到饱和都非常吻合；候选15的FIG.1(a)显示exact dynamics与cascade model曲线接近；候选12说明比较对象为W0(t)数值数据与式(10)。",
+      "b_remark": "box 15 的图1(a)直接展示了两种模型下W0演化曲线的高度重合；box 12及13的文字明确得出两者吻合度'very good'的结论，均为独立充分证据。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0108/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0108/overlay.png",
+      "kinds": []
+    },
+    {
+      "sample_id": "ann-0119",
+      "query": "What does the red line with markers in the graph most likely represent?",
+      "ann_split": "annot_val",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 4及图注；图注明确红线表示在最佳拟合模型上加入吸收线（cyclabs模型 in XSPEC）后的零假设概率。",
+      "b_remark": "候选过粗。box 0 包含图注，图注末尾明确说明红色(red)代表增加了吸收线(cyclabs model)的相同模型。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0119/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0119/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0121",
+      "query": "Based on Figure e, which device has the highest transconductance (Gm) at 4.2K?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 2及图注；图2e中4.2 K处蓝色圆点标为nMOS 300 nm / 28 nm，其Gm高于绿色方块和红色菱形。",
+      "b_remark": "候选过粗。box 0 包含了 Fig 2(e)，在横坐标 4.2K 处，最高点对应的器件标注为 '3μm / 28nm nMOS'。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0121/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0121/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0133",
+      "query": "How do the graphs indicate the relationship between the critical density (δc) and the variable n?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0,
+        1
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full",
+        "1": "partial"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 4及图注，直接显示左右面板δc=1.5/1.7及n-Ων曲线；候选1正文补充δc=1.7时需n≲0.95才与观测一致。",
+      "b_remark": "box 0 包含图表及图注，左右面板分别标出 δc=1.5 和 1.7，可以直接对比出两图中曲线在横轴 n 上的相对移动。",
+      "jaccard": 0.5,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0133/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0133/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0148",
+      "query": "What can be inferred about the force between the flake and the surface at 0 K from figure (a)?",
+      "ann_split": "annot_val",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        1
+      ],
+      "b_chosen": [
+        1
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "1": "full"
+      },
+      "b_levels": {
+        "1": "full"
+      },
+      "a_remark": "候选1过粗，含Figure 4(a)(b)及图注；图注明确虚线为对应吸引力随脱离距离的变化，图(a)中力为负值并随距离增大趋近0。",
+      "b_remark": "box 1 包含了图 4(a) 和图注，图注指明虚线为引力，图中虚线显示 0K 时对齐态(红虚线)的最大吸引力大于未对齐态(绿虚线)。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0148/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0148/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0150",
+      "query": "Which panel shows the Fourier amplitude as a function of frequency?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        2,
+        3,
+        4
+      ],
+      "b_chosen": [
+        4
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "2": "partial",
+        "3": "partial",
+        "4": "full"
+      },
+      "b_levels": {
+        "4": "full"
+      },
+      "a_remark": "候选4过粗，含Figure 2及图注；图(b)纵轴Fourier amp.、横轴Frequency (T)，直接显示傅里叶振幅随频率变化；候选2、3文字也指向Fig.2(b)为傅里叶变换。",
+      "b_remark": "box 4 包含图2，其中子图(b)的纵轴为'Fourier amp.'，横轴为'Frequency'，直接回答了问题。",
+      "jaccard": 0.3333333333333333,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0150/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0150/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0158",
+      "query": "Which statement best describes the trend in empirical power for the MW test in the Normal II distribution?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "skipped",
+      "b_status": "labeled",
+      "a_chosen": [],
+      "b_chosen": [
+        1
+      ],
+      "a_no_candidate": true,
+      "b_no_candidate": false,
+      "a_cover_ok": false,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {},
+      "b_levels": {
+        "1": "full"
+      },
+      "a_remark": "当前页面内容为超导材料PDC共振频率与傅里叶变换，未出现MW检验、Normal II分布或empirical power相关证据，疑附件与问题不匹配。",
+      "b_remark": "box 1 包含了右上角的 Normal II 子图及图例，图中直观显示了代表 MW 的粗虚线随横轴 δ 增加而呈现经验功效单调上升的趋势。",
+      "jaccard": 0.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0158/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0158/overlay.png",
+      "kinds": [
+        "no_candidate_A_only",
+        "chosen_mismatch",
+        "cover_ok_mismatch"
+      ]
+    },
+    {
+      "sample_id": "ann-0160",
+      "query": "Based on the energy diagram in figure (b), what is the consequence of bringing two Rydberg atoms closer together?",
+      "ann_split": "annot_val",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        3,
+        5,
+        7
+      ],
+      "b_chosen": [
+        4,
+        5
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "3": "partial",
+        "5": "full",
+        "7": "partial"
+      },
+      "b_levels": {
+        "4": "full",
+        "5": "full"
+      },
+      "a_remark": "候选5过粗，含Figure 1(b)能级图及图注；图(b)右侧Pair Energy vs Distance显示两原子靠近到特征距离时能级移动/相互作用；候选3说明特征范围相互作用，候选7说明生成Ising相互作用。",
+      "b_remark": "box 5的图1(b)右侧直观展示了距离减小时|rr>态能级急剧偏移；box 4正文描述了里德伯相互作用会导致能级偏移(shifts the atomic transition)。",
+      "jaccard": 0.25,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0160/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0160/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0163",
+      "query": "What does the shaded area around the 'Decoding' curve most likely represent?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.SI1及图注；图注Top明确红色Decoding曲线为contributing cells平均值±SD，阴影区域表示标准差。",
+      "b_remark": "候选过粗。box 0 包含图表及图注，图注明确指出 Top 面板中红色曲线(对应Decoding)的统计量为 Average (± SD)，阴影区域即代表 ± SD (标准差)",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0163/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0163/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0181",
+      "query": "What does the point \\( h(x) \\) represent in this figure?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        1,
+        2
+      ],
+      "b_chosen": [
+        1,
+        2
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "1": "partial",
+        "2": "full"
+      },
+      "b_levels": {
+        "1": "partial",
+        "2": "full"
+      },
+      "a_remark": "框2图注直接定义h(x)为x到第三近输入x_{F-V}的距离；框1图示h(x)箭头位置，但单独不足以定义其含义。",
+      "b_remark": "box 2 的图注文字直接定义了 h(x) 为从 x 到第三近的 x_{F-V} 的距离；box 1 的图中画出了这根表示距离的线段。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0181/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0181/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0218",
+      "query": "What is the scale of the feature shown in the micrograph in figure (b)?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Fig.1(b)及图注；图b有10 μm标尺，图注称红箭头所示薄片厚度小于20 nm。",
+      "b_remark": "候选过粗。box 0 包含图 1(b) 及其图注，图 b 左上角有 '10 μm' 比例尺，图注中也说明了薄片厚度小于 20 nm",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0218/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0218/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0219",
+      "query": "Based on the graph, what can be inferred about the critical current (I_c)?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        9
+      ],
+      "b_chosen": [
+        9
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "9": "full"
+      },
+      "b_levels": {
+        "9": "full"
+      },
+      "a_remark": "候选9含FIG.B1及图注；图注明确超过临界电流Ic后I-V曲线出现MAR特征直至2Δ，V>2Δ进入线性区并外推得Ie。",
+      "b_remark": "box 9 包含图表及图注，图注明确写出当电流大于临界电流 I_c 时，I-V曲线(红线)可能包含多次安德烈夫反射(MAR)的特征。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0219/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0219/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0232",
+      "query": "What does the area between the 'AUC+' and 'AUC-' curves in the leftmost graph indicate?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 2及图注；图注说明Coverage AUC是期望覆盖曲线与对角线之间的有符号面积，AUC+对应保守、AUC-对应过度自信",
+      "b_remark": "候选过粗。box 0包含图2最左侧子图及图注，图注第一句话明确解释了该区域代表Coverage AUC，即期望覆盖曲线与对角线之间的积分有符号面积。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0232/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0232/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0234",
+      "query": "Based on the color intensity in the graphs (e), (f), (g), and (h), what does the brightness signify in relation to the magnon-like and cavity-like modes?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0,
+        2
+      ],
+      "b_chosen": [
+        2
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full",
+        "2": "full"
+      },
+      "b_levels": {
+        "2": "full"
+      },
+      "a_remark": "remark\": \"候选0过粗，含图2及图注；图注说明(e)(g)为|S21|透射幅度映射，(f)(h)为群延迟τg映射，红蓝箭头标记磁子/腔模式；候选2正文补充BIC热斑与群延迟奇点",
+      "b_remark": "box 2 包含图3图注，明确说明了颜色表示空腔模式(蓝色)和磁振子模式(红色)的主导地位(dominance)。",
+      "jaccard": 0.5,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0234/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0234/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0267",
+      "query": "What does the dotted line from the function \\( g \\) to the function \\( f \\) in panel b represent?",
+      "ann_split": "annot_val",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 1及图注；图注(b)明确代理方法用人类可解释模型g近似f，对应panel b中g到f的虚线。",
+      "b_remark": "box 0 包含图 1 及图注，图注对 (b) 的解释明确指出是使用人类可解释的模型 g 来近似(approximate)模型 f，这直接解释了图中虚线的含义。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0267/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0267/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0310",
+      "query": "In the Office 2013 figure, which statement accurately describes the behavior of the frequency \\( f_{PTR}^{+} - f_{PTR}^{sol} \\) for the group size g=100 as Δt increases?",
+      "ann_split": "annot_val",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.4及图注；图中Office 2013为第d行，图例g=100为绿色线，上方箭头指示Δt从左到右增大，可直接观察绿线随Δt的变化。",
+      "b_remark": "候选过粗。box 0 包含整个图表，能直接定位到 Office 2013(d行)、g=100(绿线) 以及 Δt 增加的方向，观察到该曲线峰值向右移动。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0310/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0310/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0317",
+      "query": "What relationship is depicted in figure 'f'?",
+      "ann_split": "annot_fit",
+      "bucket": "pending",
+      "a_status": "labeled",
+      "b_status": "pending",
+      "a_chosen": [
+        0,
+        2,
+        3
+      ],
+      "b_chosen": [
+        0,
+        2,
+        3
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": null,
+      "a_cover_ok": true,
+      "b_cover_ok": null,
+      "a_cross_box": false,
+      "b_cross_box": null,
+      "a_levels": {
+        "0": "full",
+        "2": "full",
+        "3": "full"
+      },
+      "b_levels": {
+        "0": "full",
+        "2": "full",
+        "3": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 4及图注；图注(f)与框2均说明图f为E(κ)能量色散关系，框3补充线性E-κ色散证明狄拉克锥。",
+      "b_remark": "box 0 图注直接说明图f是Energy dispersion关于κ的函数；box 2和3的正文补充说明了在图4(f)中绘制的是E(κ)曲线，且该关系为线性色散。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0317/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0317/overlay.png",
+      "kinds": [
+        "cover_ok_mismatch",
+        "cross_box_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0319",
+      "query": "Which method depicted in the figure uses a variable phase (U(ϕk)) in the process?",
+      "ann_split": "annot_val",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        7,
+        8
+      ],
+      "b_chosen": [
+        7,
+        8
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "7": "full",
+        "8": "full"
+      },
+      "b_levels": {
+        "7": "full",
+        "8": "full"
+      },
+      "a_remark": "候选7过粗，含Figure 1；图中Method2在π1与π2间标U(φk)。候选8正文明确第二种方法产生非均匀确定性相位演化U(φk)。",
+      "b_remark": "box 7中的图1(c)直接在'Method 2'对应的图示中标注了U(ϕ_k)；box 8正文明确指出'second method'施加了相位演化U(ϕ_k)。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0319/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0319/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0328",
+      "query": "What is the common feature of all three processes depicted in the figures?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0,
+        2
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full",
+        "2": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.2三个费曼图及图注；图注首句明确三者均为ep→epγ反应的最低阶QED振幅。",
+      "b_remark": "box 0 包含图 2 及其图注，图注第一句话即指出这些是 ep -> epγ 反应的振幅；box 2 的正文也解释了 VCS 和 Bethe-Heitler 都是构成 ep -> epγ 反应截面的通道。",
+      "jaccard": 0.5,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0328/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0328/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0346",
+      "query": "What does the dashed horizontal line at the value of 0.5 on the y-axis in the graphs represent?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        6,
+        7
+      ],
+      "b_chosen": [
+        6,
+        7
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "6": "full",
+        "7": "full"
+      },
+      "b_levels": {
+        "6": "full",
+        "7": "full"
+      },
+      "a_remark": "候选6正文明确1/2随机分配值由水平虚线标记；候选7过粗，含Figure 1及图注，图中显示y=0.5水平虚线。",
+      "b_remark": "box 7中的图展示了y轴0.5处的水平虚线；box 6的正文明确说明该水平虚线(1/2)代表对应于随机分配(random assignment)的值。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0346/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0346/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0352",
+      "query": "Based on figure b, what can be said about the relationship between bias voltage and gate voltage at the points indicated by the yellow triangles?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 3及图注；图b中黄三角位于斜向亮线端点，显示偏压与栅压呈线性关系；图注说明三角形指示与非平衡激发相关的ETE峰终止",
+      "b_remark": "box 0 包含图 3 及图注，图注明确写出三角形指示了与非平衡激发相关的 ETE 峰的终止。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0352/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0352/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0357",
+      "query": "What physical quantity is represented by the y-axis labeled 'ε²' in Figure D?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0,
+        2
+      ],
+      "b_chosen": [
+        0,
+        1,
+        2
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full",
+        "2": "full"
+      },
+      "b_levels": {
+        "0": "full",
+        "1": "full",
+        "2": "full"
+      },
+      "a_remark": "候选0过粗，含Figure 1及图注；图注D明确ε'为无量纲效率；候选2正文也称Fig.1D为efficiencies且给出ε'数值。问题中ε²应为ε'。",
+      "b_remark": "提问中ε²系笔误，实为ε'。box 0图注直接说明图D纵轴ε'为Dimensionless efficiency；box 1和2正文也独立印证了它代表效率。",
+      "jaccard": 0.6666666666666666,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0357/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0357/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0363",
+      "query": "In the context of magnetic materials, what does the interaction term \\( JS_i \\cdot S_j \\) most likely describe?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "候选0过粗，含FIG.1及图注；图注明确JS_i·S_j为最近邻海森堡模型，用于描述Kagome晶格自旋相互作用与几何阻挫。",
+      "b_remark": "box 0 包含图注，明确指出 JS_i·S_j 项代表的是最近邻海森堡模型(nearest-neighbor Heisenberg model)",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0363/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0363/overlay.png",
+      "kinds": [
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0365",
+      "query": "What is the likely relationship between \\( w_F^a \\) and \\( w_F^0 \\) as indicated by the contour lines?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        2,
+        3
+      ],
+      "b_chosen": [
+        2,
+        3
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "2": "full",
+        "3": "partial"
+      },
+      "b_levels": {
+        "2": "full",
+        "3": "full"
+      },
+      "a_remark": "\"候选2图中等高线斜向右下，显示w_F^a随w_F^0增大而减小；候选3图注给出直线w0+wa<0，支持负相关。",
+      "b_remark": "box 2图表直观显示等高线呈从左上至右下的负斜率，表明两个参数之间存在负相关关系；box 3图注解释了这些等高线代表拟合优度极限和混淆区。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0365/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0365/overlay.png",
+      "kinds": [
+        "full_partial_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0373",
+      "query": "What does the scaling factor indicated by 'x10^n' in the figure represent?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "skipped",
+      "a_chosen": [
+        0
+      ],
+      "b_chosen": [],
+      "a_no_candidate": false,
+      "b_no_candidate": true,
+      "a_cover_ok": true,
+      "b_cover_ok": false,
+      "a_cross_box": false,
+      "b_cross_box": true,
+      "a_levels": {
+        "0": "full"
+      },
+      "b_levels": {},
+      "a_remark": "候选0过粗，含FIG.1；图中曲线旁标有x10^5、x10^3等，表示不同中心度bin谱线为同图显示而乘以的缩放因子；图注未直接解释。",
+      "b_remark": "图注未直接用文字解释缩放因子 x10^n 的含义。根据物理图表惯例，它是为了在纵向分离开代表不同中心度的光谱曲线（如box 1所述）的视觉平移因子。",
+      "jaccard": 0.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0373/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0373/overlay.png",
+      "kinds": [
+        "no_candidate_B_only",
+        "chosen_mismatch",
+        "cover_ok_mismatch",
+        "cross_box_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0378",
+      "query": "Based on the density of points in both graphs, what CCD value range seems to have the highest frequency of occurrences?",
+      "ann_split": "annot_fit",
+      "bucket": "pending",
+      "a_status": "pending",
+      "b_status": "labeled",
+      "a_chosen": [],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": false,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {},
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "问题问CCD value range，但页面中未出现CCD；Figure 1仅含R.A.、Dec及速度/红移刻度，无法确定对应量，建议pending。",
+      "b_remark": "提问中的CCD疑似R.A.(赤经)的笔误。box 0包含完整的楔形散点图，通过观察可以直观看出点最密集的区域对应外围刻度大约在11.5到13.5之间。",
+      "jaccard": 0.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0378/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0378/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "cover_ok_mismatch"
+      ]
+    },
+    {
+      "sample_id": "ann-0380",
+      "query": "Comparing the normal sample to the AML sample, what change is observed in the myeloid cells population?",
+      "ann_split": "annot_fit",
+      "bucket": "pending",
+      "a_status": "pending",
+      "b_status": "labeled",
+      "a_chosen": [],
+      "b_chosen": [
+        0
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": false,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {},
+      "b_levels": {
+        "0": "full"
+      },
+      "a_remark": "页面证据只说明myeloid blasts比例从1.5%增至28%，未直接说明myeloid cells群体变化，问题可能混淆两者，建议pending。",
+      "b_remark": "box 0包含图表与图例。虽然文字仅提及红色myeloid blasts增加，但从图中直观可见代表myeloid cells的绿色点云区域在AML样本中明显减少。",
+      "jaccard": 0.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0380/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0380/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "cover_ok_mismatch"
+      ]
+    },
+    {
+      "sample_id": "ann-0389",
+      "query": "What is the relationship between t_p and P(t_p) for the highest angular velocity of 37.7 rad s^-1?",
+      "ann_split": "annot_val",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        11,
+        12
+      ],
+      "b_chosen": [
+        11,
+        12
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "11": "full",
+        "12": "full"
+      },
+      "b_levels": {
+        "11": "full",
+        "12": "partial"
+      },
+      "a_remark": "候选11过粗，含Figure 2及图注；图注说明幂律P~t_p^{-α}及α=2参照，图中37.7 rad/s橙色曲线随t_p增大而下降。候选12正文直接说明高t_p处P呈幂律衰减P~t_p^{-α}。",
+      "b_remark": "box 11 包含图 2 及图注，图例显示 ω=37.7 对应橙色菱形，图中橙色菱形数据线旁标有 α=1.8，且图注指出关系满足幂律 P ~ t_p^(-α)。",
+      "jaccard": 1.0,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0389/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0389/overlay.png",
+      "kinds": [
+        "full_partial_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    },
+    {
+      "sample_id": "ann-0395",
+      "query": "What does the main trend depicted in the figure indicate?",
+      "ann_split": "annot_fit",
+      "bucket": "comparable",
+      "a_status": "labeled",
+      "b_status": "labeled",
+      "a_chosen": [
+        0,
+        1
+      ],
+      "b_chosen": [
+        1
+      ],
+      "a_no_candidate": false,
+      "b_no_candidate": false,
+      "a_cover_ok": true,
+      "b_cover_ok": true,
+      "a_cross_box": false,
+      "b_cross_box": false,
+      "a_levels": {
+        "0": "partial",
+        "1": "full"
+      },
+      "b_levels": {
+        "1": "full"
+      },
+      "a_remark": "候选1过粗，含Figure 4及图注，显示5.5K的Q总体高于290K且ΔFWHM更负；候选0文字说明Q和Er线宽随温度变化，并探索两个极端以展示最大线宽变化。需图与文字联合说明趋势含义。",
+      "b_remark": "box 1 包含图 4 及其图注，图注明确指出图中两个温度之间的波长偏移趋势最可能是由于样品在低温恒温器中的位置偏移造成的。",
+      "jaccard": 0.5,
+      "page_image": "experiments/region_annotation/pilot_materials/samples/ann-0395/page.png",
+      "overlay_image": "experiments/region_annotation/pilot_materials/samples/ann-0395/overlay.png",
+      "kinds": [
+        "chosen_mismatch",
+        "protocol_risk_caption_or_large_box"
+      ]
+    }
+  ],
+  "formula": {
+    "jaccard": "|A∩B|/|A∪B|; 双方空集单列不计满分; 一方有框另一方确认无候选=0; pending 不进分母",
+    "exact": "chosen_box_ids 集合完全相同 / Jaccard 分母",
+    "no_candidate": "双方 no_candidate 同为 true/false 的一致数 / 该分母"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "n_pilot": 40,
+  "n_label_rows": 40,
+  "missing_fields": [],
+  "duplicate_sample_ids": [],
+  "illegal_box_ids": [],
+  "protocol_errors": [],
+  "status_errors": [
+    {
+      "sample_id": "ann-0317",
+      "error": "ann-0317: pending cannot have chosen_box_ids"
+    },
+    {
+      "sample_id": "ann-0317",
+      "error": "ann-0317: pending cover_levels must be empty"
+    },
+    {
+      "sample_id": "ann-0373",
+      "error": "ann-0373: skipped cross_box must be false"
+    }
+  ],
+  "type_errors": [],
+  "conflict_errors": [],
+  "review_conflicts": [],
+  "metadata_errors": [],
+  "extra_sample_ids": [],
+  "missing_sample_ids": [],
+  "pending": 1,
+  "labeled": 38,
+  "skipped": 1,
+  "unlabeled": 1,
+  "ok": false,
+  "test_eval_ids_opened": false,
+  "evaluation_gold_used": false,
+  "auto_labels_written": false,
+  "training_started": false,
+  "images": {
+    "n_questions": 40,
+    "png_opened": 80,
+    "png_expected": 80,
+    "failures": [],
+    "complete": true
+  },
+  "labels_path": "C:\\Users\\WenJing\\Documents\\WorkTransfer\\layoutpatch\\experiments\\region_annotation\\archive\\2026-09-30_annotator_B_v1\\labels_annotator_B_v1.jsonl",
+  "source_path": "C:\\Users\\WenJing\\Downloads\\labels_annotator_B_v1.jsonl",
+  "source_sha256": "7209e3bf497c80cf8dc2f142af68df2d32c7c7dfaadf8c161fb57cc1a26fb964",
+  "archive_sha256": "7209e3bf497c80cf8dc2f142af68df2d32c7c7dfaadf8c161fb57cc1a26fb964",
+  "independent_sha256": "7209e3bf497c80cf8dc2f142af68df2d32c7c7dfaadf8c161fb57cc1a26fb964",
+  "old_labels_sha256": null,
+  "old_labels_overwritten": false,
+  "manifest_written": false,
+  "created_utc": "2026-09-30T22:34:26Z",
+  "source_kept": true,
+  "archive_copy_status": "already_same",
+  "independent_copy_status": "already_same",
+  "completion_stats": {
+    "n_rows": 40,
+    "labeled": 38,
+    "pending": 1,
+    "skipped": 1,
+    "pending_ids": [
+      "ann-0317"
+    ],
+    "skipped_ids": [
+      "ann-0373"
+    ],
+    "labeled_ids": [
+      "ann-0004",
+      "ann-0014",
+      "ann-0018",
+      "ann-0059",
+      "ann-0062",
+      "ann-0066",
+      "ann-0073",
+      "ann-0091",
+      "ann-0098",
+      "ann-0103",
+      "ann-0104",
+      "ann-0108",
+      "ann-0119",
+      "ann-0121",
+      "ann-0133",
+      "ann-0148",
+      "ann-0150",
+      "ann-0158",
+      "ann-0160",
+      "ann-0163",
+      "ann-0181",
+      "ann-0218",
+      "ann-0219",
+      "ann-0232",
+      "ann-0234",
+      "ann-0267",
+      "ann-0310",
+      "ann-0319",
+      "ann-0328",
+      "ann-0346",
+      "ann-0352",
+      "ann-0357",
+      "ann-0363",
+      "ann-0365",
+      "ann-0378",
+      "ann-0380",
+      "ann-0389",
+      "ann-0395"
+    ],
+    "single_box_labeled": 28,
+    "multi_box_labeled": 10,
+    "cover_full_boxes": 48,
+    "cover_partial_boxes": 2,
+    "questions_with_full": 38,
+    "questions_with_partial": 2,
+    "cross_box": {
+      "False": 38,
+      "None": 1,
+      "True": 1
+    },
+    "no_candidate": {
+      "False": 38,
+      "None": 1,
+      "True": 1
+    },
+    "potential_trainable_cover_ok_nonempty": 38,
+    "potential_trainable_ids": [
+      "ann-0004",
+      "ann-0014",
+      "ann-0018",
+      "ann-0059",
+      "ann-0062",
+      "ann-0066",
+      "ann-0073",
+      "ann-0091",
+      "ann-0098",
+      "ann-0103",
+      "ann-0104",
+      "ann-0108",
+      "ann-0119",
+      "ann-0121",
+      "ann-0133",
+      "ann-0148",
+      "ann-0150",
+      "ann-0158",
+      "ann-0160",
+      "ann-0163",
+      "ann-0181",
+      "ann-0218",
+      "ann-0219",
+      "ann-0232",
+      "ann-0234",
+      "ann-0267",
+      "ann-0310",
+      "ann-0319",
+      "ann-0328",
+      "ann-0346",
+      "ann-0352",
+      "ann-0357",
+      "ann-0363",
+      "ann-0365",
+      "ann-0378",
+      "ann-0380",
+      "ann-0389",
+      "ann-0395"
+    ],
+    "potential_trainable_is_not_training_approval": true,
+    "format_pass_is_not_evidence_correctness": true
+  },
+  "human_review": [
+    {
+      "sample_id": "ann-0317",
+      "fields": [
+        "checker"
+      ],
+      "reason": "ann-0317: pending cannot have chosen_box_ids"
+    },
+    {
+      "sample_id": "ann-0317",
+      "fields": [
+        "checker"
+      ],
+      "reason": "ann-0317: pending cover_levels must be empty"
+    },
+    {
+      "sample_id": "ann-0373",
+      "fields": [
+        "checker"
+      ],
+      "reason": "ann-0373: skipped cross_box must be false"
+    }
+  ],
+  "hash_reused_previous_a_acceptance": false,
+  "bytes": 58080,
+  "dev_eval_ids_opened": false
+}

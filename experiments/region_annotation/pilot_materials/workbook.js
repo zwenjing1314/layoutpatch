@@ -1,5 +1,5 @@
 (() => {
-  const PROTOCOL = "region-ann-v0";
+  const PROTOCOL = "region-ann-v1";
   const UTC_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 
   function questions() {
@@ -154,14 +154,22 @@
       if (!chosen.length) errors.push(`${sid}: labeled 必须选择至少一个框`);
       if (rec.no_candidate === true) errors.push(`${sid}: labeled 不能同时 no_candidate`);
       if (rec.cover_ok === null) errors.push(`${sid}: labeled 必须判断 cover_ok`);
-      if (chosen.length >= 2 && rec.cross_box !== true) errors.push(`${sid}: 选了多个框时必须 cross_box=true`);
+      // Multiple independently sufficient regions are valid with cross_box=false.
       if (chosen.length === 1 && rec.cross_box === true) errors.push(`${sid}: 只选一个框时不能 cross_box=true`);
     }
     if (rec.label_status === "skipped") {
       if (rec.no_candidate !== true) errors.push(`${sid}: skipped 必须 no_candidate=true`);
       if (chosen.length) errors.push(`${sid}: skipped 不能有 chosen_box_ids`);
+      if (rec.cover_ok !== false) errors.push(`${sid}: skipped 的 cover_ok 必须为 false`);
+      if (rec.cross_box !== false) errors.push(`${sid}: skipped 的 cross_box 必须为 false`);
+      if (Object.keys(levels).length) errors.push(`${sid}: skipped 的 cover_levels 必须为空`);
     }
     if (rec.label_status === "pending") {
+      if (chosen.length) errors.push(`${sid}: pending 不能有 chosen_box_ids`);
+      if (rec.cover_ok !== null) errors.push(`${sid}: pending 的 cover_ok 必须为空`);
+      if (rec.no_candidate !== null) errors.push(`${sid}: pending 的 no_candidate 必须为空`);
+      if (rec.cross_box !== null) errors.push(`${sid}: pending 的 cross_box 必须为空`);
+      if (Object.keys(levels).length) errors.push(`${sid}: pending 的 cover_levels 必须为空`);
       if (rec.labeled_at != null && rec.labeled_at !== "") {
         errors.push(`${sid}: pending 的 labeled_at 必须为空`);
       }
@@ -214,6 +222,7 @@
     const map = new Map();
     for (const rec of imported) {
       if (!rec || !rec.sample_id) continue;
+      if (rec.protocol_version !== PROTOCOL) throw new Error("旧协议标签不能自动迁移；请备份后按v1重新审阅填写。");
       if (map.has(rec.sample_id)) throw new Error(`导入文件有重复题目 ${rec.sample_id}`);
       map.set(rec.sample_id, rec);
     }
@@ -256,7 +265,7 @@
   async function importFile(file) {
     const text = await file.text();
     mergeImported(parseJsonl(text));
-    showStatus(`已导入 ${file.name}。浏览器不会写回磁盘，导出后请另存为 labels_annotator_A.jsonl 或 labels_annotator_B.jsonl。`, false);
+    showStatus(`已导入 ${file.name}。浏览器不会写回磁盘，导出后请另存为 labels_annotator_A_v1.jsonl 或 labels_annotator_B_v1.jsonl。`, false);
   }
 
   function exportFile() {
@@ -267,7 +276,7 @@
       return;
     }
     const counts = countStatus(out);
-    const name = `labels_annotator_${annotator}.jsonl`;
+    const name = `labels_annotator_${annotator}_v1.jsonl`;
     download(name, toJsonl(out));
     showStatus(
       `已下载 ${name}。UTC=${stamp}。pending=${counts.pending} labeled=${counts.labeled} skipped=${counts.skipped}。浏览器没有写回仓库里的原文件，请把下载文件覆盖到 experiments/region_annotation/。`,

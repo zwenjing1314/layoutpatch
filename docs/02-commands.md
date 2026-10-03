@@ -194,6 +194,6 @@ uv run python scripts/audit_phase2r_gaps.py
 ./tasks.ps1 region-ann-pilot
 ```
 
-- 输入：`experiments/region_annotation/arxivqa_pilot_manifest.jsonl` + `pilot_materials/samples/*/page.png|overlay.png`。不读 `dev_eval` / `test_eval`。不改 template / manifest。不自动填框。不覆盖已有 `labels_annotator_A.jsonl` / `labels_annotator_B.jsonl`。
-- 输出：`pilot_materials/workbook.html` + `workbook.js`。人工标签由浏览器导出为独立 A/B 文件。检查可用 `uv run python scripts/region_ann_pilot.py check --annotator A|B`，或 `--labels` 指向临时文件。
-- 检查：40 题 PNG 都能打开；报告缺失字段、重复题目、非法/重复 `box_id`、状态冲突、无候选与选框冲突。浏览器不会写回仓库文件。
+- 输入：`experiments/region_annotation/arxivqa_pilot_manifest.jsonl` + `pilot_materials/samples/*/page.png|overlay.png`。不读 `dev_eval` / `test_eval`。不改 template / manifest。不自动填框。不覆盖已有 `labels_annotator_A.jsonl` / `labels_annotator_B.jsonl`。v1 结果用独立文件，例如 `labels_annotator_A_v1.jsonl`。
+- 输出：`pilot_materials/workbook.html` + `workbook.js`。人工标签由浏览器导出为独立 A/B 文件。检查可用 `uv run python scripts/region_ann_pilot.py check --annotator A|B`，或 `--labels` 指向临时/归档文件。
+- 检查：40 题 PNG 都能打开；报告缺失字段、重复题目、非法/重复 `box_id`、状态冲突、无候选与选框冲突、题目元数据是否被改。`pending` 的 `cover_ok` / `no_candidate` / `cross_box` 必须为 `null`。多个独立 `full` 框允许 `cross_box=false`。浏览器不会写回仓库文件。

@@ -1,0 +1,243 @@
+{
+  "n_pilot": 40,
+  "n_label_rows": 40,
+  "missing_fields": [],
+  "duplicate_sample_ids": [],
+  "illegal_box_ids": [],
+  "protocol_errors": [],
+  "status_errors": [
+    {
+      "sample_id": "ann-0378",
+      "error": "ann-0378: pending cover_ok must be null"
+    },
+    {
+      "sample_id": "ann-0378",
+      "error": "ann-0378: pending no_candidate must be null"
+    },
+    {
+      "sample_id": "ann-0378",
+      "error": "ann-0378: pending cross_box must be null"
+    },
+    {
+      "sample_id": "ann-0380",
+      "error": "ann-0380: pending cover_ok must be null"
+    },
+    {
+      "sample_id": "ann-0380",
+      "error": "ann-0380: pending no_candidate must be null"
+    },
+    {
+      "sample_id": "ann-0380",
+      "error": "ann-0380: pending cross_box must be null"
+    }
+  ],
+  "type_errors": [],
+  "conflict_errors": [],
+  "review_conflicts": [],
+  "metadata_errors": [],
+  "extra_sample_ids": [],
+  "missing_sample_ids": [],
+  "pending": 2,
+  "labeled": 37,
+  "skipped": 1,
+  "unlabeled": 2,
+  "ok": false,
+  "test_eval_ids_opened": false,
+  "evaluation_gold_used": false,
+  "auto_labels_written": false,
+  "training_started": false,
+  "images": {
+    "n_questions": 40,
+    "png_opened": 80,
+    "png_expected": 80,
+    "failures": [],
+    "complete": true,
+    "resolved_from": "C:\\Users\\WenJing\\Documents\\WorkTransfer\\layoutpatch\\experiments\\region_annotation\\pilot_materials\\samples",
+    "downloads_relative_paths_not_used": true
+  },
+  "labels_path": "C:\\Users\\WenJing\\Documents\\WorkTransfer\\layoutpatch\\experiments\\region_annotation\\archive\\2026-09-30_annotator_A_v1\\labels_annotator_A_v1.jsonl",
+  "source_path": "C:\\Users\\WenJing\\Downloads\\labels_annotator_A_v1.jsonl",
+  "source_sha256": "acfb7bf62b41334db7fa92c03f81bdbf7af86d08af76077955cb69d637b888a5",
+  "archive_sha256": "acfb7bf62b41334db7fa92c03f81bdbf7af86d08af76077955cb69d637b888a5",
+  "independent_sha256": "acfb7bf62b41334db7fa92c03f81bdbf7af86d08af76077955cb69d637b888a5",
+  "old_labels_annotator_A_sha256": "3bcad4ba92fa48337c87dff03393ef4569648af378bb7c1f801162f22458e260",
+  "old_labels_overwritten": false,
+  "manifest_written": false,
+  "created_utc": "2026-09-30T22:15:44Z",
+  "source_kept": true,
+  "b_repo_exists": false,
+  "b_repo_v1_exists": false,
+  "b_downloads_v1_exists": true,
+  "b_file_read": false,
+  "b_file_copied": false,
+  "b_auto_generated": false,
+  "archive_copy_status": "copied",
+  "independent_copy_status": "copied",
+  "completion_stats": {
+    "n_rows": 40,
+    "labeled": 37,
+    "pending": 2,
+    "skipped": 1,
+    "pending_ids": [
+      "ann-0378",
+      "ann-0380"
+    ],
+    "skipped_ids": [
+      "ann-0158"
+    ],
+    "single_box_labeled": 23,
+    "multi_box_labeled": 14,
+    "cover_full_boxes": 47,
+    "cover_partial_boxes": 8,
+    "questions_with_full": 37,
+    "questions_with_partial": 6,
+    "cross_box": {
+      "False": 40
+    },
+    "no_candidate": {
+      "False": 39,
+      "True": 1
+    },
+    "potential_trainable_cover_ok_nonempty": 37,
+    "potential_trainable_ids": [
+      "ann-0004",
+      "ann-0014",
+      "ann-0018",
+      "ann-0059",
+      "ann-0062",
+      "ann-0066",
+      "ann-0073",
+      "ann-0091",
+      "ann-0098",
+      "ann-0103",
+      "ann-0104",
+      "ann-0108",
+      "ann-0119",
+      "ann-0121",
+      "ann-0133",
+      "ann-0148",
+      "ann-0150",
+      "ann-0160",
+      "ann-0163",
+      "ann-0181",
+      "ann-0218",
+      "ann-0219",
+      "ann-0232",
+      "ann-0234",
+      "ann-0267",
+      "ann-0310",
+      "ann-0317",
+      "ann-0319",
+      "ann-0328",
+      "ann-0346",
+      "ann-0352",
+      "ann-0357",
+      "ann-0363",
+      "ann-0365",
+      "ann-0373",
+      "ann-0389",
+      "ann-0395"
+    ],
+    "potential_trainable_is_not_training_approval": true,
+    "format_pass_is_not_evidence_correctness": true,
+    "labeled_at_values": [
+      "2026-09-30T20:27:29Z",
+      null
+    ]
+  },
+  "human_review": [
+    {
+      "sample_id": "ann-0108",
+      "fields": [
+        "cover_levels"
+      ],
+      "reason": "已选框 [13] 没有 cover_levels；协议允许留空，但需人工确认是否故意未填。"
+    },
+    {
+      "sample_id": "ann-0234",
+      "fields": [
+        "remark",
+        "note"
+      ],
+      "reason": "备注疑似导出残留引号或 JSON 片段，未改原文。"
+    },
+    {
+      "sample_id": "ann-0365",
+      "fields": [
+        "remark",
+        "note"
+      ],
+      "reason": "备注疑似导出残留引号或 JSON 片段，未改原文。"
+    },
+    {
+      "sample_id": "ann-0378",
+      "fields": [
+        "cover_ok",
+        "no_candidate",
+        "cross_box",
+        "label_status"
+      ],
+      "reason": "pending 应按协议保持 cover_ok/no_candidate/cross_box=null；当前写成 false。未自动改标签。"
+    },
+    {
+      "sample_id": "ann-0380",
+      "fields": [
+        "cover_ok",
+        "no_candidate",
+        "cross_box",
+        "label_status"
+      ],
+      "reason": "pending 应按协议保持 cover_ok/no_candidate/cross_box=null；当前写成 false。未自动改标签。"
+    },
+    {
+      "sample_id": "ann-0395",
+      "fields": [
+        "cross_box",
+        "cover_levels",
+        "remark"
+      ],
+      "reason": "备注写需联合，同时已有 full 且 cross_box=false；不自动裁定。"
+    }
+  ],
+  "provenance": {
+    "protocol_required": [
+      "model_name",
+      "use_date",
+      "prompt",
+      "raw_model_suggestion",
+      "human_review_or_edit_log"
+    ],
+    "present": {
+      "protocol_version": "region-ann-v1",
+      "annotator": "A",
+      "protocol_allows_DeepSeek_for_A": true
+    },
+    "missing": [
+      "model_name_or_display_name",
+      "use_date",
+      "prompt",
+      "raw_model_suggestion_file",
+      "human_review_or_edit_log"
+    ],
+    "not_inferred_from_final_labels": true
+  },
+  "calibration": {
+    "confirmed": [
+      {
+        "sample_id": "ann-0004",
+        "reason": "annotation_protocol_v1.md 明确登记为共同讨论校准题。"
+      },
+      {
+        "sample_id": "ann-0018",
+        "reason": "题目原文含 Figure (A) descending part；即“图A下降段”。"
+      }
+    ],
+    "unconfirmed": [],
+    "keep_in_data": true,
+    "exclude_from_blind_agreement_denominator": [
+      "ann-0004",
+      "ann-0018"
+    ],
+    "agreement_not_computed_this_round": true
+  }
+}
