@@ -2,12 +2,14 @@
 
 What (beginner):
 - We do NOT train. We reuse FROZEN ColPali vectors (1031x128 per page: 1024 image
-  patches + 7 prefix tokens) and ask: can rule-based region scoring pick the right
+  patches + 7 prompt tokens, image-first; the legacy slice below assumed prefix-first)
+  and ask: can rule-based region scoring pick the right
   box without learning?
 - Three files, three ideas:
-  - propagation.py: Snappy-style patch->region propagation. Patch scores come from
+  - propagation.py: historical patch->region propagation variants. Patch scores come from
     a real query-vs-page MaxSim over cached ColPali vectors; region score =
-    IoU-weighted pooling of patch scores (max/mean/iou three aggregations).
+    IoU-weighted pooling of patch scores (max/mean/iou three aggregations). These
+    do not establish a faithful reproduction of Snappy's full scoring protocol.
   - region_pooling.py: fixed IoU/coverage aggregation. Same patch scores, but the
     region score normalizes differently (coverage-weighted vs IoU-weighted).
   - region_grouping.py: dynamic saliency grouping. Take high-scoring patches
@@ -47,8 +49,10 @@ def load_query_vectors(run_dir: Path, query_text: str) -> torch.Tensor:
 
 
 def patch_scores_from_vectors(query_vecs: torch.Tensor, page_vecs: torch.Tensor) -> list[float]:
-    """s_patch(j) = max_i Q_i . P_j over cached vectors (image patches only, skip 7 prefix)."""
-    # cache layout is [7 prefix, 1024 patches] (prefix-first); asserted by callers.
+    """s_patch(j) = max_i Q_i . P_j over cached vectors (legacy: drops rows 0..6)."""
+    # Historical prefix-first assumption, kept only to replay old runs. The cache is
+    # image-first (rows 0..1023 = patches, 1024..1030 = prompt), so this slice shifts
+    # patches by 7; route-v2 uses retrieval/colpali_layout.py (coordinate_audit_v1.json).
     if page_vecs.shape[0] == GRID * GRID + 7:
         image_vecs = page_vecs[7:]
     elif page_vecs.shape[0] == GRID * GRID:
@@ -84,11 +88,15 @@ def propagate_region_scores(
     regions: list[dict],
     aggregation: str = "iou",
 ) -> list[float]:
-    """Snappy-style: region score from IoU-weighted patch scores.
+    """Historical variants: region score from IoU-weighted patch scores.
 
     - max: max over overlapping patches of IoU*score (strong local evidence).
-    - mean: mean over overlapping patches of IoU*score (robust to box size).
-    - iou: sum(IoU*score)/sum(IoU) (Snappy rel(q,r) proper, size-normalized).
+    - mean: mean over overlapping patches of IoU*score.
+    - iou: sum(IoU*score)/sum(IoU) (normalized IoU-weighted mean).
+
+    max/mean are weighted historical variants, not unweighted patch aggregation.
+    No percentile filtering is applied. Preserve these names for old run replay;
+    a verified Snappy reproduction must use a separately versioned configuration.
     """
     boxes = patch_boxes()
     scores = []

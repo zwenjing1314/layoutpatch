@@ -6,6 +6,12 @@
 
 ### Added
 
+- Cursor 项目规则 `.cursor/rules/karpathy-guidelines.mdc`：编码时先澄清假设、保持最小改动、只改任务相关代码、用可验证标准收尾。与本仓库铁律冲突时仍以本仓库为准。
+
+- route-v2：data-roles-v1 数据角色划分、坐标与区域监督审计、v2-loc-1 页内定位指标、对照 A/B/C 评分与局部对比损失，以及 `route-v2-identity`/`route-v2-data`/`route-v2-smoke` 三个任务。smoke 因缺少问题向量缓存未训练。旧文件与旧结果未改动。
+
+- 新增route-v2协议草案与外部建议核查记录；提供显式V2融合、统一类型/OCR输入策略及同页IoU工具和合成测试。新输入必须写全新目录；未切换旧实验、未训练、未读取test_eval样本。
+
 - `docs/paper-draft-notes.md`：小论文章节素材。只记可写内容和已有实验数字，不改评测口径。
 - 项目骨架首版：`src/layoutpatch/` 包结构、`tests/`、`configs/`、`docs/`、`experiments/`、`tasks.ps1`、uv 环境三件套（`pyproject.toml` + `.python-version` + 本文件）。
 - `docs/02-commands.md` 新增 `phase2r-dude`：DUDE 2-R 训练与一次 `dev_eval` 判定。
@@ -21,6 +27,9 @@
 
 ### Changed
 
+- 修正论文规范的Snappy失败分母/基线称谓、RegionRAG指标、训练标签事实和LN公式，明确旧协议与新草案的数据角色边界；保留历史评分算法及旧权重兼容路径。
+
+- 更新 `docs/handoff.md` 的2026-10-03新会话入口及导航，区分已完成实验、失败证据、标注验收状态与尚未实施的新路线；保留历史记录，避免旧“算涨”和旧下一步误导接续。
 - `docs/RULES.md` 新增 0.2「实验讲解粒度（小白模式）」与 4.4「指令透明、agent 可在后台执行」（原因：EXP-001 期间代跑长任务与讲解过简引发时间线质疑；此后实验回复必须白话目标/输入/处理/输出/验证/失败后果/文档出处，操作步骤后附本轮指令原文；版本号升 v1.1）。
 - M4 缺口诊断落地（`45af9c0`）：`src/layoutpatch/layout/correspondence.py`（Snappy 公式 + W cover/行归一化）+ `tests/layout/test_correspondence.py`；`src/layoutpatch/evaluation/audit.py` + `audit_overlays.py` + `scripts/run_phase1b_audit.py`（`docs/02-commands.md` 登记为 `phase1b-audit`）；叠图页号差一 bug 修复（`c7a817c`，去掉 `-1` 偏移，文本判别法双文档验证）；机器 Gate 通过（20261 页/170338 区域/越界 1/零覆盖 0）。
 

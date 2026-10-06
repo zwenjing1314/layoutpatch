@@ -1,0 +1,181 @@
+{
+  "assignment": "identity units atomic; dev members kept, old-test twins quarantined",
+  "cross_role_groups_quarantined": [],
+  "data_identity_ready": true,
+  "dev_twin_quarantine": [
+    "21-00620-INLSR-Vol2_Report-FINAL",
+    "INCSR-Vol-INCSR-Vol.-2-pdf",
+    "INCSR-Vol-INCSR-Vol.-I-1",
+    "NASDAQ_QCOM_2021",
+    "NETFLIX_2015_10K",
+    "NIKE_2021_10K",
+    "NYSE_DHR_2020",
+    "SAO-StudentSupport_Guidebook-Content"
+  ],
+  "empty_training_role": false,
+  "evidence": {
+    "external_manifest_sha256": "80e9c1f742a9c27dfc85d40d0b5d621ebfa97135987bb57e86359746c93cc642",
+    "independence_status": "passed",
+    "license_status": "not_declared_in_dataset_card; unresolved",
+    "overlap_report_sha256": "797befb88eaafc6bae952839f9126da89effd69c1c61b79d221df6f650a87aed",
+    "provenance_sha256": "26231861946fd9318fed6bf1fec26e49ee331482153319c2dec1d78fa561ee6c"
+  },
+  "external_quarantine": [
+    "Country_Reports_2021_Complete_MASTER.no_maps-011323-Accessible"
+  ],
+  "file_sha256": {
+    "quarantine_doc_ids.txt": "ad8b8797efe6960d4c02cdcb8011aacd3629628cb3b861b5f4da0bda151522ab",
+    "quarantine_ids.jsonl": "ade48ed92e5d6245b4a0d8abd65519e45e0b2d2798e44e9046c28e4dade63678",
+    "quarantine_query_ids.txt": "f1dd8eaac92ad3b0349cf4ae376933783672dd2b342772eaffe42a26a8e31178",
+    "source_dev_doc_ids.txt": "98cf05a4c06a2585d6f90a90eb070611f1f5da046d0eada487271d81cf737738",
+    "source_dev_ids.jsonl": "1bf1a8f528071c92bdfae9ecc8bece6e52823711131f40ec45bdcf71ef6d7e8d",
+    "source_dev_query_ids.txt": "1d075f278b2c1e87f230c94ae54b19a1ff87e2c0d0025fb865c0dd9ad941866c",
+    "source_train_doc_ids.txt": "405dba19dbef29e069883ccef2573cd3337eec8cd0f60b6995896221f4f4a7a9",
+    "source_train_ids.jsonl": "17a832192d1591af17988ee693a35915386d7e9cf7183f40b58ee1951daebe9b",
+    "source_train_query_ids.txt": "afc39cd4a7a805c442bef78968afc887e3abd9e0deb2a63abed4e25c930d3759",
+    "source_val_doc_ids.txt": "a6cc4b8e0256c5a7d251a72ded8ae6ad9fa6efaa65e27d512b330a9886d1ce1e",
+    "source_val_ids.jsonl": "af3d918f45c5537cf8823cc06e39839223a4a976374e3a307b85794790033114",
+    "source_val_query_ids.txt": "38ff2b8e011bdb6dc1b333168a2148272050fa9305acdf5418f9eb60e0fee354"
+  },
+  "identity_evidence_origin": "Caller-supplied overlap report; builder verifies local roles only.",
+  "identity_units": [
+    {
+      "documents": [
+        "21-00620-INLSR-Vol2_Report-FINAL",
+        "INCSR-Vol-INCSR-Vol.-2-pdf",
+        "Tab-2-INCSR-Vol-2-508"
+      ],
+      "roles": [
+        "quarantine",
+        "source_dev"
+      ]
+    },
+    {
+      "documents": [
+        "3M_2018_10K",
+        "NASDAQ_QCOM_2021",
+        "NETFLIX_2015_10K",
+        "NIKE_2021_10K",
+        "NYSE_DHR_2020"
+      ],
+      "roles": [
+        "quarantine",
+        "source_dev"
+      ]
+    },
+    {
+      "documents": [
+        "COSTCO_2021_10K",
+        "NASDAQ_COST_2022"
+      ],
+      "roles": [
+        "source_train"
+      ]
+    },
+    {
+      "documents": [
+        "Country_Reports_2021_Complete_MASTER.no_maps-011323-Accessible",
+        "Country_Reports_on_Terrorism_2020"
+      ],
+      "roles": [
+        "quarantine"
+      ]
+    },
+    {
+      "documents": [
+        "FY-2020-Agency-Financial-Report",
+        "FY-2021-Agency-Financial-Report-508"
+      ],
+      "roles": [
+        "source_train"
+      ]
+    },
+    {
+      "documents": [
+        "INCSR-Vol-INCSR-Vol.-I-1",
+        "International-Narcotics-Control-Strategy-Report-Volume-I-FINAL-1"
+      ],
+      "roles": [
+        "quarantine",
+        "source_dev"
+      ]
+    },
+    {
+      "documents": [
+        "Independents-Report",
+        "PP_2019.01.17_Trump-economy_FINAL2"
+      ],
+      "roles": [
+        "source_train"
+      ]
+    },
+    {
+      "documents": [
+        "SAO-StudentSupport_Guidebook-Content",
+        "StudentSupport_Guidebook"
+      ],
+      "roles": [
+        "quarantine",
+        "source_dev"
+      ]
+    }
+  ],
+  "identity_units_crossing_roles": [],
+  "legacy_pools": {
+    "dev_eval": {
+      "documents": 93,
+      "questions": 415
+    },
+    "test_eval": {
+      "documents": 220,
+      "questions": 1243
+    }
+  },
+  "near_duplicate_groups": [],
+  "pairwise_document_intersections": {
+    "source_dev__quarantine": [],
+    "source_train__quarantine": [],
+    "source_train__source_dev": [],
+    "source_train__source_val": [],
+    "source_val__quarantine": [],
+    "source_val__source_dev": []
+  },
+  "question_id_policy": "all source questions in physical-line order, before exclusions",
+  "role_names": {
+    "quarantine": "excluded from every role",
+    "source_dev": "old dev_eval documents, development benchmark (seen in old exploration)",
+    "source_train": "old test_eval documents, training",
+    "source_val": "old test_eval documents, early stopping and model selection"
+  },
+  "roles": {
+    "quarantine": {
+      "documents": 10,
+      "questions": 45,
+      "with_layout_gold": 45
+    },
+    "source_dev": {
+      "documents": 91,
+      "questions": 412,
+      "with_layout_gold": 412
+    },
+    "source_train": {
+      "documents": 169,
+      "questions": 826,
+      "with_layout_gold": 826
+    },
+    "source_val": {
+      "documents": 43,
+      "questions": 375,
+      "with_layout_gold": 375
+    }
+  },
+  "schema": "route-v2-data-roles-v1",
+  "seed": 42,
+  "shuffle": "sort exact document IDs, then random.Random(seed).shuffle",
+  "source_documents": 313,
+  "source_questions": 1658,
+  "status": "assigned",
+  "train_document_ratio": 0.8,
+  "training_blocker": "Loss, metrics, and training runner require a separate frozen protocol.",
+  "training_ready": false
+}

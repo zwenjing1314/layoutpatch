@@ -1,6 +1,7 @@
 # 小论文执行规范：布局约束的文档侧 Patch 融合方法（PAPER_SPEC）
 
-> Status: stable | Scope: 小论文方法、实验、评测、实现清单 | SSOT: 是
+> Status: working | Scope: 小论文方法、实验、评测、实现清单 | SSOT: 是
+> 2026-10-03 版本边界：旧2-R/首次融合路线已停止，下文历史Phase/Gate不再作为当前执行令。新路线的数据角色、方法候选与待冻结项见 `docs/ROUTE_V2_PROTOCOL.md`；旧frozen文件、指标实现、划分和结果保持原样。本文已纠正文献/实现事实，不代表新训练已经批准或完成。
 > 迁移来源：旧仓库 `mmdoc-evidence-rag/docs/SMALL_PAPER_DEV_SPEC.md` 全文迁移；包名 `mmdocrag`→`layoutpatch`、
 > 大论文规范引用 `docs/THESIS_RESEARCH_ROUTE_DRAFT.md`→`docs/THESIS_SPEC.md` 已替换。
 > 分工：`docs/THESIS_SPEC.md` 回答“为什么做、做到哪算完、什么不许做”；本文档回答“具体怎么做、做到什么程度、用什么证明”。
@@ -115,7 +116,7 @@ B1（效率对比表）/ B2（失败分类学）只是大论文内的一节诊�
 
 ```text
 [ ] 有可训练参数（不是纯规则）；
-[ ] 有独立训练数据（不用 evaluation gold 当训练监督）；
+[ ] 训练/开发与最终测试按文档隔离；旧路线不用 evaluation gold 训练，新路线的数据角色重定按 ROUTE_V2_PROTOCOL 声明，训练用过的数据不再充当其独立测试；
 [ ] 非测试集调参（映射规则、K、阈值、loss 权重全部 dev 冻结）；
 [ ] 有明确对照（Snappy 式、固定聚合、动态分组、ColMate 位置差异，必要时 ColParse/LFRAG 成本对照）；
 [ ] 三指标同报（页级 + 区域 + 效率）；
@@ -126,7 +127,7 @@ B1（效率对比表）/ B2（失败分类学）只是大论文内的一节诊�
 
 ### 2.5 与 8 篇论文的一句话区分（related work 直接用）
 
-- Snappy：同用 overlap，但它推理期分分数、不改表征；我们离线改表征。它是 1C 最强基线。
+- Snappy：同用 overlap，但它推理期分分数、不改表征；我们离线改表征。它是必要的传播对照，不能先验称为最强；面积基线必须保留。本地旧max/mean是IoU加权变体，不能直接当原文Eq.8/9复现。
 - Beyond：自顶向下 global token + 文本监督；我们自底向上坐标级局部融合 + 页内区域评估。
 - ColMate：空间只在预训练 loss 的 Bj pooling；我们是前向显式融合层。
 - RegionRAG：在线 query 条件 saliency + BFS 组图像 crop；我们离线 query 无关融合，存一份 P_fused。
@@ -217,7 +218,8 @@ config：configs/datasets/mmdocir.yaml（role: main_retrieval）。
 ### 4.2 训练候选 MMDocIR train（Phase 2 前必须先审）
 
 ```text
-文档 6878（平均 32.6 页）；query 73k+；仅部分子集有布局级标签。
+官方规模介绍不能代替本地版本清点。本地S2审计：剔除前65319题/30913规范化文档，剔除后65201题/30889文档；仅页级正负监督，无独立框级gold。
+layouts是版式候选，不是“问题→证据框”标签。证据：experiments/2026-09-24-s2-train-audit.md。
 使用前必须书面回答：标签构造规则是什么？硬负例怎么采的？与 evaluation 有无泄漏？
 ```
 
@@ -230,7 +232,7 @@ config：configs/datasets/mmdocir.yaml（role: main_retrieval）。
 ### 4.4 数据划分铁律
 
 ```text
-1. evaluation gold 只用于最终评测，不许同时当训练监督和测试。
+1. 旧路线evaluation gold不进训练；新路线可预先声明重新分工，但训练/开发与最终测试必须按文档隔离，并有重叠核查。被重定训练用途的数据不再称新路线独立测试。
 2. overlap 定义、K、阈值、loss 权重全部独立 dev 冻结，test 只跑一次冻结配置。
 3. 跨页证据单独标注，不混入单页区域分母。
 4. 公平比较：同 query 集、同页面集、同划分、同评测脚本、同 Top-K。
@@ -289,8 +291,10 @@ c) W_ij^(iou)   = Area(Pi ∩ Rj) / Area(Pi ∪ Rj)   # 对称版本（小框数
 
 ### 5.4 稀疏局部融合（核心前向，数学定义）
 
+2026-10-03修订：以下为新版本设计约定；历史 `SparseLocalFusion` 仍保留末端LN与共享key/value投影以复现旧权重。新 `SparseLocalFusionV2` 按本节pre-LN公式实现，尚未训练；详细边界见新协议第4节。
+
 ```text
-N(i) = TopK_j W_ij ∪ 半径内邻域（K dev 冻结，如 4/8 对比；邻域半径与 TopK 二选一或组合，dev 定）
+N(i) = TopK_j W_ij，仅取正权重且非padding的节点（V2默认K=4；正式配置在内部val冻结）
 e_ij = (p_i · t_j)/sqrt(D) + spatial_bias(W_ij)      # spatial_bias = log(W_ij+eps)
 a_ij = softmax_{j∈N(i)} (e_ij)                        # softmax 前将非 N(i) 与 padding 位置置 -inf
 delta_i = Σ_{j∈N(i)} a_ij * (t_j W_V)
@@ -298,8 +302,8 @@ p_i' = p_i + gate_i * MLP(LN(delta_i))                # residual + 零初始化
 P' = L2norm(P')
 ```
 
-- 稀疏原因：防 O(N²) 与过平滑，强制局部吸收，边界 patch 允许 soft 跨区（不用硬 mask）。
-- `MLP` 结构固定为 `Linear(D→2D) → GELU → Linear(2D→D) → LayerNorm`，末层 `Linear(2D→D)` 权重与 bias 全零初始化，保证训练起点 `P'≈P`。
+- 稀疏原因：限制每个patch参与注意力的区域数；邻域外使用硬mask，邻域内按soft权重聚合。半径扩邻域是未采用的未来变体，不属于当前V2。
+- 新版本残差为 `LayerNorm → Linear(D→2D) → GELU → Linear(2D→D)`，末层权重与bias全零；这与上式 `MLP(LN(delta))` 一致。旧末端LN可能放大微小非零残差，但不是已证明的失败根因；新版本效果仍待实验。
 - softmax 的 mask 语义：非 N(i) 邻居与 padding 区域在 softmax 前置 -inf，禁止事后置零（事后置零会破坏分母）。
 - TopK 实现必须可复现：tie 时按下标稳定排序；K 大于有效邻居数时按实际数，不补无效位。
 
@@ -309,11 +313,12 @@ P' = L2norm(P')
 
 ```text
 gate_i = sigmoid( Linear([p_i ; delta_i ; coverage_i]) + b0 )
-# coverage_i = Σ_j W_ij（patch 被布局覆盖程度），让留白 patch 自动关小门。
+# 新版本coverage输入另传cover_mass_i = Σ_j W_raw^(cover)_ij，不能对行归一化后的W求和。
+# cover_mass可大于1（框重叠重复累计），不是几何并集覆盖率；是否使gate关小需要实验。
 # b0 初始化为负数（如 -3），使初值 gate≈0.05，起点退化为原 ColPali。
 ```
 
-- 空 patch（W 全 0 行）：跳过注意力，`p_i'=p_i`，不参与任何 softmax 分母；或路由到可学习背景 token（二选一，dev 定，全文统一）。
+- 空patch（W全0行）：`p_i'=p_i`，有效注意力为0，直接保留输入；V2不使用背景token。背景token仅为未采用的未来变体。
 - NaN 防护：注意力分母加 eps；W 全 0 行禁止进 softmax；梯度裁剪阈值记录。
 - Gate 是稳定性设计，不单列创新；但“OCR 噪声下 Gate 关小、保底退回原性能”是可以写的实验结论（第 9.3 节）。
 
@@ -338,11 +343,15 @@ AreaRecall@K(q) = Σ_{c∈TopK} Σ_{g∈Gold} Area(c∩g) / Σ_g Area(g)   # 同
 精确相等；不要求单框 IoU≥0.5；必须保留 page_id 过滤。官方实现允许重叠
 candidate 对同一 gold 重复累加，主复现严格跟随官方代码，另报
 union-clipped Area Recall 作重叠敏感性分析，两者不许混称。
-Snappy 式 `rel=ΣIoU·s/ΣIoU`（max/mean/IoU 三聚合）降级为内部排序探针，不再是
-区域主指标。BBox 缩放仍用 Snappy 公式 `B'(r)=(x1*I/W, y1*I/H, x2*I/W, y2*I/H)`，
+Snappy原文Eq.8/9为相交patch原始分数的max/mean，Eq.10为 `rel=ΣIoU·s/ΣIoU`。
+本地 `propagation.py` 的旧max/mean先乘IoU，是历史变体；iou仅对应Eq.10聚合。
+原文P50阈值流程与主表配置还需源码核对，不把本地三行称为完整复现。它们是评分规则，不是区域指标。
+BBox 缩放仍用 Snappy 公式 `B'(r)=(x1*I/W, y1*I/H, x2*I/W, y2*I/H)`，
 I=448（仅探针内部用；官方 Area Recall 在原图坐标系直接算交集）。
 
 ### 5.7 损失函数（Phase 2）
+
+本节保留旧方案描述：覆盖率软标签不惩罚过大候选，不能称为面积去偏；旧train没有框级gold，正式融合实际只用了页级损失。新路线改用声明的训练侧区域监督，候选loss及正负规则见 `docs/ROUTE_V2_PROTOCOL.md` 第5节，未冻结。数据是否可作训练依据其新角色声明，不由原文件名evaluation一词永久决定。
 
 ```text
 L = λ_page * L_page + λ_region * L_region + λ_distill * L_distill
@@ -449,6 +458,8 @@ PaliGemma 默认 448×448、32×32 网格、s=14；OCR 框是原图绝对像素�
 
 ### 7.5 Phase 2：训练融合模块 + Phase 2-R：轻量重排分支（2026-09-18 修订）
 
+以下为历史路线，不继续执行。新路线不继承其开训Gate、面积标签或数据角色；已完成实验见handoff及对应run。下文“evaluation gold永不进训练”仅描述旧版本隔离，新版本适用第4.4节与新协议。
+
 ```text
 Phase 2（全融合 P→P'）：
 顺序：冻主干练小模块 → dev 确认稳定 →（必要时）LoRA → 冻结全部（模型+超参+映射规则+K+阈值+λ）→ test 跑一次。
@@ -466,6 +477,8 @@ Phase 2-R（低风险先行分支，推荐先跑）：
 
 ### 7.6 最终 test 与记录格式
 
+route-v2最终测试拟来自独立外部数据，身份仍待核实。旧MMDocIR dev是反复使用的开发基准，旧test若转训练也不再承担最终测试。
+
 test 只在冻结后跑一次；任何 test 数不得反向选模型。每次运行目录至少：
 
 ```text
@@ -476,6 +489,8 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 
 
 ## 8. 评测指标定义（2026-09-18 修订：官方口径为主，全实验统一）
+
+下述主辅关系属于旧协议，指标实现保持不变。route-v2 的页内定位口径见第 8.1 节；主比较的最小有意义差值与页级非劣界限在正式实验开训前另行冻结。不得把“保持MaxSim接口”或复制原页序视为页级不掉的证据，须用P′实际重算页面分数。
 
 ```text
 页级：Recall@1/5/10、MRR、nDCG@5/10。检索范围为文档内（与官方 search.py 一致）；页面命中 = gold 页在 Top-K（K 预先声明）内。
@@ -488,6 +503,26 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 公平：同 query 集、同页面集（含文档内范围声明）、同划分、同脚本、同 Top-K 同表对比。
 ```
 
+### 8.1 route-v2 页内定位口径（v2-loc-1，2026-10-04 在任何 route-v2 开发集分数之前固定）
+
+只用于 route-v2（`docs/ROUTE_V2_PROTOCOL.md`）；不改上面的旧口径，也不改旧脚本。实现：`src/layoutpatch/evaluation/localization.py`。
+
+```text
+任务：给定正确页的条件定位。评测单元 unit =（问题, gold 页）；方法对该页的固定解析候选框排序。
+      gold 只来自问题的 layout_mapping；候选只来自该页解析版面行。框与 gold 同在页面坐标（page_size）。
+主指标：Top-1 IoU 命中@0.5，按问题宏平均（问题内对 unit 取均值，再对问题取均值）。
+辅指标：Top-1 IoU 命中@0.25/@0.7；Top-1 IoU 均值；去重覆盖 Cov@1/3/5 = Area(∪TopK ∩ ∪gold)/Area(∪gold)；
+      gold 召回@3/5（IoU≥0.5，按 IoU 降序贪心一对一匹配）；旧口径并列 area_sum@1/5（同页内的
+      recall_layout 公式，可超过 1；单页题与官方值相同，多页题按页分别计算后宏平均，故不与旧数直接相等）。
+多 gold：IoU 取预测框对同页各 gold 框的最大值；不同页的 gold 互不参与。
+空预测：页上无候选的 unit 各指标记 0，计入分母并单独计数。
+平局：分数降序，非有限分数置末，同分按 layout_id 升序。
+同表必报：随机期望 random1@θ = r/M（r 为达阈值候选数，M 为候选数）、候选 Oracle@θ、面积降序。
+大小统计：Top-1 框面积/页面积、Top-1 框面积/gold 并集面积（分位数）。
+统计：同一 query 集配对；文档聚类 bootstrap（2000 次，seed 0）给差值 95% 区间为主；
+      unit 级精确 McNemar 为辅（忽略同文档相关性，须声明）。
+页检索：P′ 若参与页检索，必须用 P′ 实际重算文档内页排序；复制冻结页序不构成页级证据。
+```
 
 
 ## 9. 消融、鲁棒性与效率
@@ -534,6 +569,8 @@ config.json / run_info.json / metrics.json / summary.md / predictions.parquet（
 
 ### 10.1 现状与缺口（旧仓库视角，新仓库按批次 2–6 重建）
 
+本节旧清单为迁移时计划，不能当当前缺件列表。实际已存在 `layout/nodes.py`、`layout/correspondence.py`、`retrieval/fusion/sparse_fusion.py`、`retrieval/propagation.py`、`retrieval/region_pooling.py`、`evaluation/region_metrics.py` 与 `scripts/train_fusion_arxivqa.py`。gate与归一化在sparse_fusion内；下方独立gate.py/fused_index.py/region_scoring.py及train_fusion.py是建议路径，尚不存在，不要重复创建同功能文件。
+
 ```text
 旧仓库已有：src/layoutpatch/{datasets,evaluation,exporting,retrieval}、configs/datasets/mmdocir.yaml、
       Phase 1A 部分 experiment yaml、docs/reproduction 复现记录、ColPali embedding cache（artifacts/）。
@@ -568,6 +605,17 @@ tests/
   test_region_metrics.py  # IoU + Text 指标、无框 query 分母、跨页排除、超大框防刷分
 ```
 
+route-v2 新增模块（2026-10-04 立项，协议见 `docs/ROUTE_V2_PROTOCOL.md`）：
+
+```text
+src/layoutpatch/retrieval/colpali_layout.py     # 已核实的页向量 token 布局（图像在前）与切分
+src/layoutpatch/retrieval/route_v2_scoring.py   # patch 分、IoU 归一化区域分、面积分、PatchAdapter、局部 loss
+src/layoutpatch/datasets/route_v2_split.py      # data-roles 构建（身份单元、dev 优先、隔离传播）
+src/layoutpatch/datasets/route_v2_regions.py    # unit / gold / 候选 / patch 标签
+src/layoutpatch/evaluation/localization.py      # 第 8.1 节口径与配对统计
+tests/: test_route_v2_split.py, test_route_v2_regions.py, test_localization.py, test_route_v2_scoring.py
+```
+
 
 
 ### 10.3 Config 与 runs 命名（冻结才有效）
@@ -592,6 +640,8 @@ RTX 3080Ti 12GB：ColPali image/query/score batch 从 1/2/4 起；融合模块 b
 确定性：seed、torch deterministic/cudnn benchmark 开关、tokenizer/渲染版本全部进 run_info.json。
 
 ## 11. Gate 与停止条件（2026-09-18 修订：官方口径为准，执行时对照）
+
+本节是旧路线Gate的历史说明；route-v2不得把旧test拿来验证缺口后又叫独立测试，也不自动继承旧数值门限。先完成新协议未决项；当前不启动训练。方法失败不等于所有同类网络或弱监督必然无效。
 
 ```text
 1A 数据规模对上（1658）                    → 才做 1B
@@ -621,7 +671,7 @@ Phase 2/2-R dev 稳定提升（页级不掉 + 官方 Area 涨）→ 才冻结跑
   aggregation, page_region_norm, thresholds, lambdas, lora_on_off,
   seeds, batches, dev_scores, gate_numeric_thresholds,
   frozen_date, frozen_by }
-# gate_numeric_thresholds：11.2 节 10%/50% 的最终数值 + 修正依据（B 类分布直方图路径）
+# gate_numeric_thresholds：所用协议版本预先冻结的数值及依据；旧10%/50% IoU Gate已废止，不能自动继承。
 ```
 
 
@@ -641,4 +691,3 @@ Phase 2/2-R dev 稳定提升（页级不掉 + 官方 Area 涨）→ 才冻结跑
 [ ] OCR 噪声 + 背景 token 有记录；test 只跑一次冻结配置；
 [ ] arXiv 重扫日期已记（Snappy/Beyond 若出可学习变体即更新第 2.5 节）。
 ```
-

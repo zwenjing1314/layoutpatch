@@ -1,0 +1,50 @@
+{
+  "overlap_report": {
+    "status": "passed",
+    "basis": "screening + content verification complete; every unresolved or confirmed external candidate quarantined; internal confirmed groups isolated as identity units",
+    "claim": "no confirmed or unresolved overlap remains in roles under identity-v1 / verification-v1 thresholds; this is not a proof of zero leakage",
+    "external_candidates": 190,
+    "external_decisions": {
+      "rejected_template": 189,
+      "unresolved": 1
+    },
+    "limitations": [
+      "heuristic near-duplicate thresholds cannot prove absence of every reformatting/translation",
+      "external images are rendered from official PDFs; original PNG archive not acquired",
+      "short generic questions excluded from semantic near-duplicate matching",
+      "pretraining exposure unknown",
+      "dataset license is separately unresolved",
+      "Not a final independence pass: apply all quarantine and local duplicate components before split validation.",
+      "Title matches in first two pages are candidates, not automatic document identity.",
+      "Image-only ambiguous candidates are conservatively unresolved.",
+      "Local text comparison covers first two pages; separate full-page near-duplicate audit is required.",
+      "Thresholds identify observable similarities; they cannot rule out every rewriting or translation.",
+      "Groups mean shared page evidence requiring role isolation, not whole-document equivalence.",
+      "One shared copyright/frontmatter page is not automatically a confirmed document duplicate.",
+      "Sparse text sketches and capped image buckets do not guarantee exhaustive near-duplicate recall.",
+      "Low-resolution image similarity alone cannot establish page identity; OCR-poor matches remain unknown.",
+      "Common trigrams, visually sparse pages, and repetitive text are suppressed to reduce boilerplate links.",
+      "Transitive unknown groups are review/isolation candidates, not certified duplication or a final split.",
+      "Identical translations, reformatted pages, OCR failures, and semantic paraphrases can be missed."
+    ]
+  },
+  "provenance": {
+    "inputs": {
+      "data/raw/mmdocir_evaluation/MMDocIR_annotations.jsonl": "812d14b22d92389a1d9b288c0143b0ffc31fba6d114322e2e75cab2528833e09",
+      "experiments/s2_splits/dev_eval_ids.jsonl": "e9179e0734a31a81046139ce7e4dcb3a5389bc938dce11d99db6466ae7dd4e83",
+      "experiments/s2_splits/test_eval_ids.jsonl": "e1910ab08d6494638f46e534f48f55d9dc8db64b26d9242f65ead052f662329c",
+      "data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9/acquisition.json": "57dffec339a10c3242e43f9b8a877873ad20eb1c2bacb6283b88093a01568313",
+      "artifacts/route_v2_data/identity_v1/overlap_report.json": "23fc6ac75b8f8611aff976ad91432c084f204d2e6c6a1dd3449a96f8a45b650c",
+      "artifacts/route_v2_data/verification_v1/verification_report.json": "6a3e92121cf6d9704e3e8192c2badce2d6f56a6d459e315ce930bb5e033b205c",
+      "artifacts/route_v2_data/internal_identity_v1.json": "e7afb3249b7b3fbfcc4985f77eb036afb5c2ea01f30ef2a80b8d4ce3384bef36"
+    },
+    "script_sha256": "01f2cff6e9fcc8f87795c30cb36ca6927871ed439d466b685abceaf624069353",
+    "policy": {
+      "version": "data-roles-v1",
+      "external_quarantine": "verification decisions unresolved or confirmed; screening-only candidates rejected by content verification are not quarantined",
+      "identity_units": "internal confirmed_doc_groups (>=2 distinct matching pages each side), merged transitively; atomic in assignment",
+      "dev_priority": "unit touching old dev keeps dev documents and quarantines old-test members",
+      "page_level": "internal unknown/confirmed page pairs across roles are excluded per unit by build_route_v2_regions.py, not by quarantining documents"
+    }
+  }
+}

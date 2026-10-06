@@ -15,6 +15,103 @@
 - 输出：终端结果；无产物
 - 检查：ruff 与 pytest 全绿（合入 `main` 的最低条件，见 `docs/RULES.md` 7.1 节）
 
+## route-v2-identity（外部源固定 + 身份审计四步，task）
+
+```powershell
+./tasks.ps1 route-v2-identity
+```
+
+- 输入/输出：依次执行下列四步（底层等价，备查）；某步产物已存在则跳过，不覆盖。全程不打分、不训练。
+- 检查：`artifacts/route_v2_data/verification_v1/verification_report.json` 的 `decision_counts`；`internal_identity_v1.json` 的 `confirmed_doc_groups`。约 3–5 分钟（首次含约 133MB 下载）。
+
+### 底层等价（备查）1/4：acquire（固定外部测试源，仅作身份审计）
+
+```powershell
+uv run --offline --no-sync python scripts/acquire_route_v2_external.py
+```
+
+- 输入：官方HF `Yuwh07/SciEGQA-Bench` revision `9bdca77be633cc3259d7e3739d35b38ab00bf5d9`；脚本联网获取README、JSONL和PDF.tar（共约133MB），uv不安装依赖。
+- 输出：`data/raw/sciegqa_bench/<revision>/` 与SHA256回执；不读取输出题目/答案/gold、不打分、不下载1.1GB Images.tar或模型。
+- 检查：固定文件大小和校验和一致；已存在源仅复核不覆盖。网络失败保留.part供诊断。身份核查不等于数据许可证已经确认。
+
+### 底层等价（备查）2/4：identity（固定阈值的身份/近重复检查）
+
+```powershell
+uv run --offline --no-sync python scripts/audit_route_v2_identity.py
+```
+
+- 输入：MMDocIR原annotations/pages（包括已批准重定用途的旧test身份）、固定SciEGQA标注/PDF；仅程序处理题目、OCR、图像用于去重，不输出答案/gold或计算模型分数。
+- 输出：`artifacts/route_v2_data/identity_v1/`，阈值策略、页指纹、overlap_report；报告输入SHA256、每层匹配、隔离文档和限制。
+- 检查：80篇外部/313篇本地页面覆盖完整；文档ID、问题近重复、全页文本5-gram Jaccard、64bit pHash+缩略图RMSE交叉核查。匹配文档仅从MMDocIR训练/开发侧隔离，外部题集不删。首次约数分钟；无训练、无额外模型编码；旧文件只读。
+
+### 底层等价（备查）3/4：verify（内容复核，不评模型）
+
+```powershell
+uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
+```
+
+- 输入：第一阶段候选及原始页/PDF；用正文、160像素前景图、标题复核低分辨率图像候选。
+- 输出：`artifacts/route_v2_data/verification_v1/`；约1分钟，未知候选保守隔离。
+- 检查：候选不等于重复；确认/模板误报/未知分别列出，输入绑定SHA256。结果仍须结合本地去重和最终split验证。
+
+## route-v2-data（数据角色、坐标门、区域单元与监督可视化，task）
+
+```powershell
+./tasks.ps1 route-v2-data
+```
+
+- 输入：MMDocIR evaluation 原始 annotations/layouts、processed pages、页向量缓存、旧 s2_splits 清单（只读）与 route-v2-identity 产物。不写题目/答案原文。
+- 输出（已存在则跳过，不覆盖）：
+  1. `experiments/route_v2_splits/data-roles-v1/`：四角色 ID、`split_proof.json`、`identity_inputs.json`（进 git，只含 ID）；
+  2. `artifacts/route_v2_data/coordinate_audit_v1.json`：token 布局、页框比例、框-墨迹召回、缓存签名；
+  3. `artifacts/route_v2_data/regions_v1/`：`units.parquet`、`candidates.parquet`、`questions.parquet`、`audit.json`；
+  4. `artifacts/route_v2_data/regions_v1/supervision_viz/`：8 张固定样本叠图 + `index.json`。
+- 检查：`split_proof.json` 的 `pairwise_document_intersections` 全空、`identity_units_crossing_roles` 为空；`coordinate_audit_v1.json` 的 `passed`；`audit.json` 各角色 `units_local_loss_ready`。约 3–6 分钟，CPU。
+- 底层等价（备查）：`uv run --offline --no-sync python scripts/{build_route_v2_split,audit_route_v2_coordinates,build_route_v2_regions,render_route_v2_supervision}.py`，按此顺序。
+
+## route-v2-smoke（管线可学习性验证，task；不是效果实验）
+
+```powershell
+./tasks.ps1 route-v2-smoke
+```
+
+- 输入：上一步全部产物 + `artifacts/route_v2_data/query_cache_v1/source_queries.pt`（非隔离来源题的问题向量，至少含固定 16 题；格式见脚本 `QUERY_SCHEMA`。截至 2026-10-04 不存在，生成需另行批准）。
+- 输出：`artifacts/route_v2_smoke/<timestamp>/preconditions.json`；全部前置通过时另有 `adapter.pt`、`smoke_result.json`。
+- 检查：前置失败时退出码 2、不训练、不替换输入。通过时看 `smoke_result.json` 的 loss、grad_norm、`mean_gap`、`nonfinite_steps`。CPU，预计数分钟。smoke 结果永不进论文。
+
+## route-v2-data-tests（身份与划分合成检查）
+
+```powershell
+uv run --offline --no-sync ruff check scripts/acquire_route_v2_external.py scripts/audit_route_v2_identity.py scripts/verify_route_v2_candidates.py src/layoutpatch/datasets/route_v2_split.py tests/datasets/test_route_v2_split.py tests/datasets/test_identity_verification.py
+uv run --offline --no-sync pytest tests/datasets/test_route_v2_split.py tests/datasets/test_identity_verification.py
+```
+
+- 输入：合成身份/图像/划分；不读取真实问题或gold。
+- 输出：终端结果；约数秒。
+- 检查：不同来源角色隔离、全局ID保持、未知证据不自动通过、图像重编码控制与正文判据。
+
+### 底层等价（备查）4/4：internal（本地全文近重复）
+
+```powershell
+uv run --offline --no-sync ruff check scripts/audit_route_v2_internal_duplicates.py tests/datasets/test_internal_identity.py
+uv run --offline --no-sync pytest tests/datasets/test_internal_identity.py
+uv run --offline --no-sync python scripts/audit_route_v2_internal_duplicates.py
+```
+
+- 输入：本地20395页OCR、已生成图像指纹；不读取答案/gold。
+- 输出：`artifacts/route_v2_data/internal_identity_v1.json`及阈值策略；约数分钟。
+- 检查：正文三词组Jaccard、低频倒排和图像候选；区别整文档重复、多页共享、单页模板和未知。不得由单个版权页认定整文档相同；划分侧保守处理未消解重叠。
+
+## route-v2 单元检查（CPU合成数据，不是效果实验）
+
+```powershell
+uv run --offline --no-sync pytest tests/layout/test_schema.py tests/datasets/test_input_policy.py tests/datasets/test_route_v2_split.py tests/datasets/test_route_v2_regions.py tests/evaluation/test_region_labels.py tests/evaluation/test_region_metrics.py tests/evaluation/test_page_aware_iou.py tests/evaluation/test_localization.py tests/retrieval/test_fusion_shapes.py tests/retrieval/test_fusion_v2.py tests/retrieval/test_phase1c.py tests/retrieval/test_route_v2_scoring.py
+```
+
+- 输入：上述测试的合成张量及pytest临时目录数据；现有uv环境，不同步或下载依赖。
+- 输出：终端通过/失败；只写pytest临时产物，不写真实数据、权重或runs。
+- 检查：类型/OCR来源、新旧输入兼容、文档/页ID一致、空patch/mask、覆盖输入、小残差及同页IoU；通过不表示效果提升，完整质量门仍为check。
+
 ## version（冒烟，已实现）
 
 ```powershell

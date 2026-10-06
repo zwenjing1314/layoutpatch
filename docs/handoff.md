@@ -4,7 +4,89 @@
 > 约定：每次会话结束前更新本文件；本文件只写变化的进度，不写不变的规范（规范在 `.cursor/rules/` 与 `docs/RULES.md`）。
 > 配套必读：`docs/MIGRATION_BATCHES.md`（批次清单）→ `docs/00-index.md`（SSOT 导航）→ `docs/PAPER_SPEC.md`（小论文执行规范）。
 
-## 2026-09-28 新窗口接续（本节置顶。2026-09-27 及更早各节保留，只作考古，不要执行里面的旧下一步）
+## 2026-10-03 新会话入口：旧路线暂停，新路线研究重定中
+
+> Status: working。当前状态以本节为入口；下方旧日期节保留为历史，不直接执行其中的“下一步”。本节不是训练指令；route-v2已有working草案，尚未冻结或开训。
+
+### 2026-10-04 route-v2 数据准备完成，smoke 被问题向量缓存拦下（最新）
+
+- 用户授权：MMDocIR evaluation 改作 route-v2 训练/开发池。Codex 已暂停，由 Claude 原地接手。协议见 `docs/ROUTE_V2_PROTOCOL.md`，数字见 `experiments/2026-10-04-route-v2-data.md`。
+- 已完成：
+  - data-roles-v1 划分（train 169 篇/826 题、val 43/375、dev 91/412、quarantine 10/45）
+  - 坐标审计通过
+  - 区域单元审计（局部 loss 可用 train 1002 unit/786 题）
+  - 监督可视化
+  - v2-loc-1 指标（`docs/PAPER_SPEC.md` 第 8.1 节）
+  - 对照 A/B/C 的代码
+- 重要发现：页向量是图像在前，旧 `[7:]` 切片让所有旧 patch 级区域分数错位 7 格。旧结果保持原样，解读时注明。
+- 阻塞：smoke 缺 `artifacts/route_v2_data/query_cache_v1/source_queries.pt`。需要用户批准后，用现有 ColPali 编码 1,613 题的问题向量。
+- 已知问题：旧脚本 ruff 19 错；`test_box_ranker.py::test_guards_reject_test_eval_and_coverage_label` 失败；不要用 `-ExecutionPolicy Bypass`。
+- 下一步（待批准）：先编码问题向量 → 重跑 `./tasks.ps1 route-v2-smoke` → 冻结 route-v2-exp1（A/B/C，source_dev 只评一次）。
+
+### 2026-10-04 外部建议复核后更新
+
+用户要求核查 `C:/Users/WenJing/Desktop/模型回答.txt` 并落实合理修订。已建立 `docs/ROUTE_V2_PROTOCOL.md`（working草案），证据与逐项判断见 `experiments/2026-10-03-route-v2-review.md`。优先验证保留ColPali、真实OCR与区域监督的融合，但数据重定、外部测试、loss和数值Gate尚未冻结/执行。
+
+确认旧adapter类型丢失、归一化W行和coverage退化，以及旧judge的IoU未筛同页。训练和评测的文本输入实际上都为零。旧“失败只因弱监督”的归因应收回；旧Area未达目标的结果不变。LN是设计风险，未证明是根因。代码新增显式V2、输入来源策略和同页IoU工具，旧训练脚本/权重/指标结果保留，新runner尚未接入。70项定向单测通过、src/tests ruff通过；全局check被既有scripts的19个错误阻塞，详见审查记录第6节。
+
+### 1. 用户目标、决定与执行边界
+
+- 目标仍是有真实网络修改/可学习模块的方法型小论文，服务于视觉文档检索与证据定位大论文；用户不希望只写失败分析论文。导师正式验收条件仍需本人确认，不能承诺毕业或投稿结果。
+- 原研究问题是在不裁剪页面、不重复视觉编码、保持MaxSim接口的条件下，利用OCR/Layout改善页内证据定位。重定路线时须明确哪些约束继续保留、哪些需要修订；接口兼容不等于页面召回不变，给定正确页的区域定位也不等于端到端检索。
+- 用户已要求暂停旧路线：不再盲调2-R或原融合、不默认扩到400题、不边试边改变指标。正在精读Snappy、RegionRAG，重新考虑监督、候选区域、骨干和任务。
+- 用户已明确提出：将MMDocIR原evaluation（包括旧test部分）改作新路线的有标注训练/开发来源，不再用它作新路线最终测试。这是新方向，不是已执行的数据迁移；不能用旧文档中的数据分工永久否定用户的新决定。
+- 独立route-v2草案已建立，仍需落实并冻结数据角色、按文档划分和外部测试隔离。保留旧冻结文件、权重和运行记录；原test被用于训练后不得继续声称它是新路线独立测试。
+- BBox-DocVQA是外部评测候选，ColQwen3-4B是骨干候选，Visual-CoT是现成区域监督候选。均未在本轮确认可用或完成接入；跨数据集文档去重、实际checkpoint和12GB资源可行性仍待核实。
+- 最近任务是审核外部模型意见并修改合理内容，已完成文档与独立代码版本修订。前文“最多16题/200步”等模板仍仅为建议，不代表已运行；本轮未训练、下载、编码或处理旧test数据。
+- 不能因打不过面积规则就删除它。可在新任务中预先定义合理主/辅指标，但不能事后选指标、选分母或隐藏强基线。
+
+### 2. 已完成的事实（证据优先于registry的note）
+
+| 阶段 | 实际状态 | 必看证据 |
+| --- | --- | --- |
+| 2-R | 6特征线性框排序头，P不变；EXP-009的397/401个Top-1是最大框，未证明学习增益。EXP-011不能写全面优于EXP-009。已停止。 | `experiments/2026-09-28-phase2r-area-bias-frozen.md`、`experiments/2026-09-28-phase2r-comparison.md`、`experiments/2026-09-28-phase2r-stop-frozen.md` |
+| patch融合 | 节点编码、W、TopK局部注意力、残差MLP和gate已实现；形状/显存/反向传播测试及一次正式ArxivQA训练均已完成。Area@1/5=0.296199/0.714743，低于面积0.467264/0.772670。 | `experiments/2026-09-29-fusion-arxivqa.md`、`experiments/2026-09-29-fusion-failure-audit.md` |
+| 人工标注pilot | A/B各40条，已有模型辅助标注和归档/诊断，但不是40条均验收通过。Jaccard约0.8357，分母35，完全一致26/35；校准题ann-0004/0018不计独立一致率。存在pending/状态矛盾及语义分歧。 | `experiments/2026-09-30-region-ann-ab-diagnosis.md`、`experiments/region_annotation/annotation_protocol_v1.md` |
+| 新路线 | route-v2草案与兼容旧版的代码修订已建立；未生成新数据划分、未训练、未评测效果。 | `docs/ROUTE_V2_PROTOCOL.md`、`experiments/2026-10-03-route-v2-review.md` |
+
+pilot诊断的面积Hit@1：A=0.8919（37题）、B=0.8158（38题），均高于当时无训练语义对照；这是人工正框诊断，不是官方Area。原始标签与过程记录不足见报告。不自动裁定、不取并集/交集充当gold、不把修标签当成恢复旧路线的必经任务。
+
+必须防止的旧结论误读：
+
+1. registry中的“算涨”仅指超过当时fixed，不等于超过面积，不证明可学习模块有效。
+2. 原融合训练用页级正负监督，文本全零。失败说明该实现未达目标，不证明所有弱监督或融合方法必然失败。
+3. 旧区域评测在正确页上进行：415题页级/401题区域。页级R@1/5/10=264/371/392来自复制冻结页序，P'未参与页级重排，不能据此证明P'保持检索能力。
+4. Area@K中的K是候选框数。当前`recall_layout`累加Top-K框与同页gold的交集面积，再除以gold面积总和；不是取最大，也不是去重并集，理论上可超过1。IoU是交并比，须单列Top-K与命中阈值。
+5. 旧IoU计数与后来重放不一致：fixed 130/136、geom 214/220。审计尚未解释差因，不得混为统一对照。
+6. 人工v1标签是“所有可核实直接证据候选”，不是最小充分集合，也不是精确gold框或Area软标签。full=单框足以回答，partial=有直接证据但单独不足；多个独立充分框时cross_box=false。
+
+### 3. 阅读顺序（不要求打开全部历史数据）
+
+1. 本节；再读`docs/RULES.md`、`docs/00-index.md`，运行命令前读`docs/02-commands.md`。
+2. `docs/PAPER_SPEC.md`第2.3b/2.4、5、8节；`docs/THESIS_SPEC.md`第2、4、6、11节；再读`docs/ROUTE_V2_PROTOCOL.md`。两份规范已标明历史条款范围，新方案以working草案区分，未冻结或训练。
+3. 上表两份失败证据与pilot诊断；再按`experiments/registry.csv`定位对应run。需要时才读已允许范围的产物，不只看note。
+4. 原论文：
+   - `C:/Users/WenJing/Desktop/论文第三阶段阅读/Spatially-Grounded Document Retrieval via Patch-to-Region Relevance Propagation.pdf`
+   - `C:/Users/WenJing/Desktop/论文第三阶段阅读/RegionRAG Region-level Retrieval-Augmented Generation for Visual Document Understanding.pdf`
+5. 实现（解释现状时阅读）：`src/layoutpatch/retrieval/rerank/box_ranker.py`、`src/layoutpatch/layout/nodes.py`、`src/layoutpatch/layout/correspondence.py`、`src/layoutpatch/retrieval/fusion/sparse_fusion.py`、`src/layoutpatch/retrieval/propagation.py`、`src/layoutpatch/retrieval/region_pooling.py`、`src/layoutpatch/evaluation/region_metrics.py`、`scripts/train_fusion_arxivqa.py`。不存在此前口头说的`src/layoutpatch/fusion/local_fusion.py`。
+
+### 4. 文献学习所得与仍待核实的问题
+
+以下为本对话读原文所得，不是已复现结果；新会话应定位原文核对，而非只引用本摘要。
+
+- Snappy（第5–6页方法、第9–10页实验）：问题-patch相似度传播到OCR候选；主实验是给定正确页的定位，59.7%是ColQwen3-4B在BBox-DocVQA的IoU@0.5，不是我们的Area或页面Recall。两阶段ANN候选检索不等同原MaxSim全库排名，不能声称主实验验证了页面召回保持。
+- Snappy待核查：归一化IoU公式与P50/max实验配置的关系；487失败样本与1619主表分母；随机6.7%来自约1/15的简化估计，非已核实的逐题随机实验。候选数与可命中候选数都影响随机命中概率。
+- RegionRAG（第3–6页、第10–11页附录）：约98k Visual-CoT区域标注+122k VisRAG页级数据；全局+局部对比，Qwen2.5-VL-3B LoRA；局部GT框约束patch；显著性+BFS生成框，现成生成器不训练。全局逐维max pooling不等同query-token MaxSim；生成端使用区域图像，不能直接继承我们不裁剪的全部承诺。
+- RegionRAG主要指标是页面检索、生成准确率和token成本；其区域相似度表不等于严格框IoU验证。复用其loss属于迁移对照，新增模块贡献需同骨干同监督消融。
+- 先前“只有自标可行”的意见不再成立：Visual-CoT等派生区域标注值得核实；原版QA数据没有答案框不代表派生集也没有。
+
+### 5. 新会话的第一项任务
+
+先读本节10月4日更新、外部建议核查记录和route-v2草案，避免重复形状/显存探针。下一项优先核实外部评测的版本、获取与独立性，并准备新协议缺项的明确实现/验证计划；旧IoU差异须在限定dev范围逐题追因。按最新用户指令执行，不把草案或代码单测当新数据已划分、有效性已证明。无需重复询问是否允许讨论MMDocIR数据角色重定。
+
+先确定任务、监督和独立评测，再选网络。下一轮执行应以具体新协议和用户执行指令为准，不沿用下面旧日期节的自动下一步。
+
+## 2026-09-28 历史接续记录（含后续追加；只作追溯，以2026-10-03置顶节为当前入口）
 
 - A/B 40 题 `region-ann-v1` 已只读验收并按字节归档，不是开训许可，不扩到 400。A 哈希未变，复用 `experiments/region_annotation/archive/2026-09-30_annotator_A_v1/`。B 新归档 `experiments/region_annotation/archive/2026-09-30_annotator_B_v1/`。独立副本：`labels_annotator_A_v1.jsonl`、`labels_annotator_B_v1.jsonl`。两边格式都未过：A 的 ann-0378/0380 pending 字段非 null；B 的 ann-0317 pending 带已选框，ann-0373 skipped 却 cross_box=true。独立 Jaccard 均值 0.8357（分母 35，校准 ann-0004/0018 除外），完全一致 26/35。无训练对照里面积 Hit@1 仍高于 iou_mass / region MaxSim。唯一下一步：先修标签/协议。诊断：`experiments/2026-09-30-region-ann-ab-diagnosis.md`。未训练。未读 `dev_eval`/`test_eval`。
 - A 的 40 题 `region-ann-v1` 先前已单独验收归档；本轮哈希复核相同，不重当新来源。旧 `labels_annotator_A.jsonl` 仍未覆盖，manifest 未写入。

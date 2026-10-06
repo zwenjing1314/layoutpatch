@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-smoke")]
   [string]$Task = "help"
 )
 
@@ -46,6 +46,18 @@ function Show-ExpHeader {
   Write-Host "  Dataset:     $Dataset"
   Write-Host "  Output:      $Output"
   Write-Host ""
+}
+
+function Invoke-RouteV2Step {
+  # Runs one offline route-v2 step unless its output already exists (outputs are never replaced).
+  param([string]$Script, [string]$Output)
+  if (Test-Path -LiteralPath $Output) {
+    Write-Host "SKIP: $Script (exists: $Output)"
+    return
+  }
+  Write-Host "RUN: uv run --offline --no-sync python $Script"
+  & uv run --offline --no-sync python $Script
+  if ($LASTEXITCODE -ne 0) { throw "$Script failed" }
 }
 
 function Assert-UvColpaliCuda {
@@ -91,6 +103,9 @@ switch ($Task) {
     Write-Host "  phase2r-arxivqa-notext  ArxivQA no-text control; does not replace the current head"
     Write-Host "  fusion-arxivqa         Phase 2 ArxivQA fusion train + one dev_eval judgment"
     Write-Host "  region-ann-pilot       40-question local annotation workbook + format check; not training"
+    Write-Host "  route-v2-identity      pinned external source + identity screening/verification (no scoring)"
+    Write-Host "  route-v2-data          data roles, coordinate gate, region units/audit, supervision overlays"
+    Write-Host "  route-v2-smoke         <=16 source_train questions, <=200 steps; stops if a precondition fails"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -213,5 +228,32 @@ switch ($Task) {
     Write-Host "RUN: uv run python scripts/region_ann_pilot.py check --annotator A"
     & uv run python scripts/region_ann_pilot.py check --annotator A
     if ($LASTEXITCODE -ne 0) { throw "region-ann-pilot check failed" }
+  }
+  "route-v2-identity" {
+    Show-ExpHeader -ExpId "ROUTE-V2-IDENTITY" -Config "docs/ROUTE_V2_PROTOCOL.md section 2" `
+      -Dataset "MMDocIR evaluation 313 docs + SciEGQA-Bench rev 9bdca77" -Output "artifacts/route_v2_data/"
+    Invoke-RouteV2Step "scripts/acquire_route_v2_external.py" "data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9/acquisition.json"
+    Invoke-RouteV2Step "scripts/audit_route_v2_identity.py" "artifacts/route_v2_data/identity_v1/overlap_report.json"
+    Invoke-RouteV2Step "scripts/verify_route_v2_candidates.py" "artifacts/route_v2_data/verification_v1/verification_report.json"
+    Invoke-RouteV2Step "scripts/audit_route_v2_internal_duplicates.py" "artifacts/route_v2_data/internal_identity_v1.json"
+  }
+  "route-v2-data" {
+    Show-ExpHeader -ExpId "ROUTE-V2-DATA" -Config "docs/ROUTE_V2_PROTOCOL.md sections 2-4" `
+      -Dataset "MMDocIR evaluation (re-purposed source pool)" -Output "experiments/route_v2_splits/data-roles-v1/ + artifacts/route_v2_data/"
+    if (-not (Test-Path "artifacts/route_v2_data/verification_v1/verification_report.json")) {
+      throw "Identity evidence missing. Run ./tasks.ps1 route-v2-identity first."
+    }
+    Invoke-RouteV2Step "scripts/build_route_v2_split.py" "experiments/route_v2_splits/data-roles-v1"
+    Invoke-RouteV2Step "scripts/audit_route_v2_coordinates.py" "artifacts/route_v2_data/coordinate_audit_v1.json"
+    Invoke-RouteV2Step "scripts/build_route_v2_regions.py" "artifacts/route_v2_data/regions_v1"
+    Invoke-RouteV2Step "scripts/render_route_v2_supervision.py" "artifacts/route_v2_data/regions_v1/supervision_viz"
+  }
+  "route-v2-smoke" {
+    Show-ExpHeader -ExpId "ROUTE-V2-SMOKE" -Config "scripts/route_v2_smoke.py (route-v2-smoke-v1)" `
+      -Dataset "data-roles-v1 source_train, 16 fixed questions" -Output "artifacts/route_v2_smoke/<timestamp>/"
+    Write-Host "RUN: uv run --offline --no-sync python scripts/route_v2_smoke.py"
+    & uv run --offline --no-sync python scripts/route_v2_smoke.py
+    if ($LASTEXITCODE -eq 2) { throw "route-v2-smoke stopped: precondition failed (see preconditions.json)" }
+    if ($LASTEXITCODE -ne 0) { throw "route-v2-smoke failed" }
   }
 }

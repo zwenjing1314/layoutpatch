@@ -55,6 +55,23 @@ def test_empty_query_excluded_from_denominator() -> None:
     assert "mmdocir_00001" not in grouped
 
 
+def test_document_normalizer_is_opt_in_and_keeps_query_order() -> None:
+    annotations = _annotations()
+    annotations[0]["doc_name"] = "paper.v1"
+    lookup = {("paper.v1", "paper.v1_p0", (10.0, 20.0, 50.0, 80.0)): "paper.v1_p0_l0"}
+    legacy = build_region_labels_from_annotations(annotations, lookup)
+    versioned = build_region_labels_from_annotations(
+        annotations, lookup, doc_id_normalizer=lambda name: name.removesuffix(".pdf")
+    )
+    assert legacy[0].doc_id == "paper"
+    assert legacy[0].source == "unmapped"
+    assert versioned[0].doc_id == "paper.v1"
+    assert versioned[0].page_id == "paper.v1_p0"
+    assert versioned[0].node_id == "paper.v1_p0_l0"
+    assert versioned[0].source == "matched"
+    assert [label.query_id for label in legacy] == [label.query_id for label in versioned]
+
+
 def test_bbox_iou_and_scaling() -> None:
     assert bbox_iou([0, 0, 10, 10], [0, 0, 10, 10]) == 1.0
     assert bbox_iou([0, 0, 10, 10], [20, 20, 30, 30]) == 0.0

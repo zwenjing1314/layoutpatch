@@ -1,4 +1,4 @@
-"""Layout node encoder (PAPER_SPEC 5.2). Shape smoke only; not trained.
+"""Layout node encoder (PAPER_SPEC 5.2), shared by shape tests and fusion runs.
 
 Recorded interface:
 - text input: [B, M, text_dim], text_dim is caller-supplied; this repo has no

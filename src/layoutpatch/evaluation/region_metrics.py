@@ -5,6 +5,8 @@ IoU = 交集面积 / 并集面积，两个框都在原图绝对像素坐标系�
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+
 
 def bbox_iou(a: list[float], b: list[float]) -> float:
     ax1, ay1, ax2, ay2 = a
@@ -16,6 +18,22 @@ def bbox_iou(a: list[float], b: list[float]) -> float:
     area_b = max(0.0, bx2 - bx1) * max(0.0, by2 - by1)
     union = area_a + area_b - inter
     return inter / union if union > 0 else 0.0
+
+
+def best_same_page_iou(
+    pred_bbox: list[float],
+    pred_page_id: str | int,
+    gold: Iterable[tuple[str | int, list[float]]],
+) -> float:
+    """Best overlap among gold boxes on this page; no same-page gold yields zero.
+
+    Page IDs must use the same namespace, including document identity when gold
+    spans multiple documents. Existing experiment scripts are not migrated here.
+    """
+    return max(
+        (bbox_iou(pred_bbox, box) for page_id, box in gold if page_id == pred_page_id),
+        default=0.0,
+    )
 
 
 def calculate_overlap_score(bbox1, bbox2):  # noqa: ANN001, ANN202 - verbatim official
@@ -45,4 +63,3 @@ def recall_layout(layout_topk, layout_indices, layout_mapping):  # noqa: ANN001,
     if gt_area == 0:
         return 0.0
     return recall_area / gt_area
-

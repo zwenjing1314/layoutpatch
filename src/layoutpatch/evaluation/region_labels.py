@@ -18,6 +18,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -49,15 +50,22 @@ def _bbox_key(bbox: list[float]) -> tuple[float, ...]:
 def build_region_labels_from_annotations(
     annotations: list[dict[str, Any]],
     node_lookup: dict[tuple[str, str, tuple[float, ...]], str],
+    *,
+    doc_id_normalizer: Callable[[str], str] | None = None,
 ) -> list[RegionLabel]:
     """纯函数：输入官方 annotations + 节点 lookup，输出 region 标注列表。
 
     与磁盘解耦，单元测试用 demo 级小数据即可覆盖 matched / unmapped / 无框三种分支。
+    默认保留历史 Path.stem 规则；新版本适配器必须传入其自身的文档 ID 规则。
     """
     labels: list[RegionLabel] = []
     query_index = 0
     for item in annotations:
-        doc_id = Path(item["doc_name"]).stem
+        doc_id = (
+            Path(item["doc_name"]).stem
+            if doc_id_normalizer is None
+            else doc_id_normalizer(item["doc_name"])
+        )
         for question in item.get("questions", []):
             query_id = f"mmdocir_{query_index:05d}"
             query_index += 1

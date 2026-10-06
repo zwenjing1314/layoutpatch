@@ -22,14 +22,17 @@
 
 ## 现行研究
 
-- `docs/THESIS_SPEC.md`（stable）：大论文边界——2026-09-15 已用旧仓全文覆盖
-- `docs/PAPER_SPEC.md`（stable）：小论文执行——2026-09-15 已用旧仓全文覆盖
-- `docs/handoff.md`（working）：当前批次、阻塞问题、下一步指令
+- `docs/THESIS_SPEC.md`（working）：大论文边界；2026-10-03/04纠正文献分母、数据标签与新旧路线范围
+- `docs/PAPER_SPEC.md`（working）：小论文执行；历史Gate保留，新路线见下方独立协议
+- `docs/ROUTE_V2_PROTOCOL.md`（working）：区域监督布局融合草案；含数据重定、OCR输入、V2网络、监督/评测与未冻结项，尚未训练
+- `docs/handoff.md`（working）：新会话先读2026-10-03置顶节；旧路线暂停、数据用途重定方向与待核实项，历史节不作当前执行令
 - `docs/paper-progress.md`（working）：小论文进度叙事。2026-09-27 起，执行令以 `docs/handoff.md` 置顶节为准。
 - `docs/paper-draft-notes.md`（working）：小论文章节素材。数字以 registry 和证明文件为准，不替代 `docs/PAPER_SPEC.md`。
 - `docs/MIGRATION_BATCHES.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）
 
 ## 实验过程
+
+- `experiments/2026-10-03-route-v2-review.md`：外部修改建议的代码/文献核查及修订依据，不是新效果实验
 
 - `experiments/registry.csv`：注册表（EXP-001~013 + FUSION-ARXIVQA + EXP-002-S1 + EXP-007-S1 + THR-B + S2-AUDIT + SPLIT-FROZEN）。2-R 缺口证明：`experiments/s2_splits/phase2r_gap_proof.json`。第一次正式融合：`experiments/2026-09-29-fusion-arxivqa.md`。
 - S2 剔除清单（2026-09-26，已落盘，未开训）：`experiments/s2_exclusion/` + `experiments/phase2r-train-leakage-review.md`。划分已冻结：`experiments/2026-09-26-dev-test-split-frozen.md` + `experiments/s2_splits/`。冻结不是开训许可。
@@ -48,6 +51,5 @@
 ## 迁移状态
 
 - 本项目由 `mmdoc-evidence-rag` 迁移而来，执行清单 `docs/MIGRATION_BATCHES.md`。
-- 当前进度：M0–M5 已完成（见下方长段，数字以 registry 为准）。2026-09-27 现行状态不在这段里：S2 泄漏已剔除，四池与 2-R 设计已冻结，训练未开始，下一步只编 `train_fit` 的 ArxivQA。读 `docs/handoff.md` 置顶节，不要只读本段。
-- 分支基线：`master` 已推到 `09911d5`（S2 划分、2-R 设计与进度页）。`447460f` 是更早的 1C 关门点，不再是最新。`./tasks.ps1 check` 在 2-R 骨架合入时为 ruff + 50 pytest。
+- 此处仅记迁移历史，不再保存易过期的当前分支头或下一步。最新状态以 `docs/handoff.md` 置顶节和Git实际状态为准；历史检查通过不代表当前质量门通过。
 - M3 全量复验（EXP-001，R@5=0.8390）已通过。本文件 Status 仍保持 working，因为迁移清单批次 6 未关。

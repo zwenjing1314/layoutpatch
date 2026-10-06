@@ -1,6 +1,7 @@
 # 大论文研究路线与开发说明（THESIS_SPEC）
 
-> Status: stable | Scope: 大论文目标、主线、文献地图、Gate、评测规范、表述边界 | SSOT: 是
+> Status: working | Scope: 大论文目标、主线、文献地图、Gate、评测规范、表述边界 | SSOT: 是
+> 2026-10-03/04修订边界：旧2-R与首次融合停止；下文Phase/Gate属于历史路线。用户已提出数据角色重定，新协议草案见 `docs/ROUTE_V2_PROTOCOL.md`。本文纠正文献与数据事实，不回写旧冻结文件，不宣称新方法成立。
 > 迁移来源：旧仓库 `mmdoc-evidence-rag/docs/THESIS_RESEARCH_ROUTE_DRAFT.md` 全文迁移；
 > 小论文执行引用 `docs/SMALL_PAPER_DEV_SPEC.md`→`docs/PAPER_SPEC.md` 已替换。
 >
@@ -129,12 +130,12 @@
 1. **GPT-5 描述子属实。** Beyond 附录 7.2/7.3 明确写用 GPT-5 生成整体结构描述，只描述构图和空间排列，不转录细节。训练集 ColPali 118k + 500 dev，每条加一条离线描述子。
 2. **BFS 组框属实。** RegionRAG 附录算法 S1 全文就是 BFS 队列找连通分支，不是推测。
 3. **门控残差要分开说。** Argus 有门控残差（公式 F=G+σ(α)Sshared+σ(β)S），ColMate 没有（全文无 Gate、无 residual fusion）。不能混说“它们都有门控”。
-4. **ViDoRe V3 不能当区域评测。** Argus 报的 V3 是 8 个公开域页级 NDCG@10，外加 agent 包装。无 IoU、无框。区域评测只能用 MMDocIR 布局级 + IoU Hit，V3 只能当页级泛化补充。
-5. **OCR 天花板 85%。** Snappy 在 BBox-DocVQA 上失败 487 个里 414 个（85%）是 OCR 根本没切出与 GT 重叠 ≥0.5 的框，传播再好也选不出来。只有 15% 是选错。这个数字必须进我们的 Limitation，否则“控制成本、提升定位”就是空话。
+4. **ViDoRe V3的页级结果不能代替区域评测。** Argus所报V3是页级NDCG@10，不能从该结果推出框IoU表现。区域任务可使用MMDocIR或其他经核实含证据框的数据集；BBox-DocVQA/SciEGQA的具体版本、候选与独立性仍需确认。
+5. **Snappy的85%只针对失败子集。** 本地原文p14报告Top-1失败652/1619，其中487题没有任何被选区域达到IoU≥0.5；p15表7把这487题分为414个OCR候选天花板与73个选择失败，414/487=85%。不能写成全部Top-1失败中只有15%选错。按该叙述推算414/652≈63.5%、414/1619≈25.6%；652−414=238只是非该天花板失败的推算数，不是表7直接报告的选择错误数。这是DeepSeek-OCR/BBox-DocVQA观察，不能移植为MinerU/MMDocIR结论。
 
 ### 4.4 一句话防御线（related work 怎么写）
 
-- 对 Snappy：共享 overlap 思想，但它是推理期分分数、不改表征；我们是离线改表征。它是 Phase 1C 最强基线。
+- 对 Snappy：共享overlap思想，但它是推理期分分数、不改表征；我们是离线改表征。它是必要传播对照，不能预先断言最强；必须保留geom:area。本地旧max/mean是IoU加权变体，原文Eq.8/9不乘IoU；完整主表配置尚需核实。
 - 对 Beyond：它是自顶向下全局 token + 文本结构监督；我们是自底向上坐标级局部融合 + 页内区域评估。它不做后半句。
 - 对 ColMate：它的空间只在预训练 loss 的 Bj pooling；我们是前向显式融合层。位置不同。
 - 对 LFRAG/ColParse：它们用 k+1 次视觉编码换布局/存储；我们用 0 次额外编码换定位。路线相反/代价不同。
@@ -142,6 +143,8 @@
 - 对 MM-Matryoshka/ColChunk/SAP：压缩正交，可组合，我们的 P_fused 可以是它们的输入。
 
 ## 5. 小论文的正式研究问题（含操作定义，2026-09-18 修订：官方口径为主）
+
+以下为旧版RQ操作定义。新路线保留检索/定位问题，但数据角色、区域监督与待冻结评测依 `docs/ROUTE_V2_PROTOCOL.md`；旧覆盖率标签不是面积去偏，旧evaluation隔离不永久限制已声明的新训练来源。Snappy三聚合须区分原文Eq.8/9的原始分数max/mean与Eq.10的归一化IoU，不能用一个IoU公式统括。本地旧max/mean属于加权变体。
 
 ### RQ1：页面命中是否等于证据命中？
 
@@ -308,9 +311,9 @@ L = lambda_page * L_page
 
 ### 8.1 数据划分
 
-训练、开发和测试数据必须明确分离。MMDocIR evaluation gold 只能用于最终评测，不能同时作为训练监督和最终测试依据。
+训练、开发和测试数据必须明确分离。旧路线MMDocIR evaluation gold不进训练；用户已提出在route-v2将其重定为训练/开发来源，并另设独立外部最终测试。新角色、隔离与待冻结项见 `docs/ROUTE_V2_PROTOCOL.md`。原始划分名不决定永久用途，但同一数据不能既供学习/选型又声称独立测试；旧冻结文件与结果不覆盖。
 
-补充：MMDocIR evaluation=313 文档/1658 query/2107 页级标签/2638 布局标签；训练集 6878 文档/73k+ query（含部分布局标签，可作为 Phase 2 候选，需先检查标签构造规则）。ViDoRe V2 可做页级泛化补充；ViDoRe V3 不做区域评测（见 4.3）。
+补充：MMDocIR evaluation=313文档/1658 query/2107页级标签/2638布局标签。本地train审计剔除后65201题/30889规范化文档，无框级gold；layouts仅为候选（`experiments/2026-09-24-s2-train-audit.md`），不能写“部分子集有布局监督”。ViDoRe V2可作页级泛化补充；区域评测资格见4.3。
 
 ### 8.2 页面级指标
 
@@ -332,7 +335,7 @@ Text Recall/F1 定义（tokenization 预先声明：中文按字、英文按词�
 ```text
 Text-Recall(R_pred, R_gold) = |Tok(R_pred) ∩ Tok(R_gold)| / |Tok(R_gold)|
 Text-F1 按标准 P/R 调和平均。
-报告方式：IoU Hit@0.5 为主指标（与 Snappy/RegionRAG 对表），Text-Recall@0.8 为辅指标。
+报告方式：旧协议以Official Area为主，IoU与Text为辅助；Snappy的IoU须在同骨干/候选/题集/配置下比较。RegionRAG主表为页检索与生成指标，不能拿它作为IoU对表依据。route-v2主辅关系另在新协议冻结。
 凡 IoU 未命中但 Text-Recall ≥ 0.8 的样本单独成组（疑似解析边界误差），人工抽查 ≥20 例判定。
 防刷分：预测框面积超过页面 50% 的样本 Text 分数置零或单独标注，禁止用超大框刷文本命中。
 ```
@@ -398,7 +401,7 @@ Phase 2/2-R 在 dev 有稳定提升（页级不掉 + 官方 Area 涨）
 
 - 坐标映射审计不通过（resize/padding/网格对不上）；
 - BBox 与页面图像系统性错位；
-- 区域标签无法可靠构造（无独立训练数据又要用 evaluation gold 训练）；
+- 区域标签无法可靠构造（无独立训练数据又要用 evaluation gold 训练；route-v2 经用户授权已把 MMDocIR evaluation 改作训练/开发池，route-v2 改按 `docs/ROUTE_V2_PROTOCOL.md` 第 2 节执行）；
 - 新模块只涨 test、dev 不涨；
 - 页级掉分且区域不涨；
 - 复杂融合不如固定 IoU 聚合；
@@ -426,7 +429,7 @@ Phase 2/2-R 在 dev 有稳定提升（页级不掉 + 官方 Area 涨）
 ### 11.3 有序收缩选项（Plan B，按成本从低到高，触发即逐级评估）
 
 - B1 效率与压缩角度：0 次额外编码 vs LFRAG/ColParse 的 k+1 次，同表对比存储、索引、延迟、显存（数据全部来自 1C，无新实验成本）；
-- B2 失败分类学：OCR 天花板（Snappy 85% 口径）+ 1B 的按类型/面积/OCR 密度分层缺口归因，转为一篇“诊断 + 基准”型论文；
+- B2 失败分类学：候选天花板（Snappy分母限定见4.3，不能照搬其85%）+ 本地按类型/面积/OCR密度分层；仅作大论文诊断与Discussion素材，不能单独代替用户的方法型小论文；
 - B3 跨页证据 / 复杂表格布局解析：只有 1B 数据证明单页区域定位已到顶、且 MMDocIR 中跨页样本量足够时才立项，需另立 Gate 与协议，不许自动 fallback。
 
 B1/B2 不需要新数据，保住大论文一节诊断内容的下限；B3 是新研究，不是救命稻草。B1/B2 绝不单独作为小论文投稿（小论文底线见 `docs/PAPER_SPEC.md` 第 2.3b 节）：若 2-R 与全融合 dev 皆不涨，小论文判方法失败，必须重定方法或换路线。选择必须由学生与导师共同确认后写入执行手册，agent 只准备决策材料（分层表、残差分布、直方图），不做选择。

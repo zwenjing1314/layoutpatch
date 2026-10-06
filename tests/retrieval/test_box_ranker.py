@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 import torch
 
 from layoutpatch.layout.correspondence import GRID
@@ -59,7 +60,7 @@ def test_area_at_k_calls_official_recall_layout():
     assert area_at_k(indices, gold, [5.0, 0.1], k=1) == 1.0
 
 
-def test_guards_reject_test_eval_and_coverage_label(tmp_path):
+def test_legacy_load_pool_rejects_test_eval(tmp_path, monkeypatch):
     import importlib.util
     from pathlib import Path
 
@@ -69,25 +70,24 @@ def test_guards_reject_test_eval_and_coverage_label(tmp_path):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     forbidden = tmp_path / "test_eval_ids.jsonl"
-    forbidden.write_text("", encoding="utf-8")
-    old = mod.TEST_EVAL
-    mod.TEST_EVAL = forbidden
-    try:
-        try:
-            mod.assert_no_test_eval(forbidden)
-            raised = False
-        except RuntimeError:
-            raised = True
-        assert raised
-    finally:
-        mod.TEST_EVAL = old
-    try:
-        mod.assert_no_coverage_label({"y_c": 0.3})
-        raised = False
-    except RuntimeError:
-        raised = True
-    assert raised
-    assert isinstance(mod.missing_before_train(), list)
+    monkeypatch.setattr(mod, "TEST_EVAL", forbidden)
+    # The legacy loader must reject this path before trying to open it.
+    with pytest.raises(RuntimeError, match="test_eval scores are forbidden"):
+        mod.load_pool(forbidden)
+    allowed = tmp_path / "train_fit_ids.jsonl"
+    allowed.write_text(
+        '{"domain": "ArxivQA", "line_index": 7}\n'
+        '{"domain": "DUDE", "line_index": 8}\n',
+        encoding="utf-8",
+    )
+    assert mod.load_pool(allowed) == {7}
+
+
+def test_page_pair_loss_rejects_coverage_label():
+    features = torch.zeros((1, FEATURE_DIM))
+    areas = torch.ones(1)
+    with pytest.raises(TypeError, match="y_c"):
+        page_pair_loss(BoxRanker(), features, areas, features, areas, y_c=0.3)
 
 
 def test_early_stop_is_page_score_only():
