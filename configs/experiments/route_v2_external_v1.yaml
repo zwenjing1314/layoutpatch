@@ -68,8 +68,8 @@ input:
     original_frame_render_mapping: unverified_stop_before_processing
     gold_used_for_candidates: false
   scope: all_questions_all_evidence_pages_not_assumed_single_page
-  manifest: null
-  manifest_sha256: null
+  manifest: artifacts/route_v2_external/preparation_v1/20261007_155402/manifest.json
+  manifest_sha256: 387b2f498ec4bb54abb7aab0a149ef46aa7856c284d2472541d61a7940d0347d
   license: unresolved_not_declared_in_dataset_card_no_redistribution
 candidate_policy:
   source: independently_parsed_page_layout_not_gold
@@ -93,6 +93,10 @@ preparation:
   download_or_install_allowed: false
   vram_budget_gib: 12
   mapping_policy: stop_if_render_annotation_coordinate_transform_unresolved
+  parser_status: blocked_missing_MinerU_in_project_venv
+  parsed_pages: 0
+  rendered_pages: 0
+  sample_validation_status: blocked_before_render_and_parse
 external_evaluation_plan:
   execution_authorized_this_round: false
   task: given_correct_page_rank_fixed_candidates

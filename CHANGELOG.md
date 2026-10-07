@@ -6,6 +6,8 @@
 
 ### Added
 
+- SciEGQA外部定位准备：冻结D-no-text主候选及A/B/C/C-wide/D对照、12份既有source_val权重身份和主比较多重校正规则；新增元数据适配、固定全题/证据页清单、定向测试与只读核验入口。初期解析器缺失，后续已在独立授权下完成八页候选导出，视觉和原图坐标映射仍待验；无外部效果结果，数据许可仍未明确。详情见`@experiments/2026-10-07-external-preparation.md`。
+
 - EXP-016最小归因：固定C-wide隐藏1062及两个D输入置零变体，复用原训练/评分预算；九次从头训练和统一dev已完成，三项文档bootstrap及Bonferroni补充区间全报，保存预测只读复核通过、20项相关测试通过。D优于C-wide、去文本更好、显式坐标校正后证据不足，仅开发归因；原EXP-015配置与A/B/C/D预测不改，不下载模型、不外测，已停止。
 
 - EXP-015正式执行：独立dev节点缓存补齐、原train/val哈希保留、预算与基线候选/指标兼容性前置门、冻结配置；逐epoch训练gate/残差诊断和逐题D预测。仅一次D开发比较，A/B/C复用原结果，无外测或自动调参。
@@ -36,6 +38,8 @@
 - `docs/figures/case_A_success.jpg` + `case_M_middle.jpg`（2026-09-18 新增，未入库）：EXP-005 两张代表压缩图（成功 A_mmdocir_00001 612x792 + 中间态 M_mmdocir_00522 768x432，长边缩 800px、quality 65，共约 187KB；判读口径：黄粗框=gold，彩色框围住文字即对，不看网格线；顶部小字/页码未框属官方稀疏）。
 
 ### Changed
+
+- 固定八页准备在回执访问恢复后续接：复用获准独立uv工具环境（MinerU4.0.10/ONNX CPU及固定模型revision），新增DocVortex2.0候选适配、真实解析进程资源记录及六项合成测试。8/8页导出（七新解析/一复用）与机器坐标检查完成；叠图Read访问被拒、原标注图像映射未验，完整验收及全量准备仍阻塞。独立配置见`@configs/tools/mineru_external_pages_v1.yaml`，结果见`@experiments/2026-10-07-external-preparation.md`；训练依赖锁、比较配置和权重保持不变，未训练、评分、Oracle或全量处理。
 
 - 修正论文规范的Snappy失败分母/基线称谓、RegionRAG指标、训练标签事实和LN公式，明确旧协议与新草案的数据角色边界；保留历史评分算法及旧权重兼容路径。
 

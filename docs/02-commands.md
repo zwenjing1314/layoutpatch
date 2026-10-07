@@ -69,15 +69,15 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 - 检查：`split_proof.json` 的 `pairwise_document_intersections` 全空、`identity_units_crossing_roles` 为空；`coordinate_audit_v1.json` 的 `passed`；`audit.json` 各角色 `units_local_loss_ready`。约 3–6 分钟，CPU。
 - 底层等价（备查）：`uv run --offline --no-sync python scripts/{build_route_v2_split,audit_route_v2_coordinates,build_route_v2_regions,render_route_v2_supervision}.py`，按此顺序。
 
-## route-v2-external-tests（仅新增外部元数据适配测试）
+## route-v2-external-tests（仅新增MinerU候选适配测试）
 
 **命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-tests`
 
-**输入**：新增SciEGQA元数据模块及合成样本；不读取真实外部内容。
+**输入**：新增MinerU/DocVortex候选适配的合成页，`@tests/datasets/test_mineru.py`；不读取真实外部题目或运行解析模型。
 
 **输出**：定向Ruff/pytest摘要，无模型或数据产物。
 
-**检查**：多页嵌套格式、1-based页号、坐标数值合法性、错误题保留、固定八页选择不依赖答案或框；不涉及旧Ruff问题。
+**检查**：0–1框到渲染像素、原页号/旋转/页面尺寸保护、空框/越界停止、重复与空页保留、既有候选字段结构；不重跑已通过元数据审计，不涉及19个旧Ruff问题。
 
 ## route-v2-external-audit（外部比较权重、源字段与本地解析工具核验）
 
@@ -88,6 +88,48 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 **输出**：`artifacts/route_v2_external/preparation_v1/<timestamp>/`的weights.json、字段结构摘要、全题/唯一证据页manifest.json和audit.json；终端只输出计数/哈希/工具状态，无题目、答案、gold、权重张量或完整运行JSON。manifest保留每题身份与失败状态，原图尺寸/渲染变换未核实时明确置null，不猜坐标。预计数秒至一分钟。
 
 **检查**：1623题与固定源哈希、四个训练方法共十二份既有三seed权重、source_val选择及源配置一致；无模型评分/训练/下载/渲染/解析，不算Oracle。解析器缺失时记录硬阻塞，不更换工具或安装资源。
+
+## route-v2-external-status（续接前精确回执检查）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-status`
+
+**输入**：冻结配置精确指向的两份元数据回执；只使用固定页身份和必要源路径，不处理题目、答案或gold。
+
+**输出**：不超过20行的清单哈希、原审计状态、源PDF包路径及固定八页身份；不写产物，不重新选页，不渲染或解析。
+
+**检查**：manifest哈希及八页身份一致；访问失败保留原始错误并停止。该入口不枚举后续运行，不代表最新八页验收状态，最新状态见`@experiments/2026-10-07-external-preparation.md`。预计数秒。
+
+## route-v2-external-tool-status（独立工具包身份只读检查）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-tool-status`
+
+**输入**：独立MinerU环境的包元数据；通过明确的工具Python路径查询，不自动发现解释器。
+
+**输出**：MinerU/ONNX Runtime/DocVortex版本、Python base prefix、包许可及已核实坐标契约摘要；不读取/打印完整日志或解析文本。
+
+**检查**：核实已安装版本与解释器来源，避免重装；该轻量入口不重新核验模型文件、实际CPU会话或处理回执，不启动解析。完整已执行核验见`@experiments/2026-10-07-external-preparation.md`。预计数秒。
+
+## route-v2-external-contract（已核实输出契约摘要）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-contract`
+
+**输入**：与tool-status相同的独立环境包元数据。
+
+**输出**：当前包版本与已由官方实现核实的`docvortex.middle`2.0、0–1块框、PDF point页面尺寸摘要；不打印文本、题目、答案或gold，不写旧产物。
+
+**检查**：最终实现为轻量身份/契约摘要，与tool-status共用只读分支，不重新读取源码或验证原始JSON。首次续接时已做过官方源码和首份原始输出核验；后续pages入口按固定契约逐页做机器检查。该命令不重新解析、下载或评分。
+
+## route-v2-external-pages（固定八页 MinerU Basic ONNX 工程验收）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-pages`
+
+**输入**：`@configs/tools/mineru_external_pages_v1.yaml`固定解析版本/设置；既有manifest的8页、`@artifacts/route_v2_external/preparation_v1/20261007_184934/`的PDF、八页渲染与第一页原始输出；独立工具环境`@artifacts/route_v2_external/preparation_v1/mineru_tool_v1/`。只读取页身份，不读问答/gold。
+
+**输出**：`@artifacts/route_v2_external/preparation_v1/<timestamp>/`的新7页原始输出、8页候选文件`@artifacts/route_v2_external/preparation_v1/<timestamp>/candidates.jsonl`及候选叠图、逐页回执、渲染/坐标/资源/工具身份/总体审计回执；原PDF/渲染/第一页以精确路径及哈希引用不覆盖。
+
+**检查**：固定8页不重选、第一页不重跑；MinerU4.0.10/ONNX1.30.0/DocVortex0.5.10和模型revision逐文件哈希绑定；当前`docvortex.middle`2.0框为0–1归一化，页面为point。严格检查源页/画布，禁止把旧`pdf_info/page_size`像素假设套上新输出。每页新解析通过同进程CLI包装记录工具导入、ONNX会话加载、CPU实际provider、Windows进程峰值工作集；旧第一页计时/内存未保存则置null。导出仅检查字段和坐标，不调用模型评分/Oracle；原始标注图像映射仍未验证时，不宣称外测输入就绪。约1–3分钟，异常立即停。
+
+**底层等价（备查）**：`uv run --offline --no-sync python scripts/prepare_route_v2_external_pages.py`；脚本内部调用独立环境`@artifacts/route_v2_external/preparation_v1/mineru_tool_v1/.venv/Scripts/python.exe`执行`@scripts/route_v2_mineru_worker.py`，在同一解析进程加载已安装的`mineru-kit`入口并记录资源，不调用自动发现的Anaconda。
 
 ## route-v2-exp3-tests（EXP-016最小归因相关检查）
 

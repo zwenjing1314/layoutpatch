@@ -8,7 +8,34 @@
 
 > Status: working。当前状态以本节为入口；下方旧日期节保留为历史，不直接执行其中的“下一步”。本节不是训练指令；route-v2已有working草案，尚未冻结或开训。
 
-### 2026-10-07 EXP-016最小归因完成（最新；已停止）
+### 2026-10-07 固定八页续接完成（最新；候选已导出，视觉与原图映射待验）
+
+- 两份指定元数据回执的受控脚本访问已恢复，固定八页身份/清单哈希不变。复用中断前独立uv解析环境、PDF、八张渲染图和第一页原始解析，只补其余七页，没有重装或重复下载。
+- 实际MinerU4.0.10、onnxruntime1.30.0、docvortex0.5.10；Basic/auto、ONNX CPU实际会话核验通过。模型`opendatalab/MinerU-4_models_onnx`固定revision `358310b4f64b95f9fefc372ad899356e4111f376`，逐文件身份已核验；工具包带附加许可义务，模型沿用组件许可，数据许可未明确。
+- 产物：`@artifacts/route_v2_external/preparation_v1/20261007_200400/`。8/8页候选导出、50候选、8叠图；7页新解析/1页复用。逐页资源及失败历史见`@experiments/2026-10-07-external-preparation.md`最新节和产物回执；首复用页资源缺失，不能补造八页总时长。
+- 解析器0–1框到当前144 dpi渲染像素的机器检查通过，坏框/越界/重复/空页均0；候选字段及到448模型画布转换通过，仅结构检查，无评分或向量缓存验收。auto文本可能来自原生PDF或OCR，不声称纯OCR或与MMDocIR原版一致。
+- **完整验收未完成，仍不能进入全量。** Read读取`@artifacts/route_v2_external/preparation_v1/20261007_200400/overlays/2309.06983_p1.png`返回`permission denied`；Cursor规则仍排除图像，视觉检查0/8，未绕过或修改权限。原SciEGQA图像尺寸及其到PDF渲染的映射也未核验，不能称外部输入就绪。
+- 新工具配置`@configs/tools/mineru_external_pages_v1.yaml`与原比较配置隔离；原比较配置保留历史状态，不回写其旧零页/安装禁令字段。训练依赖/锁文件、比较配置及既有权重身份清单前后哈希保护通过。定向Ruff和6项合成测试通过（1.47秒）；不重复元数据审计、不修19个旧Ruff问题。
+- 文档与工程登记已更新，命令见`@docs/02-commands.md`。下一步仅需受控开放八张叠图或人工检查，并补齐原始图像映射；本轮停止，未训练、评分、Oracle、视觉编码或837页全量处理。
+
+### 2026-10-07 17:12 固定八页工程验收授权（历史；当时回执访问阻塞）
+
+- 已获本轮独立uv工具环境安装MinerU/必要模型及固定八页处理授权；训练环境依赖/锁文件不改，冻结比较配置与权重不改，禁止全量、训练、调参或外部评分。
+- 指定manifest.json和audit.json读取均返回`permission denied`，无法核实既定八页身份；未绕过访问限制或重新选页，安装/下载/渲染/解析均未启动。这是访问阻塞，不判定数据损坏。
+- 官方资料确认MinerU4.0系列存在Basic ONNX/CPU路径并声明Windows支持；具体发布包版本/许可/坐标契约尚未核完，未安装未经确认的包。uv查询的3.12解释器指向Anaconda，未使用；uv的pip index子命令不可用，未试装其它版本。
+- 八页0/8完成；实际时长、内存、候选数及全量预算未测，仍不具备全量准备条件。需先恢复两份精确回执的受控访问。核查依据与错误记录见`@experiments/2026-10-07-external-preparation.md`。
+
+### 2026-10-07 SciEGQA外部比较冻结与输入准备（历史；硬阻塞停止）
+
+- 本轮仅授权比较计划、元数据适配和条件满足时的固定八页工程验证；禁止训练、调参、效果/Oracle评分及全量解析/视觉编码。没有安装依赖、下载模型或替换候选来源。
+- `@configs/experiments/route_v2_external_v1.yaml`已frozen：D-no-text为主候选、D为文本对照，保留A/B/C/C-wide；D-no-text来自EXP-016开发选择，尚无独立验证，不改论文贡献结论。主比较D-no-text−A/B/C-wide及三项Bonferroni校正已预定，原D比较仅次要分析。
+- 四训练方法各用既有seed0/1/2的source_val最佳权重；精确registry索引核对12份权重身份，未加载张量。绑定清单`@artifacts/route_v2_external/preparation_v1/20261007_152240/weights.json`。
+- 固定SciEGQA revision及全部1623题，清点80文档/837唯一证据页/1941题—页单元，保留所有题身份与失败状态。最终格式核验0失败；归一化框为0–1000。清单和回执：`@artifacts/route_v2_external/preparation_v1/20261007_155402/`；完整哈希及曾误用0–1的核验记录见详情，不修改旧产物。
+- 当前直接阻塞是项目`.venv`没有可执行、模型身份已绑定的MinerU候选生成流程。MMDocIR原版面框来自MinerU，但生成版本/模型/参数未知；不能声称同版。原图尺寸及渲染变换尚未验收、保持null，也不允许猜测。
+- 八页ID按文档/整数页号固定；渲染0/8、解析0/8，实际处理耗时/显存/候选数量均未测，无法给可靠全量时长。没有用gold生成或调优候选，没有静默删题；数据许可仍未解决。
+- 新命令已定点登记，新增适配与冻结配置相关Ruff通过、5项测试通过（1.44秒）；未全仓check，未处理19个旧Ruff问题。命令见`@docs/02-commands.md`。详情、固定清单、待批准工具方案及预算限制见`@experiments/2026-10-07-external-preparation.md`。本轮到此停止；比较冻结不代表测试输入就绪或允许正式外测。
+
+### 2026-10-07 EXP-016最小归因完成（历史；已停止）
 
 - 正式run：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/runs/retrieval/route_v2_exp3_attribution/20261007_135013/`。九次从头训练共91epoch，九份source_val选择全部确定后一次统一dev；A/B/C/D保存预测完全不变，无外测/调参/重跑。
 - 配置`configs/experiments/route_v2_exp3_attribution.yaml` frozen，哈希绑定原EXP-015预算且原配置未改。C-wide隐藏1062、273318有效参数；D-no-text只置零文本；D-no-coord只置零编码器坐标，保留真实W/邻域/cover_mass。

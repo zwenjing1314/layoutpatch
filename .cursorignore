@@ -4,7 +4,7 @@
 
 # Datasets, embeddings, model weights, predictions and large run histories
 /data/
-/artifacts/
+/artifacts/*
 /runs/
 /tmp/
 
@@ -72,3 +72,25 @@
 .env
 .env.*
 !.env.example
+
+# Explicit metadata access for the authorized external 8-page preparation.
+# Reopen each parent while keeping siblings excluded; never attach the full
+# manifest to chat (about 675 KB). Extract only fixed-page metadata with a script.
+!/artifacts/route_v2_external/
+/artifacts/route_v2_external/*
+!/artifacts/route_v2_external/preparation_v1/
+/artifacts/route_v2_external/preparation_v1/*
+!/artifacts/route_v2_external/preparation_v1/20261007_155402/
+/artifacts/route_v2_external/preparation_v1/20261007_155402/*
+!/artifacts/route_v2_external/preparation_v1/20261007_155402/manifest.json
+!/artifacts/route_v2_external/preparation_v1/20261007_155402/audit.json
+
+# Fixed eight-page engineering review only; keep parser raw output excluded.
+!/artifacts/route_v2_external/preparation_v1/20261007_200400/
+/artifacts/route_v2_external/preparation_v1/20261007_200400/*
+!/artifacts/route_v2_external/preparation_v1/20261007_200400/coordinate_audit.json
+!/artifacts/route_v2_external/preparation_v1/20261007_200400/render_manifest.json
+!/artifacts/route_v2_external/preparation_v1/20261007_200400/overlays/
+/artifacts/route_v2_external/preparation_v1/20261007_200400/overlays/*
+!/artifacts/route_v2_external/preparation_v1/20261007_200400/overlays/2309.06983_p[1-7].png
+!/artifacts/route_v2_external/preparation_v1/20261007_200400/overlays/2309.06983_p9.png

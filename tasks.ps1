@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-external-status","route-v2-external-tool-status","route-v2-external-contract","route-v2-external-pages","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
   [string]$Task = "help"
 )
 
@@ -106,6 +106,7 @@ switch ($Task) {
     Write-Host "  route-v2-identity      pinned external source + identity screening/verification (no scoring)"
     Write-Host "  route-v2-data          data roles, coordinate gate, region units/audit, supervision overlays"
     Write-Host "  route-v2-smoke         <=16 source_train questions, <=200 steps; stops if a precondition fails"
+    Write-Host "  route-v2-external-pages fixed SciEGQA eight-page MinerU Basic ONNX render/parse audit"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -255,9 +256,9 @@ switch ($Task) {
     if ($LASTEXITCODE -ne 0) { throw "route-v2-queries stopped (see query_cache_v1/runs/)" }
   }
   "route-v2-external-tests" {
-    & uv run --offline --no-sync ruff check src/layoutpatch/datasets/sciegqa.py tests/datasets/test_sciegqa.py scripts/prepare_route_v2_external.py
+    & uv run --offline --no-sync ruff check src/layoutpatch/datasets/sciegqa.py tests/datasets/test_sciegqa.py scripts/prepare_route_v2_external.py scripts/prepare_route_v2_external_pages.py scripts/route_v2_mineru_worker.py src/layoutpatch/datasets/mineru.py tests/datasets/test_mineru.py
     if ($LASTEXITCODE -ne 0) { throw "external metadata lint failed" }
-    & uv run --offline --no-sync pytest tests/datasets/test_sciegqa.py
+    & uv run --offline --no-sync pytest tests/datasets/test_mineru.py
     if ($LASTEXITCODE -ne 0) { throw "external metadata tests failed" }
   }
   "route-v2-external-audit" {
@@ -265,6 +266,24 @@ switch ($Task) {
       -Dataset "pinned SciEGQA 1623 questions; metadata only" -Output "artifacts/route_v2_external/preparation_v1/<timestamp>/"
     & uv run --offline --no-sync python scripts/prepare_route_v2_external.py
     if ($LASTEXITCODE -ne 0) { throw "external preparation identity hard stop; no automatic retry" }
+  }
+  "route-v2-external-status" {
+    & uv run --offline --no-sync python scripts/prepare_route_v2_external_pages.py --inspect-only
+    if ($LASTEXITCODE -ne 0) { throw "external fixed-page access/status check failed" }
+  }
+  "route-v2-external-tool-status" {
+    & uv run --offline --no-sync python scripts/prepare_route_v2_external_pages.py --inspect-tool
+    if ($LASTEXITCODE -ne 0) { throw "external parser state check failed" }
+  }
+  "route-v2-external-contract" {
+    & uv run --offline --no-sync python scripts/prepare_route_v2_external_pages.py --inspect-contract
+    if ($LASTEXITCODE -ne 0) { throw "external parser output contract check failed" }
+  }
+  "route-v2-external-pages" {
+    Show-ExpHeader -ExpId "EXTERNAL-PREP-PAGES" -Config "scripts/prepare_route_v2_external_pages.py" `
+      -Dataset "fixed manifest eight pages only; no questions/gold/scoring" -Output "artifacts/route_v2_external/preparation_v1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/prepare_route_v2_external_pages.py
+    if ($LASTEXITCODE -ne 0) { throw "external eight-page engineering audit failed; preserve output and error" }
   }
   "route-v2-exp3-tests" {
     & uv run --offline --no-sync ruff check src/layoutpatch/retrieval/route_v2_attribution.py scripts/run_route_v2_exp3.py tests/retrieval/test_route_v2_attribution.py

@@ -1,5 +1,34 @@
-"""SciEGQA元数据适配的合成测试；不读取真实外部题目或gold。"""
+"""SciEGQA元数据适配及冻结配置检查；不读取真实外部题目或gold。"""
+from pathlib import Path
+
+import yaml
+
 from layoutpatch.datasets.sciegqa import FIELDS, metadata_manifest
+
+
+def test_external_preparation_config_keeps_fixed_inputs_and_execution_limits():
+    root = Path(__file__).resolve().parents[2]
+    cfg = yaml.safe_load((root / "configs/experiments/route_v2_external_v1.yaml").read_text("utf-8"))
+    assert cfg["status"] == "frozen"
+    assert cfg["primary_candidate"] == "D-no-text"
+    assert set(cfg["methods"]) == {"A", "B", "C", "C-wide", "D", "D-no-text"}
+    assert cfg["weights"]["seeds"] == [0, 1, 2]
+    assert cfg["weights"]["selection"] == "existing_source_val_best_all_seeds"
+    assert cfg["input"]["revision"] == "9bdca77be633cc3259d7e3739d35b38ab00bf5d9"
+    assert cfg["input"]["questions"] == 1623
+    assert cfg["input"]["coordinate_schema"]["normalization_scale"] == 1000
+    assert cfg["preparation"]["sample_unique_pages"] == 8
+    assert all(cfg["preparation"][key] is False for key in (
+        "full_parsing_allowed", "full_visual_encoding_allowed", "scoring_allowed",
+        "oracle_allowed", "metrics_allowed", "training_allowed", "download_or_install_allowed",
+    ))
+    plan = cfg["external_evaluation_plan"]
+    assert plan["execution_authorized_this_round"] is False
+    assert plan["primary_metric"] == "hit1@0.5"
+    assert plan["comparisons"] == ["D-no-text-A", "D-no-text-B", "D-no-text-C-wide"]
+    assert plan["multiple_comparisons"]["family_size"] == 3
+    assert plan["multiple_comparisons"]["method"] == "Bonferroni_percentile_document_bootstrap_intervals"
+    assert cfg["auto_followup"] is False
 
 
 def test_metadata_manifest_retains_failed_question_and_sorts_pages():
