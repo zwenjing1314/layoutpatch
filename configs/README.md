@@ -20,6 +20,8 @@
 
 | config | 状态 | 说明 |
 | --- | --- | --- |
+| `configs/experiments/route_v2_external_v1.yaml` | working | 2026-10-07外部准备；D-no-text主候选及A/B/C/C-wide/D对照定义已固定，十二权重身份待程序绑定；只核验元数据与解析前置条件，不评分、不训练、不下载 |
+| `configs/experiments/route_v2_exp3_attribution.yaml` | frozen | EXP-016；2026-10-07用户授权C-wide/D-no-text/D-no-coord各seed0/1/2；继承并哈希绑定EXP-015预算，九权重确定后统一dev；三项文档bootstrap及Bonferroni区间预固定，不调优不外测 |
 | `configs/experiments/route_v2_exp2_D.yaml` | frozen | EXP-015；2026-10-06本轮授权dev节点编码和一次正式D比较，457页dev缓存与基线兼容性门通过，预算沿EXP-014；禁止事后改参 |
 | `configs/experiments/route_v2_exp1.yaml` | frozen | EXP-014；2026-10-06 用户授权 A/B/C 正式比较，seed 0/1/2，训练与一次开发比较规则见 route-v2 协议第 9 节；不得事后改参 |
 | `configs/datasets/mmdocir.yaml` | working | MMDocIR evaluation 数据集主配置，环境变量已改为 `LAYOUTPATCH_*` |

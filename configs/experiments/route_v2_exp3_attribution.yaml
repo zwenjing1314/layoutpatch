@@ -1,0 +1,55 @@
+# frozen：2026-10-07，任何训练/评分前固定；只允许本轮九次从头训练。
+experiment_id: EXP-016
+name: route_v2_exp3_attribution
+status: frozen
+base_config: configs/experiments/route_v2_exp2_D.yaml
+base_config_sha256: 4ac025e83d6a37ce07de2d1df8d84975cf7b9c788dedc46dff82190ad5f11c51
+inheritance: all_EXP015_inputs_training_early_stopping_metrics_and_budget_except_explicit_overrides
+output: runs/retrieval/route_v2_exp3_attribution
+reference_run: runs/retrieval/route_v2_exp2_D/20261006_230924
+reference_policy: reuse_saved_A_B_C_D_predictions_no_retraining_no_rescoring
+variants:
+  C-wide:
+    module: PatchAdapter
+    hidden: 1062
+    trainable_parameters: 273318
+    definition: only_change_hidden_width_all_parameters_used_no_layout_input
+    parameter_formula: 257*hidden+384
+    maximum_relative_parameter_error: 0.01
+  D-no-text:
+    module: LayoutPatchD
+    trainable_parameters: 273410
+    zero_input: text
+    definition: zeros_like_text_before_text_projection_keep_all_other_inputs_and_structure
+  D-no-coord:
+    module: LayoutPatchD
+    trainable_parameters: 273410
+    zero_input: coords
+    definition: zeros_like_six_coords_before_sinusoidal_encoding_keep_real_W_neighborhood_cover_mass
+    limitation: removes_explicit_coordinate_input_not_all_spatial_information
+seeds: [0, 1, 2]
+max_epochs: 30
+maximum_training_runs: 9
+initialization: fresh_per_variant_per_seed_never_load_trained_D_C_or_smoke
+checkpoint_selection: source_val_only
+training_order: variant_in_declared_order_then_seed_0_1_2
+evaluation_gate: all_nine_checkpoints_selected_before_any_source_dev_model_scoring
+comparisons: [D-C-wide, D-D-no-text, D-D-no-coord]
+bootstrap:
+  iterations: 2000
+  seed: 0
+  unit: document
+  input: per_question_mean_D_three_seeds_minus_per_question_mean_variant_three_seeds
+  confidence: 0.95
+multiple_comparisons:
+  method: Bonferroni_percentile_document_bootstrap_intervals
+  family_size: 3
+  family_alpha: 0.05
+  individual_confidence: 0.9833333333333333
+  quantile_rule: sorted_samples_floor_probability_times_iterations_clamped
+  decision: interpret_all_three_adjusted_intervals_no_selection_of_significant_comparisons
+  limitation: bootstrap_coverage_is_approximate_not_exact_finite_sample_FWER
+report_top5_differences: [cov@5, gold_recall@5@0.5, area_sum@5]
+source_dev_claim: development_attribution_evidence_only_not_external_generalization_or_novelty
+external_test: false
+auto_followup: false

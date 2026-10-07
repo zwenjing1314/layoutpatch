@@ -1,0 +1,120 @@
+# 仅外部准备；本轮禁止效果评分、训练、调参、全量解析或编码。
+name: route_v2_external_v1
+status: frozen
+comparison_status: frozen_weights_and_statistics_bound
+purpose: page_conditioned_candidate_localization_preparation_only
+primary_candidate: D-no-text
+selection_disclosure: selected_from_EXP016_source_dev_not_independently_validated
+paper_contributions: unchanged
+methods:
+  A:
+    implementation: area_descending
+    trained: false
+  B:
+    implementation: frozen_patch_scores_then_IoU_normalized_region_scores
+    trained: false
+    claim: Snappy_style_not_original_paper_reproduction
+  C:
+    implementation: PatchAdapter
+    hidden: 256
+    experiment: EXP-014
+    config: configs/experiments/route_v2_exp1.yaml
+    selection_key: null
+  C-wide:
+    implementation: PatchAdapter
+    hidden: 1062
+    experiment: EXP-016
+    config: configs/experiments/route_v2_exp3_attribution.yaml
+    selection_key: C-wide
+  D:
+    implementation: LayoutPatchD
+    experiment: EXP-015
+    config: configs/experiments/route_v2_exp2_D.yaml
+    selection_key: null
+    role: secondary_text_control
+  D-no-text:
+    implementation: InputAblatedD
+    zero_input: text
+    experiment: EXP-016
+    config: configs/experiments/route_v2_exp3_attribution.yaml
+    selection_key: D-no-text
+    role: primary_candidate
+weights:
+  registry: experiments/registry.csv
+  seeds: [0, 1, 2]
+  selection: existing_source_val_best_all_seeds
+  selection_file: checkpoint_selection.json
+  no_development_best_seed: true
+  no_smoke: true
+  no_training: true
+  identity_manifest: artifacts/route_v2_external/preparation_v1/20261007_152240/weights.json
+  identity_sha256: 5a1bc2a05dfdd5b7287862a6b04928f30b0d90612b6cc2abb77aad7c4bebbe0f
+input:
+  dataset: Yuwh07/SciEGQA-Bench
+  revision: 9bdca77be633cc3259d7e3739d35b38ab00bf5d9
+  root: data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9
+  annotations: SciEGQA_Bench.jsonl
+  annotations_sha256: 338b701830495b984acca753e5b5065b35a7566c308f2d5c81f76b8401a3053f
+  pdf_archive: PDF.tar
+  pdf_archive_sha256: d15569aefec7339ebd360a19d946b384b5ced07b8ffda941f0dfa3494b9f7a16
+  split: test
+  questions: 1623
+  coordinate_schema:
+    page_number_base: 1
+    bbox: per_evidence_page_list_of_xyxy_pixel_boxes
+    rel_bbox: per_evidence_page_list_of_xyxy_on_0_1000_scale
+    normalization_scale: 1000
+    source_code: https://github.com/yuwenhan07/SciEGQA/blob/4552a0e957d1091129118c1666d1ff5f76f74aad/generate/local_generate/data_transfer.py
+    original_frame_render_mapping: unverified_stop_before_processing
+    gold_used_for_candidates: false
+  scope: all_questions_all_evidence_pages_not_assumed_single_page
+  manifest: null
+  manifest_sha256: null
+  license: unresolved_not_declared_in_dataset_card_no_redistribution
+candidate_policy:
+  source: independently_parsed_page_layout_not_gold
+  training_source: official_MMDocIR_layouts_MinerU_reported_version_models_parameters_unknown
+  external_parser: blocked_until_local_executable_and_model_identity_verified
+  same_parser_claim: forbidden_without_generation_identity
+  gold_tuning: forbidden
+  common_for_all_methods: [candidates, rendering, page_ids, denominator]
+  failures: retain_all_question_ids_stop_for_unresolved_inputs_never_silently_drop
+preparation:
+  output: artifacts/route_v2_external/preparation_v1
+  sample_unique_pages: 8
+  sample_rule: first_eight_sorted_doc_id_then_integer_page_id
+  sample_selection_uses: evidence_page_ids_only_not_answers_boxes_coverage_or_scores
+  full_parsing_allowed: false
+  full_visual_encoding_allowed: false
+  scoring_allowed: false
+  oracle_allowed: false
+  metrics_allowed: false
+  training_allowed: false
+  download_or_install_allowed: false
+  vram_budget_gib: 12
+  mapping_policy: stop_if_render_annotation_coordinate_transform_unresolved
+external_evaluation_plan:
+  execution_authorized_this_round: false
+  task: given_correct_page_rank_fixed_candidates
+  primary_metric: hit1@0.5
+  metrics: PAPER_SPEC_8.1_v2-loc-1_all_existing_unit_metrics
+  aggregation: mean_units_within_question_then_question_macro
+  seed_aggregation: mean_three_seed_question_scores_before_paired_statistics
+  seed_std_ddof: 1
+  comparisons: [D-no-text-A, D-no-text-B, D-no-text-C-wide]
+  secondary_comparisons: [D-no-text-D, D-no-text-C]
+  secondary_policy: exploratory_not_contribution_claims_no_promotion_after_results
+  bootstrap: {iterations: 2000, seed: 0, unit: document, confidence: 0.95}
+  multiple_comparisons:
+    method: Bonferroni_percentile_document_bootstrap_intervals
+    family_size: 3
+    family_alpha: 0.05
+    individual_confidence: 0.9833333333333333
+    quantile_rule: sorted_samples_floor_probability_times_iterations_clamped
+    limitation: approximate_bootstrap_coverage_not_exact_finite_sample_FWER
+  auxiliary_mcnemar: per_seed_binary_unit_only_ignores_document_dependence
+  report: [all_seeds, all_primary_comparisons, all_auxiliary_metrics, area_baseline, random, oracle, M_ge_2_denominators, area_quantiles, costs, failures]
+  effect_metrics_in_preparation: forbidden_including_random_and_oracle
+  change_metrics_from_external_results: forbidden
+  page_retrieval: false
+auto_followup: false

@@ -8,7 +8,16 @@
 
 > Status: working。当前状态以本节为入口；下方旧日期节保留为历史，不直接执行其中的“下一步”。本节不是训练指令；route-v2已有working草案，尚未冻结或开训。
 
-### 2026-10-06 23:14 EXP-015正式D开发比较完成（最新；已停止）
+### 2026-10-07 EXP-016最小归因完成（最新；已停止）
+
+- 正式run：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/runs/retrieval/route_v2_exp3_attribution/20261007_135013/`。九次从头训练共91epoch，九份source_val选择全部确定后一次统一dev；A/B/C/D保存预测完全不变，无外测/调参/重跑。
+- 配置`configs/experiments/route_v2_exp3_attribution.yaml` frozen，哈希绑定原EXP-015预算且原配置未改。C-wide隐藏1062、273318有效参数；D-no-text只置零文本；D-no-coord只置零编码器坐标，保留真实W/邻域/cover_mass。
+- 主指标三seed均值：C-wide0.4296925566、D-no-text0.5566747573、D-no-coord0.5037486516，原D0.5296521036。D减三变体点估计依次+0.0999595469/−0.0270226537/+0.0259034520；预固定Bonferroni 98.333%文档区间依次[0.0438330675;0.1559586798]/[−0.0551388889;−0.0023474178]/[−0.0025943396;0.0541463415]。
+- 三项共同解读：单纯增宽普通适配器不能解释D收益；该预算下去文本反而更好；显式坐标经多重校正证据不足，且不是全部空间信息消融。仅开发归因，不证明新颖性/泛化。D相对两个输入消融的Cov@5与gold召回@5均更低，须同时披露。
+- 相关Ruff和20测试通过；正式入口内部读回检查选择、预测、逐题分数、三项统计和输入身份通过，exit0；无NaN/Inf/显存超限。未全仓check、19旧Ruff不改。代码commit起点`1961493b6b7f655459ffb24fe0b75536b0075a66`，本轮未提交。
+- 五件套/定点代码快照/九份选择及训练日志齐全；详情及指标来源见`experiments/2026-10-07-exp-016-attribution.md`和run的metrics.json。完成后已停止，不自动调参、替换D、增变体或外测。
+
+### 2026-10-06 23:14 EXP-015正式D开发比较完成（历史；已停止）
 
 - 本轮授权补dev节点并执行一次D三seed正式训练/开发比较。配置`route_v2_exp2_D.yaml`已frozen；train/val原缓存未变，独立dev缓存457页3904节点（3581非空、323缺失、23截断），编码身份/规则一致。
 - 完整run：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/runs/retrieval/route_v2_exp2_D/20261006_230924/`。seed0/1/2实际6/7/7epoch，最佳1/2/2；仅val选权重，全部选择后一次dev评分；A/B/C原预测值完全不变。

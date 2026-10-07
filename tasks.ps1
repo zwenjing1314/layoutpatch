@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
   [string]$Task = "help"
 )
 
@@ -253,6 +253,30 @@ switch ($Task) {
       -Dataset "data-roles-v1 source_train/source_val/source_dev; encoding only" -Output "artifacts/route_v2_data/query_cache_v1/source_queries.pt"
     & uv run --offline --no-sync python scripts/cache_route_v2_queries.py
     if ($LASTEXITCODE -ne 0) { throw "route-v2-queries stopped (see query_cache_v1/runs/)" }
+  }
+  "route-v2-external-tests" {
+    & uv run --offline --no-sync ruff check src/layoutpatch/datasets/sciegqa.py tests/datasets/test_sciegqa.py scripts/prepare_route_v2_external.py
+    if ($LASTEXITCODE -ne 0) { throw "external metadata lint failed" }
+    & uv run --offline --no-sync pytest tests/datasets/test_sciegqa.py
+    if ($LASTEXITCODE -ne 0) { throw "external metadata tests failed" }
+  }
+  "route-v2-external-audit" {
+    Show-ExpHeader -ExpId "EXTERNAL-PREP" -Config "configs/experiments/route_v2_external_v1.yaml" `
+      -Dataset "pinned SciEGQA 1623 questions; metadata only" -Output "artifacts/route_v2_external/preparation_v1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/prepare_route_v2_external.py
+    if ($LASTEXITCODE -ne 0) { throw "external preparation identity hard stop; no automatic retry" }
+  }
+  "route-v2-exp3-tests" {
+    & uv run --offline --no-sync ruff check src/layoutpatch/retrieval/route_v2_attribution.py scripts/run_route_v2_exp3.py tests/retrieval/test_route_v2_attribution.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-016 related lint failed" }
+    & uv run --offline --no-sync pytest tests/retrieval/test_route_v2_attribution.py tests/retrieval/test_route_v2_layout.py tests/retrieval/test_route_v2_exp2.py tests/retrieval/test_route_v2_exp1.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-016 related tests failed" }
+  }
+  "route-v2-exp3" {
+    Show-ExpHeader -ExpId "EXP-016" -Config "configs/experiments/route_v2_exp3_attribution.yaml" `
+      -Dataset "data-roles-v1 source_train/val; dev after all nine checkpoints" -Output "runs/retrieval/route_v2_exp3_attribution/<timestamp>/"
+    & uv run --offline --no-sync python scripts/run_route_v2_exp3.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-016 hard stop; preserve failure; no automatic retry" }
   }
   "route-v2-exp2-result-check" {
     & uv run --offline --no-sync ruff check scripts/verify_route_v2_exp2_result.py

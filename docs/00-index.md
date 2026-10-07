@@ -1,6 +1,7 @@
 # 00-index（全仓导航 SSOT）
 
 > Status: working | Scope: 全仓 | SSOT: 是
+> 2026-10-07：EXP-016三变体最小归因完成并停止；命令/配置已登记执行，最新状态见`docs/handoff.md`，结果见`experiments/2026-10-07-exp-016-attribution.md`。
 > 新增/修改任何 SSOT 文档，必须同步更新本表状态行。迁移完成前 Status 保持 working。
 
 ## 六类信息去哪找
@@ -25,7 +26,7 @@
 - `docs/THESIS_SPEC.md`（working）：大论文边界；2026-10-03/04纠正文献分母、数据标签与新旧路线范围
 - `docs/PAPER_SPEC.md`（working）：小论文执行；历史Gate保留，新路线见下方独立协议
 - `docs/ROUTE_V2_PROTOCOL.md`（working）：区域监督布局融合协议；2026-10-06第9节冻结EXP-014；第10节及10.1节落实D输入并冻结EXP-015正式授权；配置注册见`configs/README.md`
-- `docs/handoff.md`（working）：新会话先读2026-10-03入口下的2026-10-06最新节；EXP-015正式D开发比较完成并停止，结果只称开发收益；历史节不作当前执行令
+- `docs/handoff.md`（working）：新会话先读2026-10-03入口下的2026-10-07最新节；EXP-016最小归因完成并停止，历史节不作当前执行令
 - `docs/paper-progress.md`（working）：小论文进度叙事。2026-09-27 起，执行令以 `docs/handoff.md` 置顶节为准。
 - `docs/paper-draft-notes.md`（working）：小论文章节素材。数字以 registry 和证明文件为准，不替代 `docs/PAPER_SPEC.md`。
 - `docs/MIGRATION_BATCHES.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）

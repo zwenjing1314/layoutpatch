@@ -69,6 +69,46 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 - 检查：`split_proof.json` 的 `pairwise_document_intersections` 全空、`identity_units_crossing_roles` 为空；`coordinate_audit_v1.json` 的 `passed`；`audit.json` 各角色 `units_local_loss_ready`。约 3–6 分钟，CPU。
 - 底层等价（备查）：`uv run --offline --no-sync python scripts/{build_route_v2_split,audit_route_v2_coordinates,build_route_v2_regions,render_route_v2_supervision}.py`，按此顺序。
 
+## route-v2-external-tests（仅新增外部元数据适配测试）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-tests`
+
+**输入**：新增SciEGQA元数据模块及合成样本；不读取真实外部内容。
+
+**输出**：定向Ruff/pytest摘要，无模型或数据产物。
+
+**检查**：多页嵌套格式、1-based页号、坐标数值合法性、错误题保留、固定八页选择不依赖答案或框；不涉及旧Ruff问题。
+
+## route-v2-external-audit（外部比较权重、源字段与本地解析工具核验）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-audit`
+
+**输入**：`configs/experiments/route_v2_external_v1.yaml`、冻结训练配置、registry精确运行索引、source_val选择回执与权重文件、固定SciEGQA JSONL/PDF.tar；仅查询当前`.venv`的MinerU/magic-pdf/PyMuPDF版本及明确工具配置路径。
+
+**输出**：`artifacts/route_v2_external/preparation_v1/<timestamp>/`的weights.json、字段结构摘要、全题/唯一证据页manifest.json和audit.json；终端只输出计数/哈希/工具状态，无题目、答案、gold、权重张量或完整运行JSON。manifest保留每题身份与失败状态，原图尺寸/渲染变换未核实时明确置null，不猜坐标。预计数秒至一分钟。
+
+**检查**：1623题与固定源哈希、四个训练方法共十二份既有三seed权重、source_val选择及源配置一致；无模型评分/训练/下载/渲染/解析，不算Oracle。解析器缺失时记录硬阻塞，不更换工具或安装资源。
+
+## route-v2-exp3-tests（EXP-016最小归因相关检查）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-exp3-tests`
+
+**输入**：新增归因模块、正式入口和合成测试；沿用D接口/早停/基线兼容性测试。
+
+**输出**：定向Ruff及pytest汇总，不训练真实数据、不评分dev。
+
+**检查**：有效参数容量、只置零指定输入且缓存不变、九权重选择门、文档bootstrap三项Bonferroni区间、预算继承；不包含19个旧Ruff问题。
+
+## route-v2-exp3（EXP-016三变体九次训练和一次统一开发评测）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-exp3`
+
+**输入**：冻结`configs/experiments/route_v2_exp3_attribution.yaml`及哈希绑定的EXP-015配置、既有缓存/划分/候选；原A/B/C/D已存预测。2026-10-07用户授权。
+
+**输出**：`runs/retrieval/route_v2_exp3_attribution/<timestamp>/`五件套、定点代码快照、输入身份、九份选择记录/权重、逐轮日志、逐题预测及保存结果复核回执；终端仅汇总。预计约15–40分钟，早停决定实际时长；中断保留失败及已完成产物，不自动续跑。
+
+**检查**：C-wide隐藏1062、273318参数；D-no-text只置零文本；D-no-coord只置零显式坐标且真实W/邻域/cover_mass保留。每变体seed0/1/2、最多30epoch，只val选权重；全部九个确定后一次统一dev评分，A/B/C/D不重评分。三项D减变体预固定，95%文档区间加98.333% Bonferroni区间，保留全部指标/分母/辅助McNemar。输入不符/非有限值/显存超过12GiB即停，不重试；完成后停止。
+
 ## route-v2-exp2-result-check（EXP-015保存结果只读回验）
 
 ```powershell
