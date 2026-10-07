@@ -17,21 +17,24 @@
 ## 入门（按顺序读）
 
 1. `docs/01-quickstart.md`（working, SSOT）：环境 + 数据准备
-2. `docs/02-commands.md`（working, SSOT）：命令唯一入口（含 `phase1b-audit` 坐标审计命令）
+2. `docs/02-commands.md`（working, SSOT）：命令唯一入口（含 `phase1b-audit` 坐标审计及 2026-10-06新增问题缓存、EXP-014及D节点/测试/smoke/只读回验入口，EXP-015正式入口及dev缓存/兼容性/结果只读回验均已登记执行）
 3. `docs/RULES.md`（stable, SSOT）：开发规范十条铁律 + 0.2 实验小白讲解 + 4.4 指令透明后台执行
 
 ## 现行研究
 
 - `docs/THESIS_SPEC.md`（working）：大论文边界；2026-10-03/04纠正文献分母、数据标签与新旧路线范围
 - `docs/PAPER_SPEC.md`（working）：小论文执行；历史Gate保留，新路线见下方独立协议
-- `docs/ROUTE_V2_PROTOCOL.md`（working）：区域监督布局融合草案；含数据重定、OCR输入、V2网络、监督/评测与未冻结项，尚未训练
-- `docs/handoff.md`（working）：新会话先读2026-10-03置顶节；旧路线暂停、数据用途重定方向与待核实项，历史节不作当前执行令
+- `docs/ROUTE_V2_PROTOCOL.md`（working）：区域监督布局融合协议；2026-10-06第9节冻结EXP-014；第10节及10.1节落实D输入并冻结EXP-015正式授权；配置注册见`configs/README.md`
+- `docs/handoff.md`（working）：新会话先读2026-10-03入口下的2026-10-06最新节；EXP-015正式D开发比较完成并停止，结果只称开发收益；历史节不作当前执行令
 - `docs/paper-progress.md`（working）：小论文进度叙事。2026-09-27 起，执行令以 `docs/handoff.md` 置顶节为准。
 - `docs/paper-draft-notes.md`（working）：小论文章节素材。数字以 registry 和证明文件为准，不替代 `docs/PAPER_SPEC.md`。
 - `docs/MIGRATION_BATCHES.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）
 
 ## 实验过程
 
+- `experiments/2026-10-06-exp-015-route-v2-D.md`：EXP-015正式D三seed开发比较，绑定配置和输入，主比较D−C，保留Top-5差值。
+- `experiments/2026-10-06-exp-015-preparation.md`：D文本来源与训练/验证缓存、固定smoke、唯一正式配置候选及dev节点缓存缺项；未正式训练。
+- `experiments/2026-10-06-exp-014-route-v2-exp1.md`：冻结A/B/C三seed正式开发比较，五件套与输入/代码身份齐全，达到C−B推进标准但未超过面积A，完成后停止。
 - `experiments/2026-10-03-route-v2-review.md`：外部修改建议的代码/文献核查及修订依据，不是新效果实验
 
 - `experiments/registry.csv`：注册表（EXP-001~013 + FUSION-ARXIVQA + EXP-002-S1 + EXP-007-S1 + THR-B + S2-AUDIT + SPLIT-FROZEN）。2-R 缺口证明：`experiments/s2_splits/phase2r_gap_proof.json`。第一次正式融合：`experiments/2026-09-29-fusion-arxivqa.md`。

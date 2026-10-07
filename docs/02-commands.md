@@ -69,14 +69,154 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 - 检查：`split_proof.json` 的 `pairwise_document_intersections` 全空、`identity_units_crossing_roles` 为空；`coordinate_audit_v1.json` 的 `passed`；`audit.json` 各角色 `units_local_loss_ready`。约 3–6 分钟，CPU。
 - 底层等价（备查）：`uv run --offline --no-sync python scripts/{build_route_v2_split,audit_route_v2_coordinates,build_route_v2_regions,render_route_v2_supervision}.py`，按此顺序。
 
+## route-v2-exp2-result-check（EXP-015保存结果只读回验）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-exp2-result-check
+```
+
+- 输入：`runs/retrieval/route_v2_exp2_D/20261006_230924/`及EXP-014原预测；只读已存结果。
+- 输出：终端回执，无训练或模型前向。
+- 检查：A/B/C复制值不变、D候选/分母一致、32项相关测试之外的实际checkpoint选择/早停及配对bootstrap重算一致；预计数秒，不重评dev。
+
+## route-v2-exp2-verify（正式D输入及基线兼容性门）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-exp2-verify
+```
+
+- 输入：EXP-014配置/代码快照/已存预测及选择回执、当前数据角色、候选、问题/节点缓存、EXP-015配置。
+- 输出：新`artifacts/route_v2_data/exp015_preflight/<timestamp>/preflight.json`；核验逐条已存预测的候选/排序/指标，不调用模型定位评分。
+- 检查：训练预算一致、原评分损失实现不变、角色和缓存哈希一致，412题545unit相同分母、逐题宏平均及预测兼容；不一致即停止，预计数十秒。
+
+## route-v2-d-dev-nodes（2026-10-06授权补dev节点，仅编码）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-d-dev-nodes
+```
+
+- 输入：source_dev eval_ready所需页的全部既有候选；严格复用train/val的本地BGE-M3身份、字段规则、1024维、512token、batch2及缺失处理。节点构造不含问题或gold。
+- 输出：独立`artifacts/route_v2_data/d_nodes_dev_v1/`与`d_nodes_runs/<timestamp>/`回执；train/val原缓存逐文件哈希在编码前后校验，禁止覆盖。
+- 检查：身份/来源/节点对应、有限性、显存≤12GiB；只编码不定位评分、不改变输入规则、不下载；预计约1分钟，以实测为准。
+
+## route-v2-d-verify（D准备产物只读回验）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-d-verify
+```
+
+- 输入：训练/验证d_nodes_v1、D smoke回执与EXP-014/015配置；不读取dev样本。
+- 输出：终端节点哈希/ID/shape/W/缺失处理与共同预算一致性回执。
+- 检查：全部缓存页逐份验证（实际页数见回执）、smoke通过，单列尚未准备的dev节点缓存；约数秒，不编码、不训练、不评分。
+
+## route-v2-exp2（EXP-015冻结正式D比较；2026-10-06授权执行）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-exp2
+```
+
+- 输入：`configs/experiments/route_v2_exp2_D.yaml`、EXP-014已存A/B/C预测、冻结页/问题缓存和同规则节点缓存。训练/验证节点与独立dev节点均已准备，开跑前必须通过配置绑定的preflight回执并复核哈希。
+- 输出：新建`runs/retrieval/route_v2_exp2_D/<timestamp>/`五件套、各seed日志/权重、D−C/D−A/D−B及Top-5差值；逐epoch训练侧gate和残差仅诊断。
+- 检查：全部D权重由val确定后统一dev评分一次；C仅复用原预测，不重训或重评。显存12GiB，输入/数值/协议不符立即停，失败保留；运行时长按首轮实测估计，不自动调参或后续实验。
+
+## route-v2-d-smoke（固定训练样本技术验收）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-d-smoke
+```
+
+- 输入：`20261006_153418`固定16题/19unit清单、原页/问题缓存、新d_nodes_v1；不加载任何训练权重，不评val/dev。
+- 输出：独立`artifacts/route_v2_d_smoke/<timestamp>/metrics.json`、`steps.jsonl`、`D_smoke.pt`，失败回执保留；权重不得用于正式D起点。
+- 检查：seed42、AdamW lr1e-3/weight_decay0.01、全19unit平均梯度200步，GPU float32、12GiB上限；损失/梯度/参数、第一步与后续上游信号、空patch/提示token、gate/归一化patch变化、训练定位宏平均、耗时和显存。无NaN/Inf；失败不扩大预算，预计数分钟以内，以实测为准。
+
+## route-v2-d-tests（D组合接口定向验收）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-d-tests
+```
+
+- 输入：合成节点/patch、现有V2融合与评分测试，不访问开发集。
+- 输出：ruff/pytest终端结果，临时测试产物。
+- 检查：零初始化一致、空patch、padding、字段/类型/坐标对齐和后续上游梯度；不运行全仓19个旧ruff问题。预计数秒至数十秒。
+
+## route-v2-d-nodes（仅训练/内部验证节点缓存）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-d-nodes
+```
+
+- 输入：source_train可训练页与source_val可评测页的全部既有候选；仅本地BGE-M3 revision 5617a9f61b028005a4858fdac845db406aefb181。正文/标题/公式选text，图/表选ocr_text，禁止vlm_text回退。官方来源见EXP-015准备记录。
+- 输出：独立`artifacts/route_v2_data/d_nodes_v1/`，逐页文本向量、类型/归一化坐标、W_raw/W_attn/cover_mass、节点ID和文本哈希；运行与覆盖率回执在`artifacts/route_v2_data/d_nodes_runs/<timestamp>/`。旧缓存拒绝覆盖。
+- 检查：原始数据和候选对应、模型本地文件哈希、有限归一化1024维向量；缺模型/来源或显存超12GiB即停。float32、CLS池化、最大512token（截断计数）、batch2；不编码图像、不准备dev文本；耗时实测，中断不发布半成品。
+
+## route-v2-exp1-result-check（已保存结果只读复核）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-exp1-result-check
+```
+
+- 输入：`runs/retrieval/route_v2_exp1/20261006_162042/` 的冻结配置、逐轮日志、选择回执、权重与已保存预测。
+- 输出：终端核验回执，无模型前向、训练、开发集重评分或输入改写。
+- 检查：相同候选与分母、严格早停/平局、checkpoint哈希及选择先于开发评测、三seed逐题配对bootstrap重算与保存统计完全一致；预计数秒。
+
+## route-v2-exp1-tests（正式runner相关合成测试）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-exp1-tests
+```
+
+- 输入：正式runner与合成测试；不访问真实开发集、不编码。
+- 输出：ruff 与 pytest 结果；测试临时目录。
+- 检查：角色限制、训练页排除、评测资格、尾组平均、早停和平局、检查点门、逐题宏平均、三seed配对、零初始化一致和非有限中止全部通过；预计数十秒。
+
+## route-v2-exp1（EXP-014，冻结A/B/C正式比较）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-exp1
+```
+
+- 输入：`configs/experiments/route_v2_exp1.yaml` 冻结配置及其绑定的核验回执；原 data-roles-v1/regions-v1/问题与页缓存。只更新 source_train；source_val 选择；全部3个seed选择完成后一次 source_dev 比较。
+- 输出：新建 `runs/retrieval/route_v2_exp1/<timestamp>/`，正式五件套、代码快照/工作区差异、输入哈希、每轮日志/曲线、独立最佳权重、逐题分数及选择回执；失败保留目录，不恢复重跑。
+- 检查：运行前定向测试通过；身份/数值/显存12GiB硬门；所有方法同题同候选同指标。实际耗时按每轮日志外推，不承诺固定时长；预计分钟至数十分钟。结束只报告开发结果与预定推进标准，不自动训练D或调参。命令内部全程离线且禁止同步依赖。
+
+## route-v2-exp1-verify（正式训练前只读输入核验）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-exp1-verify
+```
+
+- 输入：现有 data-roles-v1、regions-v1、问题/页面缓存、坐标与 smoke 回执；不打开外部测试，不运行其他辅助任务。
+- 输出：`artifacts/route_v2_data/exp1_verification/<timestamp>/verification.json`，含逐文件哈希和角色/排除核验。只读既有输入。
+- 检查：ID、角色、源哈希、缓存模型与页面签名、有限性、既有排除计数全部通过；失败即停止。预计数分钟，取决于磁盘哈希耗时，无模型编码或评分。
+
+## route-v2-queries（本地冻结问题向量缓存，2026-10-06 授权）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-queries
+```
+
+- 输入：`data-roles-v1` 四角色清单和证明、MMDocIR 原始 annotations；仅提取三个非隔离角色的问题文本。精确核对物理行/题下标、全局 ID、文档 ID 和冻结源哈希。只用本地 `vidore/colpali`、其基础权重和现有 uv 环境，离线且不同步依赖。
+- 输出：`artifacts/route_v2_data/query_cache_v1/source_queries.pt`；独立 `runs/<timestamp>/run_info.json` 记录模型/processor 身份、哈希、token、shape/dtype、batch 耗时和峰值显存。已有缓存严格校验复用；不兼容即停，不覆盖。首 batch=1，后续 batch=2；实际耗时以运行记录为准，中断只留下独立运行目录，不发布半成品缓存。
+- 检查：预期 1613 题（以 manifest 为准），完整 ID 覆盖、三角色计数、非零有限向量、保留十个增广 token；模型缺失、ID 不一致、异常向量或显存不足即停。不同角色仅编码，不评分，不读取外部测试，不编码页面。
+
+## route-v2-cache-tests（缓存与 smoke 相关定向检查）
+
+```powershell
+powershell.exe -NoProfile -File tasks.ps1 route-v2-cache-tests
+```
+
+- 输入：缓存映射/完整性验证、smoke 数值中止、现有划分/区域/定位的合成测试。
+- 输出：终端 ruff 与 pytest 结果；临时测试文件，无真实模型编码或实验训练。
+- 检查：全部通过；约数十秒。内部使用 `uv run --offline --no-sync`，不安装依赖。
+
 ## route-v2-smoke（管线可学习性验证，task；不是效果实验）
 
 ```powershell
 ./tasks.ps1 route-v2-smoke
 ```
 
-- 输入：上一步全部产物 + `artifacts/route_v2_data/query_cache_v1/source_queries.pt`（非隔离来源题的问题向量，至少含固定 16 题；格式见脚本 `QUERY_SCHEMA`。截至 2026-10-04 不存在，生成需另行批准）。
-- 输出：`artifacts/route_v2_smoke/<timestamp>/preconditions.json`；全部前置通过时另有 `adapter.pt`、`smoke_result.json`。
+- 输入：上一步全部产物 + `artifacts/route_v2_data/query_cache_v1/source_queries.pt`（非隔离来源题的问题向量，至少含固定 16 题；格式见脚本 `QUERY_SCHEMA`；使用已授权的 `route-v2-queries` 生成并校验）。
+- 输出：`artifacts/route_v2_smoke/<timestamp>/preconditions.json`；全部前置通过时另有 `adapter.pt`、`smoke_result.json`、`metrics.json`；出现非有限训练数值时保存 `failure.json` 并立即中止。
 - 检查：前置失败时退出码 2、不训练、不替换输入。通过时看 `smoke_result.json` 的 loss、grad_norm、`mean_gap`、`nonfinite_steps`。CPU，预计数分钟。smoke 结果永不进论文。
 
 ## route-v2-data-tests（身份与划分合成检查）

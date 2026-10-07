@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import random
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -19,6 +20,7 @@ import polars as pl
 import torch
 
 from layoutpatch.evaluation.localization import rank_candidates, unit_metrics
+from layoutpatch.retrieval.colpali import _source_signature
 from layoutpatch.retrieval.colpali_layout import split_page_embedding
 from layoutpatch.retrieval.route_v2_scoring import (
     PatchAdapter,
@@ -95,6 +97,7 @@ def evaluate(units: list[dict], items: list[dict], cands: dict, module: torch.nn
 
 
 def main() -> int:
+    started = time.perf_counter()
     out = OUT_ROOT / datetime.now().strftime("%Y%m%d_%H%M%S")
     out.mkdir(parents=True, exist_ok=False)
     results, units, cache = preconditions()
@@ -108,8 +111,16 @@ def main() -> int:
         return 2
     torch.manual_seed(SEED)
     items = []
+    page_ids = {u["page_cache_id"] for u in units}
+    pages = pl.read_parquet(REPO / "data/processed/mmdocir_evaluation/pages.parquet",
+                            columns=["page_id", "page_image_path"]).filter(pl.col("page_id").is_in(page_ids))
+    image_paths = {r["page_id"]: Path(r["page_image_path"]) for r in pages.to_dicts()}
     for u in units:
         payload = torch.load(PAGE_CACHE / f"{u['page_cache_id']}.pt", map_location="cpu", weights_only=True)
+        if payload.get("model_name") != "vidore/colpali" or payload.get("source_signature") != _source_signature(image_paths[u["page_cache_id"]], "vidore/colpali"):
+            raise ValueError(f"page cache signature mismatch: {u['page_cache_id']}")
+        if not bool(torch.isfinite(payload["embedding"]).all()):
+            raise FloatingPointError(f"nonfinite page cache: {u['page_cache_id']}")
         patches, _ = split_page_embedding(payload["embedding"].float())
         pos = torch.zeros(1024, dtype=torch.bool)
         pos[u["patch_pos_idx"]] = True
@@ -122,15 +133,33 @@ def main() -> int:
         cands.setdefault((c["doc_id"], c["page"]), []).append(c)
     module = PatchAdapter()
     before = evaluate(units, items, cands, module)
-    result = train_local_steps(module, items, steps=STEPS, lr=LR)
+    training_started = time.perf_counter()
+    try:
+        result = train_local_steps(module, items, steps=STEPS, lr=LR)
+    except FloatingPointError as exc:
+        (out / "failure.json").write_text(json.dumps({"error": str(exc), "elapsed_seconds": time.perf_counter() - started}), "utf-8")
+        raise
+    result["training_seconds"] = time.perf_counter() - training_started
+    result["train_questions"] = len({u["query_id"] for u in units})
+    result["unit_ids"] = [u["unit_id"] for u in units]
     result["train_units"] = len(items)
     result["train_hit1@0.5_before"] = before
     result["train_hit1@0.5_after"] = evaluate(units, items, cands, module)
+    result["localization_aggregation"] = "unit_mean (existing smoke diagnostic)"
     result["note"] = "training-set diagnostics only; not a generalization or paper result"
+    result["elapsed_seconds"] = time.perf_counter() - started
+    result["checks"] = {
+        "loss_decreased": result["final"]["loss"] < result["initial"]["loss"],
+        "gradients_finite_nonzero": result["gradients_all_finite"] and result["gradient_nonzero_steps"] == STEPS,
+        "parameters_changed": result["parameters_changed"],
+        "no_nonfinite": result["nonfinite_steps"] == 0,
+    }
+    result["passed"] = all(result["checks"].values())
     torch.save(module.state_dict(), out / "adapter.pt")
+    (out / "metrics.json").write_text(json.dumps({k: v for k, v in result.items() if k not in ("log", "unit_ids")}, indent=2), "utf-8")
     (out / "smoke_result.json").write_text(json.dumps(result, indent=2), "utf-8")
     print(json.dumps({"run_dir": str(out), "initial": result["initial"], "final": result["final"]}))
-    return 0
+    return 0 if result["passed"] else 3
 
 
 if __name__ == "__main__":

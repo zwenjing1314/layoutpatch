@@ -115,3 +115,34 @@ RegionRAG 用的 98k 文档向框来自 Visual-CoT（arXiv 2403.16999）的 Text
 - 开发信号出现前不做多 seed 消融；失败如实记录，不删基线、不换主指标。
 - 不要求每个 seed 单独 p<0.05；不显著不等于等价，等价性只能用预先冻结的非劣界限判断。
 - 旧结果中 IoU 计数口径的不一致（130/136、214/220）只影响旧结论的解读，不改动 route-v2 的口径。
+
+## 9. route-v2-exp1-v1（EXP-014，2026-10-06 训练前冻结）
+
+用户明确授权执行 A/B/C，目标是检验普通区域监督适配器在未参与参数更新的问题上的定位开发效果；不验证 D 创新。唯一数值配置为 `configs/experiments/route_v2_exp1.yaml`（frozen）。已通过只读输入核验，回执路径由该配置绑定。保持 data-roles-v1、regions-v1、现有候选/排序、image-first patch 切片、query token、局部损失和 τ，不重新编码或重新划分。
+
+- 只用 source_train 中 local_loss_ready 且非 page_overlap_excluded 的 unit 更新 C。每 seed 独立初始化 PatchAdapter(hidden=256)，不读取 smoke 权重。seed=0/1/2，各最多30 epoch；AdamW lr=1e-3、weight_decay=0.01、betas=(0.9,0.999)、eps=1e-8，无 scheduler。按排序后的 unit_id 起点，以每 seed 独立且跨 epoch 连续的 Python RNG 洗牌。逐 unit 前后向，每组4 unit按实际数量平均，尾组同样平均；clip max_norm=1.0。
+- GPU float32，禁用 TF32，不启用混合精度，确定性算法；12 GiB 显存上限。首次训练前仅在 train/val 检查 C 零残差与 B 分数一致（绝对容差1e-6）。本轮不添加页面保护项或额外损失。
+- 每 epoch 在 source_val 全部 eval_ready unit 上计算第8.1节主指标（题内平均再按问题宏平均），包括无正/负patch及页重叠标记的评测样本。初始 best=-∞，仅训练后的 epoch 可入选；严格提高保存独立 checkpoint，平局保留更早者，连续5轮未严格提高早停。每个 seed 均报告，不选择最佳 seed。
+- 三个 seed 的 checkpoint 全部确定并写选择回执后，才进行一次统一 source_dev A/B/C 比较。A/B 各计算一次；三seed逐题 C 主指标先平均，再与同题 B 按文档聚类 bootstrap（2000次，seed0），95%区间。seed标准差使用样本标准差（ddof=1）。McNemar 仅对各 seed 的二元 unit 命中与 B 配对，注明忽略同文档相关性，不将跨seed均值当二元数据。
+- 推进标准：C−B点估计≥0.01且95%区间下界>0；始终报告 C−A，未超过 A 不能称超过面积强基线。未达标则暂停扩大，不推论所有区域监督/布局融合无效。
+- 指标完全沿用 PAPER_SPEC 第8.1节；M≥2按符合条件的 unit 过滤后再做题内/题间平均，单列分母，不替代全集。框大小分位数报告 unit 分布。source_val 的 news_combined 集中分布只披露，不重切。source_dev只称开发结果。
+- 本轮只做给定正确页定位，不做页级非劣实验、不声称页面召回保持，故第8节中页级非劣界限要求不适用于此实验。禁止读取/评分外部测试、训练D或自动开第二轮。
+- 输入身份/缓存不符、角色泄漏、NaN/Inf、显存超限或实现偏离冻结协议时硬停止，保留失败目录，不自动降级重跑。既有无关ruff问题单独记录。
+
+## 10. EXP-015 D输入与实现准备（2026-10-06；正式运行未启动）
+
+本轮以用户授权完成D训练侧技术验收，不改EXP-014。唯一候选配置`configs/experiments/route_v2_exp2_D.yaml`，状态working；数值与接口已落定，正式冻结前补同规则dev节点缓存及身份回执。本轮仅处理source_train可训练页与source_val可评测页的全部候选，不编码dev节点、不评分dev或外部测试。
+
+- 文本来源：MMDocIR官方数据卡revision `bdcb36ecb3eee73667180ee3fb24fe433f6dd2a4` 的 Miscellaneous Document Files / Layout-related files明确text为正文/公式OCR原文、ocr_text为图/表OCR原文，vlm_text为VLM描述；官方encode.py对非图表取text。正文/标题/公式取text，图/表取ocr_text；strip首尾空白，空/null保留节点并记录缺失，缓存零文本向量但仍过投影层；绝不回退vlm_text。未知类型来源未明则停止（类型表仍保留UNK）。标题沿官方非图表分支，本轮实际候选未出现独立title/UNK。未获得逐节点OCR工具/版本，不声称可复现其原始解析流水线。详细证据与覆盖率见EXP-015准备记录。
+- 既有本地BAAI/bge-m3 revision `5617a9f61b028005a4858fdac845db406aefb181`，SentenceTransformer原CLS池化、1024维、L2归一化、float32、max_seq_length=512、batch2，模型冻结。属于既有编码器接口适配，不沿旧5.2节计划另换mean池化。只离线编码候选框文本，不运行视觉编码器。截断和缺失计数报告。
+- D由原TextLayoutEncoder(text_dim=1024,num_types=6,coord_width=72)与原SparseLocalFusionV2(top_k=4)组合；文本1024维投影，坐标6维，经72维正弦编码，类型ID沿layout-types-v1；输出节点128维。节点按layout_id升序；mask为boolean[M]。坐标/W按既有裁剪与448映射，W_raw采用cover，W_attn只对非空行归一化，cover_mass为原始行和；均离线缓存。此实现选择不经dev调参。
+- D只接收页面patch和页面节点，不接收query/gold；gold仅构造既有损失mask。只训练节点编码器（文本/坐标投影、类型嵌入与融合投影）和融合V2；冻结BGE-M3与ColPali。提示行1024–1030逐值保留；空patch原值保留；padding在softmax前屏蔽。正式训练每seed独立零残差初始化，禁止载入C、旧融合或smoke权重。
+- D技术smoke固定沿用20261006_153418的16题/19unit，seed42，GPU float32、AdamW lr1e-3/weight_decay0.01，200步全批平均；不作为正式预算调优或效果结论。记录后续上游梯度、gate、归一化patch变化及训练定位。
+- EXP-015正式预算/早停与EXP-014相同。主比较三seed逐题D均值减三seed逐题C均值，文档聚类bootstrap2000次/seed0，点估计≥0.01且95%下界>0；同报D−A、D−B。A/B/C只复用EXP-014已存预测。保留全部8.1节指标、随机/Oracle、M≥2、参数与成本；Top-5差值必须显式报告，不被Top-1改善覆盖。
+- source_dev仅在全部D checkpoint确定后统一评一次，是新的开发比较而非独立测试。D优于C本身不等于论文新颖性成立。本轮无正式D训练许可，不自动扩展。
+
+### 10.1 2026-10-06 22:41正式执行授权与冻结增补
+
+本节覆盖第10节准备轮次的“未授权正式运行”状态，不修改其输入/方法/预算。用户明确授权补source_dev节点缓存并执行一次EXP-015。独立dev缓存`d_nodes_dev_v1`，与train/val同编码器/字段规则/几何/截断；原train/val不覆盖。配置`route_v2_exp2_D.yaml`经输入/预算/基线预测兼容性门后改为frozen，绑定缓存manifest与preflight。
+
+正式参数273410（D）对66176（C），不声称容量匹配。只训练source_train，val选择；三个seed全部权重确定后一次dev评分，A/B/C只复用EXP-014预测。逐epoch增加训练侧gate及未经归一化MLP残差范数、归一化patch变化诊断，不影响梯度、损失或checkpoint选择。主比较与Top-5披露沿第10节。无论推进判定结果如何，完成后停止，不消融、不调参、不外测。

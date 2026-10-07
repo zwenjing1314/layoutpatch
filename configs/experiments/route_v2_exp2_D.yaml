@@ -1,0 +1,116 @@
+# frozen：2026-10-06，输入及预算核验通过，授权一次EXP-015。
+experiment_id: EXP-015
+name: route_v2_exp2_D
+protocol: route-v2-exp015-v1
+status: frozen
+preflight: artifacts/route_v2_data/exp015_preflight/20261006_225507/preflight.json
+smoke_receipt: artifacts/route_v2_d_smoke/20261006_220102/metrics.json
+trainable_parameters: 273410
+C_trainable_parameters: 66176
+baseline_run: runs/retrieval/route_v2_exp1/20261006_162042
+baseline_predictions: runs/retrieval/route_v2_exp1/20261006_162042/predictions.parquet
+baseline_policy: reuse_saved_A_B_C_predictions_no_retraining_no_rescoring
+split: experiments/route_v2_splits/data-roles-v1
+regions: artifacts/route_v2_data/regions_v1
+query_cache: artifacts/route_v2_data/query_cache_v1/source_queries.pt
+page_cache: artifacts/colpali/mmdocir_evaluation/vidore_colpali
+node_cache_train_val: artifacts/route_v2_data/d_nodes_v1
+node_manifest_sha256: 4514800ee81cad1343635e27bbe6edad73e880e44f30af32224ffed7ec2160d6
+# 2026-10-06本轮授权仅编码dev输入，训练结束后才评分。
+node_cache_dev: artifacts/route_v2_data/d_nodes_dev_v1
+node_cache_dev_status: verified_encoding_complete
+dev_node_manifest_sha256: e3806ce6428d5b6130720138920fbd4fea31f9ed5f7274f4071a71327551faea
+output: runs/retrieval/route_v2_exp2_D
+model: vidore/colpali
+module: layoutpatch.retrieval.route_v2_layout.LayoutPatchD
+initialization: fresh_per_seed_zero_residual_never_load_C_or_smoke
+node_encoder: TextLayoutEncoder
+fusion: SparseLocalFusionV2
+text:
+  model: BAAI/bge-m3
+  revision: 5617a9f61b028005a4858fdac845db406aefb181
+  frozen: true
+  dimension: 1024
+  pooling: CLS
+  max_seq_length: 512
+  normalize_embeddings: true
+  rule: mmdocir-official-ocr-by-type-v1
+  text_title_equation: text
+  image_table: ocr_text
+  vlm_text: forbidden
+  unknown_type: stop_unresolved_provenance
+  missing: zero_text_vector_keep_node_and_missing_flag
+layout:
+  dimension: 128
+  coords_dimension: 6
+  coord_width: 72
+  type_ids: {UNK: 0, text: 1, title: 2, table: 3, image: 4, equation: 5}
+  top_k: 4
+  W_raw: cover
+  W_attn: nonempty_row_normalize_W_raw
+  cover_mass: sum_W_raw_before_normalization
+  tie: layout_id_ascending_stable
+  padding: boolean_node_mask_before_softmax
+  empty_patch: keep_input_exactly
+  spatial_eps: 0.000001
+  gate_bias: -3.0
+  residual: pre_LN_Linear128_256_GELU_Linear256_128_zero_last
+  image_tokens: [0, 1024]
+  prompt_tokens: preserve_exactly_rows_1024_1031
+seeds: [0, 1, 2]
+max_epochs: 30
+optimizer:
+  name: AdamW
+  lr: 0.001
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  eps: 0.00000001
+units_per_update: 4
+tau: 0.25
+clip_max_norm: 1.0
+early_stopping:
+  role: source_val
+  metric: hit1@0.5
+  aggregation: question_macro
+  patience: 5
+  improvement: strict
+  tie: earliest
+  initial_best: negative_infinity
+shuffle: persistent_python_random_per_seed_sorted_unit_ids
+checkpoint: each_strict_improvement_immutable_file
+training_role: source_train
+training_filter: local_loss_ready_and_not_page_overlap_excluded
+validation_filter: eval_ready
+scoring: existing_patch_scores_then_region_scores
+loss: existing_local_contrastive_loss
+evaluation_role: source_dev
+evaluation_gate: all_three_D_checkpoints_selected
+device: cuda:0
+dtype: float32
+mixed_precision: false
+scheduler: null
+tf32: false
+deterministic_algorithms: true
+vram_budget_gib: 12
+zero_init_score_atol: 0.000001
+bootstrap:
+  iterations: 2000
+  seed: 0
+  unit: document
+  input: per_question_mean_D_three_seeds_minus_per_question_mean_C_three_seeds
+seed_std_ddof: 1
+minimum_difference: 0.01
+advance_ci_lower_gt: 0.0
+primary_comparison: D-C
+secondary_comparisons: [D-A, D-B]
+metrics: PAPER_SPEC_8.1_v2-loc-1
+report_random_oracle: true
+subset: candidate_count_ge_2_units_then_question_macro
+report_costs: [trainable_parameters, frozen_text_parameters, text_encoding_seconds, node_cache_bytes, training_seconds, fusion_seconds_per_page, scoring_seconds, peak_allocated_bytes, peak_reserved_bytes]
+report_top5_differences: [cov@5, gold_recall@5@0.5, area_sum@5]
+interpretation: report_top5_regression_explicitly_even_if_top1_gate_passes
+source_dev_claim: new_development_comparison_not_independent_test
+external_test: false
+page_retrieval: false
+additional_losses: []
+auto_followup: false

@@ -131,27 +131,55 @@ def train_local_steps(
         losses, gaps = [], []
         for item in items:
             s = patch_scores(item["query"], module(item["patches"]))
+            if not bool(torch.isfinite(s).all()):
+                raise FloatingPointError("nonfinite patch scores; stopped before optimizer update")
             losses.append(local_contrastive_loss(s, item["pos"], item["neg"], tau))
             gaps.append(separation(s, item["pos"], item["neg"]))
         mean_gap = {k: sum(g[k] for g in gaps) / len(gaps) for k in gaps[0]}
         return torch.stack(losses).mean(), mean_gap
 
+    initial_parameters = [p.detach().clone() for p in module.parameters()]
+    for item in items:
+        if not all(bool(torch.isfinite(item[k]).all()) for k in ("query", "patches")):
+            raise FloatingPointError("nonfinite input; stopped before optimizer update")
     log: list[dict[str, float]] = []
+    grad_norms = []
     nonfinite = 0
     for step in range(steps):
         loss, gaps = evaluate()
+        if not bool(torch.isfinite(loss)):
+            raise FloatingPointError(f"nonfinite loss at step {step}; no optimizer update")
         optimizer.zero_grad()
         loss.backward()
         grads = [p.grad for p in module.parameters() if p.grad is not None]
         grad_norm = float(torch.linalg.vector_norm(torch.stack([g.norm() for g in grads]))) if grads else 0.0
         value = float(loss.detach())
-        nonfinite += not (math.isfinite(value) and math.isfinite(grad_norm))
+        if not math.isfinite(grad_norm) or not all(bool(torch.isfinite(g).all()) for g in grads):
+            raise FloatingPointError(f"nonfinite gradient at step {step}; no optimizer update")
+        grad_norms.append(grad_norm)
         if step % log_every == 0:
             log.append({"step": float(step), "loss": value, "grad_norm": grad_norm, **gaps})
         optimizer.step()
+        if not all(bool(torch.isfinite(p).all()) for p in module.parameters()):
+            raise FloatingPointError(f"nonfinite parameters after step {step}; stopped")
+        if not all(bool(torch.isfinite(v).all()) for state in optimizer.state.values()
+                   for v in state.values() if isinstance(v, torch.Tensor)):
+            raise FloatingPointError(f"nonfinite optimizer state after step {step}; stopped")
     with torch.no_grad():
         final_loss, final_gaps = evaluate()
+    if not bool(torch.isfinite(final_loss)):
+        raise FloatingPointError("nonfinite final loss")
+    parameter_delta = float(torch.linalg.vector_norm(torch.stack([
+        (p.detach() - before).norm() for p, before in zip(module.parameters(), initial_parameters, strict=True)
+    ])))
     return {
+        "steps_completed": steps,
+        "gradient_norm_min": min(grad_norms),
+        "gradient_norm_max": max(grad_norms),
+        "gradient_nonzero_steps": sum(g > 0 for g in grad_norms),
+        "gradients_all_finite": True,
+        "parameters_changed": parameter_delta > 0,
+        "parameter_delta_l2": parameter_delta,
         "log": log,
         "initial": log[0],
         "final": {"step": float(steps), "loss": float(final_loss), **final_gaps},

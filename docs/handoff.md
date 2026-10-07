@@ -8,7 +8,43 @@
 
 > Status: working。当前状态以本节为入口；下方旧日期节保留为历史，不直接执行其中的“下一步”。本节不是训练指令；route-v2已有working草案，尚未冻结或开训。
 
-### 2026-10-04 route-v2 数据准备完成，smoke 被问题向量缓存拦下（最新）
+### 2026-10-06 23:14 EXP-015正式D开发比较完成（最新；已停止）
+
+- 本轮授权补dev节点并执行一次D三seed正式训练/开发比较。配置`route_v2_exp2_D.yaml`已frozen；train/val原缓存未变，独立dev缓存457页3904节点（3581非空、323缺失、23截断），编码身份/规则一致。
+- 完整run：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/runs/retrieval/route_v2_exp2_D/20261006_230924/`。seed0/1/2实际6/7/7epoch，最佳1/2/2；仅val选权重，全部选择后一次dev评分；A/B/C原预测值完全不变。
+- D均值0.5296521036±0.0250218861，C均值0.4253101402；D−C=0.1043419633、95%文档bootstrap[0.0552878179,0.1521909233]，达到预定推进标准。D−A=0.0127831715但区间跨0，不能宣称可靠胜过面积基线。Top5 Cov/gold召回均提高，不是全面创新或独立泛化证据。
+- 五件套/代码身份/输入哈希/三seed权重/逐epoch gate残差梯度齐全。32相关测试通过；保存结果回验4360unit预测、3296逐题分数、20轮日志和配对统计通过。无NaN/Inf/显存超限。未运行全仓check，19旧Ruff问题仍披露。
+- 详情与原文：`experiments/2026-10-06-exp-015-route-v2-D.md`及run的metrics.json；registry已登记EXP-015。仅source_dev开发结果，不容量匹配（D273410/C66176）。未读SciEGQA、未重训C、未重复smoke。
+- 已结束；不自动调D、加loss、扩数据、消融或外测。后续需新的明确任务。
+
+### 2026-10-06 夜间 EXP-015 D准备与技术验收完成（历史；未正式训练）
+
+- 文本来源按固定官方数据卡落实：正文/标题/公式取text，图/表取ocr_text，禁止vlm_text回退；逐节点OCR引擎版本未提供，来源限制如实记录。
+- 仅train/val候选节点缓存：`artifacts/route_v2_data/d_nodes_v1/`，1067页/11972节点，11116非空，train/val覆盖约92.845%/92.856%；本地既有BGE-M3冻结1024维CLS向量，未下载或编码页面。
+- D组合原TextLayoutEncoder与SparseLocalFusionV2，TopK4，W_raw cover/W_attn/cover_mass，273410可训练参数；公共训练/评分支持可选layout输入，C旧路径及EXP-014代码快照/结果保留。
+- 固定16题/19unit、seed42、200步D smoke通过：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/artifacts/route_v2_d_smoke/20261006_220102/`。首步上游零梯度、后续学习信号及参数变化已验证；无NaN/Inf，提示/空patch保留。仅训练侧技术验收，非泛化/创新结果。
+- 最终相关Ruff通过、30测试通过，节点缓存全部回验通过；本轮未运行全仓check，19旧Ruff问题未修。
+- 唯一配置`configs/experiments/route_v2_exp2_D.yaml` working、正式入口已准备但未执行；同EXP-014预算，主比较D−C，保留D−A/B与Top-5差值。**唯一数据准备阻塞：source_dev节点缓存未在本轮授权范围生成**，正式训练前需同身份/规则补齐并绑定哈希再冻结。
+- 详细来源、覆盖、smoke原文与缺项：`experiments/2026-10-06-exp-015-preparation.md`。本轮结束，不启动D正式训练、不重评dev、不运行外部测试。
+
+### 2026-10-06 EXP-014 route-v2-exp1 完成（历史；已停止）
+
+- 用户授权A面积/B冻结传播/C PatchAdapter三seed正式开发比较；配置`configs/experiments/route_v2_exp1.yaml`与协议第9节在开训前冻结。
+- 完整run：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/runs/retrieval/route_v2_exp1/20261006_162042/`。训练1002unit，val374题/448unit，dev412题/545unit。seed0/1/2实际14/7/11epoch，选择9/2/6epoch；全部checkpoint确定后才一次开发评分。
+- 主指标A=0.5168689320、B=0.3430420712、C三seed均值=0.4253101402；C−B=+0.0822680690、95%文档bootstrap区间[0.0150793651,0.1488425926]，达到本轮推进标准；C−A=−0.0915587918，未超过面积强基线。C的Cov@5/gold召回@5低于B，不能称全面改善。
+- 五件套、逐轮日志、独立权重、逐题预测、工作区代码快照与输入哈希齐全；只读复核2725预测行、32epoch日志、checkpoint和配对统计通过。定向45测试通过；全仓仍19既有ruff错误。
+- 原文数字、辅助指标与限制见`experiments/2026-10-06-exp-014-route-v2-exp1.md`和上述run的`metrics.json`；registry已登记EXP-014。仅开发结果，没有外部测试、D创新或页面召回保持证据。
+- 本轮结束。未训练D、未扩数据、未开启第二轮参数调整；后续行动需要新的明确任务。
+
+### 2026-10-06 问题缓存与固定 smoke 完成（历史；该轮到此停止）
+
+- 本轮明确授权仅编码非隔离来源问题并完成既有 smoke；未启动 route-v2-exp1、Visual-CoT 或模块 D，未读取/评分 SciEGQA 外部测试。
+- 缓存 `artifacts/route_v2_data/query_cache_v1/source_queries.pt` 已生成；1613 题与冻结 manifest 精确匹配，train/val/dev=826/375/412。源/manifest/模型/processor/token/向量哈希已绑定，复用校验通过且文件未变。
+- smoke：`artifacts/route_v2_smoke/20261006_153418/`，固定 16 题、19 unit、CPU、200 步，loss 下降、梯度有限非零、参数变化及数值稳定性均通过。全部原文数字与官方代码借鉴差异见 `experiments/2026-10-04-route-v2-data.md` 第 9–10 节；仅训练集诊断。
+- 定向 ruff 与 38 项测试通过；全仓 check 仍有既有 19 个 ruff 错误，因而未执行全仓 pytest。
+- A/B/C 的缓存与 smoke 技术前置具备，但正式实验配置仍需预先冻结：C 的正式训练预算/学习率/预定 seed、source_val 选择规则、source_dev 比较与访问计划、主比较/最小有意义差值/页面非劣界限及正式 task/config/五件套登记。不能把 smoke 的超参自动当作正式实验冻结值。本轮不继续。
+
+### 2026-10-04 route-v2 数据准备完成，smoke 被问题向量缓存拦下（历史）
 
 - 用户授权：MMDocIR evaluation 改作 route-v2 训练/开发池。Codex 已暂停，由 Claude 原地接手。协议见 `docs/ROUTE_V2_PROTOCOL.md`，数字见 `experiments/2026-10-04-route-v2-data.md`。
 - 已完成：

@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-smoke")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
   [string]$Task = "help"
 )
 
@@ -247,6 +247,86 @@ switch ($Task) {
     Invoke-RouteV2Step "scripts/audit_route_v2_coordinates.py" "artifacts/route_v2_data/coordinate_audit_v1.json"
     Invoke-RouteV2Step "scripts/build_route_v2_regions.py" "artifacts/route_v2_data/regions_v1"
     Invoke-RouteV2Step "scripts/render_route_v2_supervision.py" "artifacts/route_v2_data/regions_v1/supervision_viz"
+  }
+  "route-v2-queries" {
+    Show-ExpHeader -ExpId "ROUTE-V2-QUERY-CACHE" -Config "scripts/cache_route_v2_queries.py" `
+      -Dataset "data-roles-v1 source_train/source_val/source_dev; encoding only" -Output "artifacts/route_v2_data/query_cache_v1/source_queries.pt"
+    & uv run --offline --no-sync python scripts/cache_route_v2_queries.py
+    if ($LASTEXITCODE -ne 0) { throw "route-v2-queries stopped (see query_cache_v1/runs/)" }
+  }
+  "route-v2-exp2-result-check" {
+    & uv run --offline --no-sync ruff check scripts/verify_route_v2_exp2_result.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-015 result verifier lint failed" }
+    & uv run --offline --no-sync python scripts/verify_route_v2_exp2_result.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-015 saved result verification failed" }
+  }
+  "route-v2-exp2-verify" {
+    & uv run --offline --no-sync python scripts/verify_route_v2_exp2.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-015 protocol/input hard stop" }
+  }
+  "route-v2-d-dev-nodes" {
+    Show-ExpHeader -ExpId "EXP-015-DEV-CACHE" -Config "fixed d_nodes_v1 encoding" `
+      -Dataset "source_dev candidates; encoding only" -Output "artifacts/route_v2_data/d_nodes_dev_v1/"
+    & uv run --offline --no-sync python scripts/cache_route_v2_nodes.py --dev-only
+    if ($LASTEXITCODE -ne 0) { throw "dev node cache hard stop" }
+  }
+  "route-v2-d-verify" {
+    & uv run --offline --no-sync python scripts/verify_route_v2_d_prep.py
+    if ($LASTEXITCODE -ne 0) { throw "D preparation verification failed" }
+  }
+  "route-v2-exp2" {
+    Show-ExpHeader -ExpId "EXP-015" -Config "configs/experiments/route_v2_exp2_D.yaml" `
+      -Dataset "source_train/val; dev only after all D checkpoints" -Output "runs/retrieval/route_v2_exp2_D/<timestamp>/"
+    & uv run --offline --no-sync python scripts/run_route_v2_exp2.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-015 stopped; preserve failure" }
+  }
+  "route-v2-d-tests" {
+    & uv run --offline --no-sync ruff check src/layoutpatch/retrieval/route_v2_layout.py scripts/cache_route_v2_nodes.py scripts/route_v2_d_smoke.py scripts/run_route_v2_exp2.py scripts/verify_route_v2_exp2.py tests/retrieval/test_route_v2_exp2.py scripts/verify_route_v2_d_prep.py scripts/run_route_v2_exp1.py src/layoutpatch/retrieval/route_v2_exp1.py tests/retrieval/test_route_v2_layout.py
+    if ($LASTEXITCODE -ne 0) { throw "D lint failed" }
+    & uv run --offline --no-sync pytest tests/retrieval/test_route_v2_exp2.py tests/retrieval/test_route_v2_layout.py tests/retrieval/test_route_v2_exp1.py tests/retrieval/test_fusion_v2.py tests/retrieval/test_route_v2_scoring.py
+    if ($LASTEXITCODE -ne 0) { throw "D tests failed" }
+  }
+  "route-v2-d-nodes" {
+    Show-ExpHeader -ExpId "EXP-015-PREP" -Config "scripts/cache_route_v2_nodes.py" `
+      -Dataset "source_train/source_val candidates only" -Output "artifacts/route_v2_data/d_nodes_v1/"
+    & uv run --offline --no-sync python scripts/cache_route_v2_nodes.py
+    if ($LASTEXITCODE -ne 0) { throw "D nodes hard stop" }
+  }
+  "route-v2-d-smoke" {
+    Show-ExpHeader -ExpId "EXP-015-SMOKE" -Config "scripts/route_v2_d_smoke.py; seed42/16 questions/200 steps" `
+      -Dataset "fixed source_train only" -Output "artifacts/route_v2_d_smoke/<timestamp>/"
+    & uv run --offline --no-sync python scripts/route_v2_d_smoke.py
+    if ($LASTEXITCODE -ne 0) { throw "D smoke failed; preserve run" }
+  }
+  "route-v2-exp1-verify" {
+    Show-ExpHeader -ExpId "EXP-014-VERIFY" -Config "scripts/verify_route_v2_exp1.py" `
+      -Dataset "data-roles-v1; signatures only; no scoring" -Output "artifacts/route_v2_data/exp1_verification/<timestamp>/"
+    & uv run --offline --no-sync python scripts/verify_route_v2_exp1.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-014 hard stop: verification failed" }
+  }
+  "route-v2-exp1-result-check" {
+    & uv run --offline --no-sync ruff check scripts/verify_route_v2_exp1_result.py
+    if ($LASTEXITCODE -ne 0) { throw "result verifier lint failed" }
+    & uv run --offline --no-sync python scripts/verify_route_v2_exp1_result.py
+    if ($LASTEXITCODE -ne 0) { throw "saved EXP-014 result verification failed" }
+  }
+  "route-v2-exp1-tests" {
+    & uv run --offline --no-sync ruff check scripts/verify_route_v2_exp1.py scripts/run_route_v2_exp1.py src/layoutpatch/retrieval/route_v2_exp1.py tests/retrieval/test_route_v2_exp1.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-014 lint failed" }
+    & uv run --offline --no-sync pytest tests/retrieval/test_route_v2_exp1.py tests/retrieval/test_route_v2_scoring.py tests/retrieval/test_route_v2_query_cache.py tests/evaluation/test_localization.py tests/datasets/test_route_v2_regions.py tests/datasets/test_route_v2_split.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-014 tests failed" }
+  }
+  "route-v2-exp1" {
+    Show-ExpHeader -ExpId "EXP-014" -Config "configs/experiments/route_v2_exp1.yaml (frozen)" `
+      -Dataset "data-roles-v1 source_train/source_val; source_dev once after all selections" -Output "runs/retrieval/route_v2_exp1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/run_route_v2_exp1.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-014 hard stop; preserve failed run" }
+  }
+  "route-v2-cache-tests" {
+    & uv run --offline --no-sync ruff check scripts/cache_route_v2_queries.py scripts/route_v2_smoke.py src/layoutpatch/retrieval/route_v2_query_cache.py src/layoutpatch/retrieval/route_v2_scoring.py tests/retrieval/test_route_v2_query_cache.py tests/retrieval/test_route_v2_scoring.py
+    if ($LASTEXITCODE -ne 0) { throw "route-v2 lint failed" }
+    & uv run --offline --no-sync pytest tests/retrieval/test_route_v2_query_cache.py tests/retrieval/test_route_v2_scoring.py tests/datasets/test_route_v2_split.py tests/datasets/test_route_v2_regions.py tests/evaluation/test_localization.py
+    if ($LASTEXITCODE -ne 0) { throw "route-v2 tests failed" }
   }
   "route-v2-smoke" {
     Show-ExpHeader -ExpId "ROUTE-V2-SMOKE" -Config "scripts/route_v2_smoke.py (route-v2-smoke-v1)" `

@@ -94,3 +94,20 @@ def test_train_local_steps_learns_a_synthetic_signal():
     assert result["final"]["loss"] < result["initial"]["loss"]
     assert result["final"]["mean_gap"] > result["initial"]["mean_gap"]
     assert result["initial"]["grad_norm"] > 0
+    assert result["parameters_changed"] and result["gradient_nonzero_steps"] == 30
+
+
+@pytest.mark.parametrize("failure", ["input", "gradient"])
+def test_nonfinite_stops_before_parameter_update(failure):
+    module = PatchAdapter()
+    initial = {k: v.clone() for k, v in module.state_dict().items()}
+    pos = torch.zeros(NUM_PATCHES, dtype=torch.bool)
+    pos[:20] = True
+    item = {"query": torch.randn(12, 128), "patches": torch.randn(NUM_PATCHES, 128), "pos": pos, "neg": ~pos}
+    if failure == "input":
+        item["query"][0, 0] = float("nan")
+    else:
+        module.net[-1].weight.register_hook(lambda grad: torch.full_like(grad, float("inf")))
+    with pytest.raises(FloatingPointError, match="nonfinite"):
+        train_local_steps(module, [item], steps=2, lr=1e-3)
+    assert all(torch.equal(initial[k], v) for k, v in module.state_dict().items())

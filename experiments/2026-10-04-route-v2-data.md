@@ -76,3 +76,81 @@
 - `tests/retrieval/test_box_ranker.py::test_guards_reject_test_eval_and_coverage_label` 失败。原因是 commit 1288fbe 删除了 `assert_no_test_eval`。
 - 执行环境拒绝 `-ExecutionPolicy Bypass`；改用 `powershell.exe -NoProfile -File tasks.ps1 <task>`。
 - 第一次运行 route-v2-data 时报 `TypeError: Object of type SizeDict is not JSON serializable`，留下一个残缺的审计文件。已删除该文件，并把三个脚本改为原子写入，重跑后通过。
+
+## 9. 2026-10-06 本地官方代码借鉴边界（仅核对，不改算法）
+
+本轮起点 `layoutpatch` commit：`1bd6c787ba1dc7d2aba4955ca1a3146ffc183d29`，工作区干净。官方本地仓库均无未提交改动：RegionRAG `1ff0f29220e05d288ebe48f7c9070f396a358552`；Snappy `acde4a1fdfd75f31d4ff13a04c03b1f06706b6f1`。仅只读参考，不安装、不部署服务。
+
+- 局部损失：RegionRAG `colpali_engine/loss/late_interaction_losses.py::RegionContraLoss.infonce_loss` 对每个正 patch 的负 log-softmax 求平均；route-v2 `local_contrastive_loss` 是正集合 logsumexp 与正负集合 logsumexp 的差，即对正集合总概率取负对数。两者多正例时不等价。官方类默认 local_tau=0.5，但 `scripts/configs/training.yaml` 设置 0.25；route-v2 保持 0.25。官方另加全局损失和无框伪标签；本轮无这些项。协议中“同式”不能解释为与该官方 commit 逐行等价，本轮只追加此事实说明，不改既有协议、监督或损失。
+- 问题聚合：该官方 loss 对 query token 相似度求和后除以非零 token 数，是 token 平均；route-v2 保留全部有效 token 并对每个 patch 取最大相似度。这也不同于论文全局逐维 max pooling 的描述，不能把论文表述当该代码行为。
+- 框到 patch：官方 `collators/visual_retriever_collator.py` 将单框归一化，以 `floor(x1*w)` 到 `floor(x2*w+1)` 的矩形网格设正（Qwen 网格再除 2），没有当前的边界忽略集合；route-v2 用固定 32×32 网格，多 gold 框中任一包含 patch 中心为正、零重叠为负、其余忽略，保留现有 regions-v1。
+- Snappy `backend/benchmarks/README.md` 提供多种 token 聚合、分位数过滤和区域聚合选项；route-v2 保持协议指定的 token max 与无分位数过滤的 IoU 加权传播，仅称 Snappy 式传播，不称完整复现。
+
+## 10. 2026-10-06 问题缓存与 smoke（非正式 EXP，完成后停止）
+
+### 缓存与运行记录
+
+- 成功运行目录：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/artifacts/route_v2_data/query_cache_v1/runs/20261006_153320_261096/`，详情为 `run_info.json`。
+- 缓存：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/artifacts/route_v2_data/query_cache_v1/source_queries.pt`；SHA256=`fc0a48afc1908805842c5f807288cf1c7521db2fd93eeb304142500b7b446681`。
+- 实际 1613 题，角色计数 train=826/val=375/dev=412；隔离题未编码。原始物理行/question_index、全局 query_id、doc_id、冻结源哈希和全部 manifest 哈希一致。向量 `[T,128]`、bfloat16，T=16..92，无 NaN/Inf 或全零有效行；保留默认问题处理和 10 个增广 token。
+- 模型 `vidore/colpali` revision `7754422bfa37f8e3cd771e13d4d7f07de3103c95`，基础模型 `vidore/colpaligemma-3b-mix-448-base` revision `6ff0d944ea09c3ead97d2bc57427e3d4f01d192f`。本地文件 SHA256、processor/tokenizer 类与实现哈希、依赖版本、每题文本/token/向量哈希均存缓存；未下载或安装。
+- 首 batch=1，后续 batch=2；模型加载 5.083741199996439 秒，编码 25.5566739999922 秒，程序 34.91568620000908 秒；峰值 allocated=6048958464 bytes，reserved=6706692096 bytes（PyTorch 口径，不含桌面程序）。
+- 复用记录：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/artifacts/route_v2_data/query_cache_v1/runs/20261006_153457_316982/`，`status=reused`，哈希不变，无重新编码。
+- 首次尝试失败记录保留：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/artifacts/route_v2_data/query_cache_v1/runs/20261006_153121_307954/`。原始错误：`IncompleteSnapshotError: The cached snapshot for 'vidore/colpaligemma-3b-mix-448-base' (revision 'main', commit 6ff0d944ea09c3ead97d2bc57427e3d4f01d192f) is incomplete: 6 file(s) are missing (.gitattributes, README.md, preprocessor_config.json, ... (3 more)). Outgoing traffic is disabled ('local_files_only=True'). Re-run the download with network access to complete the snapshot.` 修正为只检查模型必要文件并验证权重索引所有分片，processor 从 ColPali 快照加载；没有补下载。
+
+### smoke 与指标原文
+
+完整目录：`C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/artifacts/route_v2_smoke/20261006_153418/`。含 `preconditions.json`（7 项通过）、`adapter.pt`、`smoke_result.json`（20 条训练日志及 19 个 unit ID）、`metrics.json`。固定 seed=42，16 题全部可用 19 unit；CPU、PatchAdapter、AdamW lr=1e-3、200 步。训练前实时重新核验所用页缓存签名与有限性，不重编码页面。保持现有 smoke 的 unit 均值诊断，不替代正式问题宏平均评测。未运行 val/dev/外部测试评分。
+
+`metrics.json` 原文：
+
+```json
+{
+  "steps_completed": 200,
+  "gradient_norm_min": 0.009345004335045815,
+  "gradient_norm_max": 1.0503872632980347,
+  "gradient_nonzero_steps": 200,
+  "gradients_all_finite": true,
+  "parameters_changed": true,
+  "parameter_delta_l2": 6.939946174621582,
+  "initial": {
+    "step": 0.0,
+    "loss": 1.715434193611145,
+    "grad_norm": 1.011820912361145,
+    "mean_gap": 0.010067342143309744,
+    "max_gap": -0.029316268469157972,
+    "top_patch_positive": 0.3157894736842105
+  },
+  "final": {
+    "step": 200.0,
+    "loss": 0.07738713175058365,
+    "mean_gap": 0.47885976339641373,
+    "max_gap": 0.9030132136846843,
+    "top_patch_positive": 1.0
+  },
+  "nonfinite_steps": 0,
+  "trainable_parameters": 66176,
+  "training_seconds": 12.762948300005519,
+  "train_questions": 16,
+  "train_units": 19,
+  "train_hit1@0.5_before": 0.5263157894736842,
+  "train_hit1@0.5_after": 1.0,
+  "localization_aggregation": "unit_mean (existing smoke diagnostic)",
+  "note": "training-set diagnostics only; not a generalization or paper result",
+  "elapsed_seconds": 13.448630899991258,
+  "checks": {
+    "loss_decreased": true,
+    "gradients_finite_nonzero": true,
+    "parameters_changed": true,
+    "no_nonfinite": true
+  },
+  "passed": true
+}
+```
+
+### 验证与剩余前提
+
+- 最终 `route-v2-cache-tests`：ruff `All checks passed!`；pytest `38 passed in 3.30s`。覆盖物理行/题下标映射、隔离排除、源哈希变化、ID 错配、token 补齐、缓存损坏拒绝，以及非有限输入/梯度出现时参数不更新。
+- 离线且禁止同步依赖的 `check`：`Found 19 errors.`，均为旧脚本中的既有 ruff 问题；停在 lint，全仓 pytest 未执行。不修改本轮范围外旧脚本。
+- 已具备问题缓存和 smoke 技术前置，但正式 A/B/C 配置尚未冻结：C 的正式训练预算、学习率与预定 seed；source_val 选择/早停；source_dev 比较计划；主比较、最小有意义差值、页面非劣界限（若声称页级保持需真实页排序）；正式 task/config/五件套与登记。D 的布局/文本配置不属于本轮，不作为 A/B/C 的新增实现。
+- 本轮结束，不启动 route-v2-exp1。上述训练样本诊断不证明泛化或创新，旧权重、旧缓存、旧结论及另一模型产物保持原样。

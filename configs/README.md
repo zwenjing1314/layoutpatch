@@ -20,6 +20,8 @@
 
 | config | 状态 | 说明 |
 | --- | --- | --- |
+| `configs/experiments/route_v2_exp2_D.yaml` | frozen | EXP-015；2026-10-06本轮授权dev节点编码和一次正式D比较，457页dev缓存与基线兼容性门通过，预算沿EXP-014；禁止事后改参 |
+| `configs/experiments/route_v2_exp1.yaml` | frozen | EXP-014；2026-10-06 用户授权 A/B/C 正式比较，seed 0/1/2，训练与一次开发比较规则见 route-v2 协议第 9 节；不得事后改参 |
 | `configs/datasets/mmdocir.yaml` | working | MMDocIR evaluation 数据集主配置，环境变量已改为 `LAYOUTPATCH_*` |
 | `configs/experiments/mmdocir_colpali.yaml` | frozen | EXP-001 Phase 1A ColPali 基线（`colpali_page/document/top_k=20/batch 1-2-4`），R@5=0.8390；改动需新版本 |
 | `configs/experiments/mmdocir_bm25_page.yaml` | working | Phase 1A BM25 对照（`bm25_page/document/top_k=20`） |

@@ -1,0 +1,74 @@
+# Cursor context/index exclusions; this does not delete files or affect experiments.
+# Terminal tools and scripts may still read these paths. Do not print raw data/logs.
+# Keep source, tests, YAML configs, Markdown experiment records and registry visible.
+
+# Datasets, embeddings, model weights, predictions and large run histories
+/data/
+/artifacts/
+/runs/
+/tmp/
+
+# Environments, dependencies and generated tooling output
+/.git/
+/.venv/
+/.uv-cache/
+/.uv-python/
+/.pytest_cache/
+/.ruff_cache/
+/.mypy_cache/
+**/__pycache__/
+**/node_modules/
+/build/
+/dist/
+/htmlcov/
+/.coverage
+/uv.lock
+
+# Per-question annotations, split manifests and generated structured reports
+**/*.json
+**/*.jsonl
+**/*.ndjson
+**/*.log
+# Small configuration/test fixtures remain available for explicit references.
+!/configs/**/*.json
+!/configs/**/*.jsonl
+!/tests/**/*.json
+!/tests/**/*.jsonl
+
+# Generated annotation UI and historical sample material
+/experiments/region_annotation/pilot_materials/
+
+# Binary datasets, checkpoints, indexes, archives and media
+**/*.parquet
+**/*.arrow
+**/*.feather
+**/*.pt
+**/*.pth
+**/*.ckpt
+**/*.safetensors
+**/*.bin
+**/*.faiss
+**/*.npy
+**/*.npz
+**/*.pkl
+**/*.pickle
+**/*.pyc
+**/*.zip
+**/*.tar
+**/*.gz
+**/*.7z
+**/*.pdf
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.webp
+**/*.gif
+**/*.mp4
+**/*.xlsx
+**/*.docx
+**/*.pptx
+
+# Local secrets (example configuration stays visible)
+.env
+.env.*
+!.env.example

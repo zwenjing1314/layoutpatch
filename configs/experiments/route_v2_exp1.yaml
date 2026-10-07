@@ -1,0 +1,59 @@
+# frozen：2026-10-06，用户授权 route-v2-exp1；修改需新实验版本。
+experiment_id: EXP-014
+name: route_v2_exp1
+protocol: route-v2-exp1-v1
+verification: artifacts/route_v2_data/exp1_verification/20261006_160457/verification.json
+split: experiments/route_v2_splits/data-roles-v1
+regions: artifacts/route_v2_data/regions_v1
+query_cache: artifacts/route_v2_data/query_cache_v1/source_queries.pt
+page_cache: artifacts/colpali/mmdocir_evaluation/vidore_colpali
+output: runs/retrieval/route_v2_exp1
+methods: [A, B, C]
+model: vidore/colpali
+hidden: 256
+seeds: [0, 1, 2]
+max_epochs: 30
+optimizer:
+  name: AdamW
+  lr: 0.001
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  eps: 0.00000001
+units_per_update: 4
+tau: 0.25
+clip_max_norm: 1.0
+early_stopping:
+  role: source_val
+  metric: hit1@0.5
+  aggregation: question_macro
+  patience: 5
+  improvement: strict
+  tie: earliest
+  initial_best: negative_infinity
+shuffle: persistent_python_random_per_seed_sorted_unit_ids
+checkpoint: each_strict_improvement_immutable_file
+training_role: source_train
+evaluation_role: source_dev
+evaluation_gate: all_three_checkpoints_selected
+device: cuda:0
+dtype: float32
+mixed_precision: false
+scheduler: null
+tf32: false
+deterministic_algorithms: true
+vram_budget_gib: 12
+zero_init_score_atol: 0.000001
+bootstrap:
+  iterations: 2000
+  seed: 0
+  unit: document
+  input: per_question_C_mean_of_three_seeds_minus_B
+seed_std_ddof: 1
+minimum_difference: 0.01
+advance_ci_lower_gt: 0.0
+primary_comparison: C-B
+secondary_comparison: C-A
+subset: candidate_count_ge_2_units_then_question_macro
+external_test: false
+page_retrieval: false
+layout_module_D: false
