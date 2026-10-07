@@ -20,8 +20,9 @@
 
 | config | 状态 | 说明 |
 | --- | --- | --- |
-| `@configs/tools/mineru_external_pages_v1.yaml` | frozen | 固定MinerU4.0.10/ONNX CPU及模型revision；八页候选导出完成（七新解析/一复用），视觉检查及原图映射待验；不改训练环境或比较计划 |
-| `@configs/experiments/route_v2_external_v1.yaml` | frozen | 2026-10-07外部比较计划冻结；D-no-text为EXP-016开发主候选但无独立验证，A/B/C/C-wide/D保留；十二份source_val权重和固定SciEGQA元数据清单已绑定；比较配置未改，其旧准备状态为历史快照，独立解析授权及八页结果见`@experiments/2026-10-07-external-preparation.md`；视觉/原图映射未验，无评分 |
+| `@configs/tools/sciegqa_images_v1.yaml` | frozen | 固定SciEGQA Images.tar revision/SHA256；只提取manifest八页，机器审计官方原图与PDF渲染内容映射；不评分、不生成候选、不处理其他页面 |
+| `@configs/tools/mineru_external_pages_v1.yaml` | frozen | 固定MinerU4.0.10/ONNX CPU及模型revision；八页候选导出、叠图视觉和官方原图内容映射均完成；完整D图表文本接入仍阻塞，不改训练环境或比较计划 |
+| `@configs/experiments/route_v2_external_v1.yaml` | frozen | 2026-10-07外部比较计划冻结；D-no-text为EXP-016开发主候选但无独立验证，A/B/C/C-wide/D保留；十二份source_val权重和固定SciEGQA元数据清单已绑定；比较配置未改，其旧准备状态为历史快照，独立解析授权及八页最后验收结果见`@experiments/2026-10-07-external-preparation.md`；视觉/原图映射8/8通过，无评分 |
 | `configs/experiments/route_v2_exp3_attribution.yaml` | frozen | EXP-016；2026-10-07用户授权C-wide/D-no-text/D-no-coord各seed0/1/2；继承并哈希绑定EXP-015预算，九权重确定后统一dev；三项文档bootstrap及Bonferroni区间预固定，不调优不外测 |
 | `configs/experiments/route_v2_exp2_D.yaml` | frozen | EXP-015；2026-10-06本轮授权dev节点编码和一次正式D比较，457页dev缓存与基线兼容性门通过，预算沿EXP-014；禁止事后改参 |
 | `configs/experiments/route_v2_exp1.yaml` | frozen | EXP-014；2026-10-06 用户授权 A/B/C 正式比较，seed 0/1/2，训练与一次开发比较规则见 route-v2 协议第 9 节；不得事后改参 |

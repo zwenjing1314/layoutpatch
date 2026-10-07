@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-external-status","route-v2-external-tool-status","route-v2-external-contract","route-v2-external-pages","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-external-status","route-v2-external-tool-status","route-v2-external-contract","route-v2-external-pages","route-v2-external-images","route-v2-external-final-review","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
   [string]$Task = "help"
 )
 
@@ -107,6 +107,7 @@ switch ($Task) {
     Write-Host "  route-v2-data          data roles, coordinate gate, region units/audit, supervision overlays"
     Write-Host "  route-v2-smoke         <=16 source_train questions, <=200 steps; stops if a precondition fails"
     Write-Host "  route-v2-external-pages fixed SciEGQA eight-page MinerU Basic ONNX render/parse audit"
+    Write-Host "  route-v2-external-images download/check/extract fixed eight official images and audit PDF mapping"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -256,9 +257,9 @@ switch ($Task) {
     if ($LASTEXITCODE -ne 0) { throw "route-v2-queries stopped (see query_cache_v1/runs/)" }
   }
   "route-v2-external-tests" {
-    & uv run --offline --no-sync ruff check src/layoutpatch/datasets/sciegqa.py tests/datasets/test_sciegqa.py scripts/prepare_route_v2_external.py scripts/prepare_route_v2_external_pages.py scripts/route_v2_mineru_worker.py src/layoutpatch/datasets/mineru.py tests/datasets/test_mineru.py
+    & uv run --offline --no-sync ruff check src/layoutpatch/datasets/sciegqa.py tests/datasets/test_sciegqa.py scripts/prepare_route_v2_external.py scripts/prepare_route_v2_external_pages.py scripts/acquire_route_v2_external_images.py scripts/review_route_v2_external_pages.py tests/datasets/test_external_image_review.py scripts/route_v2_mineru_worker.py src/layoutpatch/datasets/mineru.py tests/datasets/test_mineru.py
     if ($LASTEXITCODE -ne 0) { throw "external metadata lint failed" }
-    & uv run --offline --no-sync pytest tests/datasets/test_mineru.py
+    & uv run --offline --no-sync pytest tests/datasets/test_mineru.py tests/datasets/test_external_image_review.py
     if ($LASTEXITCODE -ne 0) { throw "external metadata tests failed" }
   }
   "route-v2-external-audit" {
@@ -284,6 +285,18 @@ switch ($Task) {
       -Dataset "fixed manifest eight pages only; no questions/gold/scoring" -Output "artifacts/route_v2_external/preparation_v1/<timestamp>/"
     & uv run --offline --no-sync python scripts/prepare_route_v2_external_pages.py
     if ($LASTEXITCODE -ne 0) { throw "external eight-page engineering audit failed; preserve output and error" }
+  }
+  "route-v2-external-images" {
+    Show-ExpHeader -ExpId "EXTERNAL-PREP-IMAGES" -Config "configs/tools/sciegqa_images_v1.yaml" `
+      -Dataset "pinned SciEGQA official Images.tar; fixed eight pages only; mapping audit" -Output "artifacts/route_v2_external/preparation_v1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/acquire_route_v2_external_images.py
+    if ($LASTEXITCODE -ne 0) { throw "external fixed-image mapping audit failed; preserve partial/error evidence" }
+  }
+  "route-v2-external-final-review" {
+    Show-ExpHeader -ExpId "EXTERNAL-FINAL-REVIEW" -Config "scripts/review_route_v2_external_pages.py" `
+      -Dataset "fixed eight-page identity/coordinate/text contract only" -Output "artifacts/route_v2_external/preparation_v1/<timestamp>_final_review/"
+    & uv run --offline --no-sync python scripts/review_route_v2_external_pages.py
+    if ($LASTEXITCODE -ne 0) { throw "external final review failed; retain evidence" }
   }
   "route-v2-exp3-tests" {
     & uv run --offline --no-sync ruff check src/layoutpatch/retrieval/route_v2_attribution.py scripts/run_route_v2_exp3.py tests/retrieval/test_route_v2_attribution.py

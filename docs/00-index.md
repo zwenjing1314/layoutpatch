@@ -1,7 +1,7 @@
 # 00-index（全仓导航 SSOT）
 
 > Status: working | Scope: 全仓 | SSOT: 是
-> 2026-10-07：EXP-016归因及外部比较冻结已完成；回执访问恢复，独立MinerU环境固定八页候选导出完成，视觉读取受限且原图映射未验，仍不具备全量准备条件；最新状态见`@docs/handoff.md`，准备记录见`@experiments/2026-10-07-external-preparation.md`。
+> 2026-10-07：EXP-016归因及外部比较冻结已完成；固定八页叠图视觉检查与官方原图映射均8/8通过，原D图表文本接入仍阻塞；837页全量仍未启动，最新状态见`@docs/handoff.md`，准备记录见`@experiments/2026-10-07-external-preparation.md`。
 > 新增/修改任何 SSOT 文档，必须同步更新本表状态行。迁移完成前 Status 保持 working。
 
 ## 六类信息去哪找
@@ -18,7 +18,7 @@
 ## 入门（按顺序读）
 
 1. `docs/01-quickstart.md`（working, SSOT）：环境 + 数据准备
-2. `@docs/02-commands.md`（working, SSOT）：命令唯一入口；含外部元数据核验、回执/工具身份检查、固定八页续接及定向测试入口，不含获准外部评分或全量解析任务。
+2. `@docs/02-commands.md`（working, SSOT）：命令唯一入口；含外部元数据核验、回执/工具身份检查、固定八页续接、官方原图映射审计及定向测试入口，不含获准外部评分或全量解析任务。
 3. `docs/RULES.md`（stable, SSOT）：开发规范十条铁律 + 0.2 实验小白讲解 + 4.4 指令透明后台执行
 
 ## 现行研究
@@ -26,14 +26,15 @@
 - `docs/THESIS_SPEC.md`（working）：大论文边界；2026-10-03/04纠正文献分母、数据标签与新旧路线范围
 - `docs/PAPER_SPEC.md`（working）：小论文执行；历史Gate保留，新路线见下方独立协议
 - `docs/ROUTE_V2_PROTOCOL.md`（working）：区域监督布局融合协议；2026-10-06第9节冻结EXP-014；第10节及10.1节落实D输入并冻结EXP-015正式授权；配置注册见`configs/README.md`
-- `@docs/handoff.md`（working）：新会话先读2026-10-03入口下的2026-10-07最新节；八页候选导出完成、完整坐标验收受阻、无效果评分，历史节不作当前执行令
+- 固定八页原图映射审计任务已登记：只下载/复用固定revision的`Images.tar`，按manifest提取8页并与既有PDF渲染做内容对齐检查；不生成候选、不评分、不处理其他页面。
+- `@docs/handoff.md`（working）：新会话先读2026-10-03入口下的2026-10-07最新节；固定八页视觉与官方原图映射通过，837页全量尚未授权或执行，无效果评分，历史节不作当前执行令
 - `docs/paper-progress.md`（working）：小论文进度叙事。2026-09-27 起，执行令以 `docs/handoff.md` 置顶节为准。
 - `docs/paper-draft-notes.md`（working）：小论文章节素材。数字以 registry 和证明文件为准，不替代 `docs/PAPER_SPEC.md`。
 - `docs/MIGRATION_BATCHES.md`（working）：M0-M6 分批迁移清单（批次 = 实验阶段）
 
 ## 实验过程
 
-- `@experiments/2026-10-07-external-preparation.md`：SciEGQA比较冻结与固定八页工程准备；实际工具/模型身份、逐页资源和50候选已记录，视觉检查及原标注图像映射未验，无外部效果结果。
+- `@experiments/2026-10-07-external-preparation.md`：SciEGQA比较冻结与固定八页工程准备；叠图视觉与官方原图内容映射均8/8通过，实际D消费者暴露图表文本丢失风险；最终回执保留接口阻塞，全量需逐页身份/几何/内容检查，无外部效果结果。
 - `experiments/2026-10-07-exp-016-attribution.md`：三变体九次训练最小开发归因已完成；仅开发证据，不证明外部泛化。
 - `experiments/2026-10-06-exp-015-route-v2-D.md`：EXP-015正式D三seed开发比较，绑定配置和输入，主比较D−C，保留Top-5差值。
 - `experiments/2026-10-06-exp-015-preparation.md`：D文本来源与训练/验证缓存、固定smoke、唯一正式配置候选及dev节点缓存缺项；未正式训练。

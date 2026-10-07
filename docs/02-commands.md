@@ -73,7 +73,7 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 
 **命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-tests`
 
-**输入**：新增MinerU/DocVortex候选适配的合成页，`@tests/datasets/test_mineru.py`；不读取真实外部题目或运行解析模型。
+**输入**：MinerU/DocVortex候选适配及原图内容映射的合成测试，`@tests/datasets/test_mineru.py`、`@tests/datasets/test_external_image_review.py`；不读取真实外部题目或运行解析模型。
 
 **输出**：定向Ruff/pytest摘要，无模型或数据产物。
 
@@ -130,6 +130,30 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 **检查**：固定8页不重选、第一页不重跑；MinerU4.0.10/ONNX1.30.0/DocVortex0.5.10和模型revision逐文件哈希绑定；当前`docvortex.middle`2.0框为0–1归一化，页面为point。严格检查源页/画布，禁止把旧`pdf_info/page_size`像素假设套上新输出。每页新解析通过同进程CLI包装记录工具导入、ONNX会话加载、CPU实际provider、Windows进程峰值工作集；旧第一页计时/内存未保存则置null。导出仅检查字段和坐标，不调用模型评分/Oracle；原始标注图像映射仍未验证时，不宣称外测输入就绪。约1–3分钟，异常立即停。
 
 **底层等价（备查）**：`uv run --offline --no-sync python scripts/prepare_route_v2_external_pages.py`；脚本内部调用独立环境`@artifacts/route_v2_external/preparation_v1/mineru_tool_v1/.venv/Scripts/python.exe`执行`@scripts/route_v2_mineru_worker.py`，在同一解析进程加载已安装的`mineru-kit`入口并记录资源，不调用自动发现的Anaconda。
+
+## route-v2-external-images（固定八页官方原图下载、提取与PDF映射审计）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-images`
+
+**输入**：`@configs/tools/sciegqa_images_v1.yaml`固定SciEGQA revision、`Images.tar` URL/SHA256、已有manifest八页身份和既有PDF渲染回执。若本地已有完整压缩包只校验复用；若没有则下载约1.13GB到固定源目录。只提取manifest指定的8个archive member，不读取题目/答案/gold来生成候选。
+
+**输出**：固定源目录的`Images.tar`及8张`fixed_images_v1/`原图；新增`@artifacts/route_v2_external/preparation_v1/<timestamp>/image_mapping_audit.json`和`page_receipts.json`，记录下载/哈希、页身份、原图尺寸、PDF页旋转/裁剪、内容前景对齐和坐标契约。
+
+**检查**：清单SHA256和8页身份必须一致；压缩包SHA256必须为`aa8f7e6f5c27fb914a2b36f6accc63fdd48f549f97c2212e03f2b6a85e67b368`；机器内容对齐不能只按宽高判断，失败即停且保留错误/部分证据。明确区分gold `rel_bbox` 0–1000、MinerU框0–1和当前渲染像素框；不评分、不算Oracle、不训练、不处理其他页面。原图已提取后再次调用会停止以避免覆盖；当前已有8页映射回执，无需重跑下载/映射，后续使用final-review核对。
+
+**底层等价（备查）**：`uv run --offline --no-sync python scripts/acquire_route_v2_external_images.py`；仅表示使用项目已锁定环境运行脚本，脚本本身按固定URL联网下载。
+
+
+
+## route-v2-external-final-review（固定八页最终坐标与真实文本消费者核对）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-final-review`
+
+**输入**：固定manifest八页、已保存原图映射回执、候选/原始解析/PDF渲染回执；仅这8页的标注bbox/rel_bbox元数据。实际冻结D的`node_text`与`page_layout`函数，零占位向量仅验证形状，不编码或执行模型。
+
+**输出**：`@artifacts/route_v2_external/preparation_v1/<timestamp>_final_review/`逐页JSON及最终回执，记录已经完成的叠图视觉检查、原图到渲染仿射、0–1000坐标转换一致性、真实类型/文本消费者/布尔节点mask及明确阻塞。只打印逐页摘要。
+
+**检查**：源/渲染/候选哈希与页身份一致；固定页原标注像素与0–1000坐标量化一致，不计算候选与gold重叠。不把字段存在等同于完整评分接口通过：图表`ocr_text=null`在冻结消费者中会丢失真实`text`，必须保留阻塞；无训练、评分、Oracle、下载或重复解析，预计数秒。exit0仅表示检查完成，准入以回执状态为准。
 
 ## route-v2-exp3-tests（EXP-016最小归因相关检查）
 

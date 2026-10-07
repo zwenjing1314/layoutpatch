@@ -1,0 +1,31 @@
+# 固定SciEGQA官方原图；只提取manifest中的八页并做PDF映射审计。
+name: sciegqa_images_v1
+status: frozen
+dataset: Yuwh07/SciEGQA-Bench
+revision: 9bdca77be633cc3259d7e3739d35b38ab00bf5d9
+archive_name: Images.tar
+archive_path: data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9/Images.tar
+archive_url: https://huggingface.co/datasets/Yuwh07/SciEGQA-Bench/resolve/9bdca77be633cc3259d7e3739d35b38ab00bf5d9/Images.tar
+archive_sha256: aa8f7e6f5c27fb914a2b36f6accc63fdd48f549f97c2212e03f2b6a85e67b368
+manifest_path: artifacts/route_v2_external/preparation_v1/20261007_155402/manifest.json
+manifest_sha256: 387b2f498ec4bb54abb7aab0a149ef46aa7856c284d2472541d61a7940d0347d
+render_manifest_path: artifacts/route_v2_external/preparation_v1/20261007_200400/render_manifest.json
+rendered_pages_root: artifacts/route_v2_external/preparation_v1/20261007_184934/rendered_pages
+fixed_image_output: data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9/fixed_images_v1
+review_output: artifacts/route_v2_external/preparation_v1
+max_pages: 8
+mapping_checks:
+  aspect_ratio_delta_max: 0.005
+  foreground_bbox_edge_delta_max: 0.03
+  foreground_iou_min: 0.70
+  grayscale_correlation_min: 0.80
+  max_shift_lowres_pixels: 3
+coordinate_contract:
+  gold_rel_bbox: 0-1000
+  parser_bbox: 0-1_normalized_xyxy
+  candidate_frame: rendered_page_pixels
+  no_gold_candidate_adjustment: true
+full_processing: false
+scoring: false
+oracle: false
+training: false
