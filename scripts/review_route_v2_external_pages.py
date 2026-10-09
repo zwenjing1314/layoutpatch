@@ -13,7 +13,12 @@ import yaml
 from acquire_route_v2_external_images import load_fixed_pages, sha256, write_json
 
 from layoutpatch.datasets.mineru import check_scoring_structure
-from layoutpatch.retrieval.route_v2_layout import TEXT_DIM, node_text, page_layout
+from layoutpatch.retrieval.route_v2_layout import (
+    TEXT_DIM,
+    external_node_text,
+    node_text,
+    page_layout,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "artifacts/route_v2_external/preparation_v1"
@@ -64,8 +69,23 @@ def annotation_checks(cfg, pages, mappings):
 def text_contract_probe():
     # 仅调用字段选择函数；合成文本不来自外部标注，也不运行模型。
     return {kind: {"selected_field": node_text({"type": kind, "text": "parsed", "ocr_text": None})[1],
-                   "preserves_parsed_text": node_text({"type": kind, "text": "parsed", "ocr_text": None})[0] == "parsed"}
+                   "selected_source": external_node_text({"type": kind, "text": "parsed", "ocr_text": None,
+                                                        "text_source": "unknown"})[1],
+                   "legacy_preserves_parsed_text": node_text({"type": kind, "text": "parsed", "ocr_text": None})[0] == "parsed",
+                   "preserves_parsed_text": external_node_text({"type": kind, "text": "parsed", "ocr_text": None,
+                                                                  "text_source": "unknown"})[0] == "parsed"}
             for kind in ("text", "title", "equation", "image", "table")}
+
+
+def known_visual_review(overlay_hash):
+    """只复用历史同哈希人工结论；新哈希保持待人工检查。"""
+    for path in sorted(BASE.glob("*_final_review/final_review.json")):
+        report = json.loads(path.read_text("utf-8"))
+        for page in report.get("pages", []):
+            review = page.get("visual_review", {})
+            if page.get("overlay_sha256") == overlay_hash and review.get("passed") is True:
+                return {**review, "reused_from": path.relative_to(ROOT).as_posix(), "hash_reused": True}
+    return {"reviewer": None, "passed": False, "status": "pending", "hash_reused": False}
 
 
 def main():
@@ -113,14 +133,12 @@ def main():
                     raise ValueError("raw parser output hash changed")
                 raw = json.loads(raw_path.read_text("utf-8"))
                 source_size = mapping[page_id]["mapping"]["source_image_size"]
+                overlay_hash = sha256(PAGES / "overlays" / f"{page_id}.png")
                 result = {"page_id": page_id, "source_page_number": identity["page_number"],
-                          "visual_review": {"reviewer": "assistant_image_review", "passed": True,
-                                            "wrong_page": False, "rotation": False, "global_shift": False,
-                                            "abnormal_crop_or_truncation": False,
-                                            "note": "段落框较粗，不据此调整候选；跨页连续文字不是图像截断"},
+                          "visual_review": known_visual_review(overlay_hash),
                           "mapping_status": mapping[page_id]["mapping"]["status"],
                           "original_image_sha256": sha256(ROOT / mapping[page_id]["extracted_path"]),
-                          "overlay_sha256": sha256(PAGES / "overlays" / f"{page_id}.png"),
+                          "overlay_sha256": overlay_hash,
                           "original_to_render_affine": [render["page_size"][0] / source_size[0], 0, 0,
                                                         render["page_size"][1] / source_size[1], 0, 0],
                           "geometry": {"pdf_rotation": page.rotation, "cropbox": list(page.cropbox), "mediabox": list(page.mediabox)},

@@ -41,6 +41,8 @@
 
 ### Changed
 
+- SciEGQA全量候选准备修复并完成：以PyMuPDF真实像素边界替代小数页尺寸猜测，按MinerU真实旋转frame映射90度页，修复Unicode行分隔符导致的JSONL误拆与中断收尾状态；续跑逐页绑定归档成员、产物哈希和候选身份。最终`@artifacts/route_v2_external/full_prep_v1/20261008_222512/audit.json`为ready，固定1623题/837页/1941单元、9746候选；未编码、评分、训练或计算Oracle。
+
 - 固定八页准备在回执访问恢复后续接：复用获准独立uv工具环境（MinerU4.0.10/ONNX CPU及固定模型revision），新增DocVortex2.0候选适配、真实解析进程资源记录及六项合成测试。8/8页导出（七新解析/一复用）与机器坐标检查完成；叠图Read访问被拒、原标注图像映射未验，完整验收及全量准备仍阻塞。独立配置见`@configs/tools/mineru_external_pages_v1.yaml`，结果见`@experiments/2026-10-07-external-preparation.md`；未改训练依赖锁、比较配置和权重；当时叠图/原图映射待验，后续已完成并发现实际D图表文本接口阻塞，详见`@experiments/2026-10-07-external-preparation.md`最新节。未训练、评分、Oracle或全量处理。
 
 - 修正论文规范的Snappy失败分母/基线称谓、RegionRAG指标、训练标签事实和LN公式，明确旧协议与新草案的数据角色边界；保留历史评分算法及旧权重兼容路径。

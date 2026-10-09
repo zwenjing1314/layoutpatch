@@ -60,7 +60,99 @@ def test_image_table_text_is_explicitly_blocked_by_legacy_selector():
     assert probe["text"]["preserves_parsed_text"]
     for kind in ("image", "table"):
         assert probe[kind]["selected_field"] == "ocr_text"
-        assert not probe[kind]["preserves_parsed_text"]
+        assert not probe[kind]["legacy_preserves_parsed_text"]
+        assert probe[kind]["preserves_parsed_text"]
+
+
+
+def test_external_full_prep_reuses_only_identity_and_hash_verified_pages(tmp_path, monkeypatch):
+    import importlib.util
+    import json
+    import sys
+
+    script = Path(__file__).resolve().parents[2] / "scripts/prepare_route_v2_external_full.py"
+    sys.path.insert(0, str(script.parent))
+    spec = importlib.util.spec_from_file_location("prepare_route_v2_external_full_test", script)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    previous = tmp_path / "20261008_002104"
+    (previous / "pdfs").mkdir(parents=True)
+    raw = previous / "raw.json"
+    render = previous / "render.png"
+    image = previous / "image.png"
+    pdf = previous / "pdfs" / "doc.pdf"
+    raw.write_text(json.dumps({"pages": [{"page_idx": 0}]}), encoding="utf-8")
+    for path, data in ((render, b"render"), (image, b"image"), (pdf, b"pdf")):
+        path.write_bytes(data)
+    page = {"page_id": "page", "doc_id": "doc", "page_number": 1, "pdf_page_index": 0,
+            "official_image_relative_path": "cs/doc/doc_1.png"}
+    pdf_member = tarfile.TarInfo("PDFs/doc_source.pdf")
+    image_member = tarfile.TarInfo("Images/cs/doc/doc_1.png")
+    pdf_archive, image_archive = tmp_path / "PDF.tar", tmp_path / "Images.tar"
+    monkeypatch.setattr(module, "member_sha256s", lambda archive, members: {
+        member.name: module.sha256(pdf if archive == pdf_archive else image) for member in members
+    })
+    receipt = {**page, "status": "passed", "candidate_count": 1, "raw_output": str(raw),
+               "raw_sha256": module.sha256(raw), "pdf_member": pdf_member.name,
+               "render": {"render_path": str(render), "render_sha256": module.sha256(render)},
+               "image": {"path": str(image), "sha256": module.sha256(image),
+                         "archive_member": "Images/cs/doc/doc_1.png", "mapping": {"status": "passed"}}}
+    manifest_sha = "387b2f498ec4bb54abb7aab0a149ef46aa7856c284d2472541d61a7940d0347d"
+    (previous / "audit.json").write_text(json.dumps({"status": "blocked_page_failures", "unique_pages": 837,
+                                                        "manifest_sha256": manifest_sha}), encoding="utf-8")
+    (previous / "page_receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    candidate = {"page_id": "page", "doc_id": "doc", "page_number": 1, "pdf_page_index": 0,
+                 "layout_id": 1, "candidate_id": "page:block:1", "text": "left\u2028right"}
+    (previous / "candidates.jsonl").write_text(json.dumps(candidate, ensure_ascii=False) + "\n", encoding="utf-8")
+    reused, rows, diagnostics = module.load_reusable_pages(
+        previous, {"manifest_sha256": manifest_sha}, [page],
+        pdf_archive, [pdf_member], image_archive, [image_member],
+    )
+    assert set(reused) == {"page"} and rows["page"] == [candidate]
+    assert diagnostics["malformed_candidate_lines"] == []
+    raw.write_text('{"pages": [{"page_idx": 1}]}', encoding="utf-8")
+    reused, rows, diagnostics = module.load_reusable_pages(
+        previous, {"manifest_sha256": manifest_sha}, [page],
+        pdf_archive, [pdf_member], image_archive, [image_member],
+    )
+    assert reused == {} and rows == {}
+    assert diagnostics["invalid_candidate_pages"] == []
+    raw.write_text(json.dumps({"pages": [{"page_idx": 0}]}), encoding="utf-8")
+    receipt["raw_sha256"] = module.sha256(raw)
+    (previous / "page_receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+    (previous / "candidates.jsonl").write_text(json.dumps(candidate) + '\n{"broken":\n', encoding="utf-8")
+    reused, rows, diagnostics = module.load_reusable_pages(
+        previous, {"manifest_sha256": manifest_sha}, [page],
+        pdf_archive, [pdf_member], image_archive, [image_member],
+    )
+    assert set(reused) == {"page"} and rows["page"] == [candidate]
+    assert diagnostics["malformed_candidate_lines"] == [2]
+
+
+def test_render_uses_pymupdf_pixel_bounds_for_fractional_page_size(tmp_path, monkeypatch):
+    import importlib.util
+    import sys
+
+    import pymupdf
+
+    script = Path(__file__).resolve().parents[2] / "scripts/prepare_route_v2_external_full.py"
+    sys.path.insert(0, str(script.parent))
+    spec = importlib.util.spec_from_file_location("prepare_route_v2_external_full_render_test", script)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    pdf = tmp_path / "fractional.pdf"
+    document = pymupdf.open()
+    document.new_page(width=595.2, height=841.92)
+    document.save(pdf)
+    document.close()
+    result = module.render_page(pdf, {"page_number": 1, "pdf_page_index": 0}, tmp_path / "render.png", 2.0)
+    assert result["page_size"] == [1191, 1684]
+    assert result["pixel_bounds"] == [0, 0, 1191, 1684]
+    assert result["pixel_origin"] == [0, 0]
 
 
 def test_empty_text_is_not_padding_and_empty_page_has_zero_nodes():

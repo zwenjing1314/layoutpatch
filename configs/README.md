@@ -21,6 +21,7 @@
 | config | 状态 | 说明 |
 | --- | --- | --- |
 | `@configs/tools/sciegqa_images_v1.yaml` | frozen | 固定SciEGQA Images.tar revision/SHA256；只提取manifest八页，机器审计官方原图与PDF渲染内容映射；不评分、不生成候选、不处理其他页面 |
+| `@configs/tools/route_v2_external_full_prep_v1.yaml` | frozen | 固定manifest的837页候选准备；复用PDF、Images.tar与MinerU环境；2026-10-08最终ready为1623题/837页/1941单元、9746候选，审计`@artifacts/route_v2_external/full_prep_v1/20261008_222512/audit.json`；不编码、不评分、不训练 |
 | `@configs/tools/mineru_external_pages_v1.yaml` | frozen | 固定MinerU4.0.10/ONNX CPU及模型revision；八页候选导出、叠图视觉和官方原图内容映射均完成；完整D图表文本接入仍阻塞，不改训练环境或比较计划 |
 | `@configs/experiments/route_v2_external_v1.yaml` | frozen | 2026-10-07外部比较计划冻结；D-no-text为EXP-016开发主候选但无独立验证，A/B/C/C-wide/D保留；十二份source_val权重和固定SciEGQA元数据清单已绑定；比较配置未改，其旧准备状态为历史快照，独立解析授权及八页最后验收结果见`@experiments/2026-10-07-external-preparation.md`；视觉/原图映射8/8通过，无评分 |
 | `configs/experiments/route_v2_exp3_attribution.yaml` | frozen | EXP-016；2026-10-07用户授权C-wide/D-no-text/D-no-coord各seed0/1/2；继承并哈希绑定EXP-015预算，九权重确定后统一dev；三项文档bootstrap及Bonferroni区间预固定，不调优不外测 |

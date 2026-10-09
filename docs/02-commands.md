@@ -145,6 +145,16 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 
 
 
+## route-v2-external-full-prep（固定837页候选准备）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-full-prep`
+
+**输入**：`@configs/tools/route_v2_external_full_prep_v1.yaml`、固定manifest（1623题/837唯一页/1941题—页单元）、已有`PDF.tar`、`Images.tar`和独立MinerU环境。只读取页身份与解析输出，不用gold选框，不加载ColPali/BGE权重。
+
+**输出**：`@artifacts/route_v2_external/full_prep_v1/<timestamp>/`，逐页PDF/原图/渲染引用、MinerU原始输出、候选`candidates.jsonl`、逐页回执和`audit.json`。单页异常保留回执并排除就绪输入，题—页身份不删除；已有独立运行目录不覆盖。续跑只复用manifest身份、固定归档成员、原始解析/渲染/原图哈希、内容映射及候选身份/计数/唯一性全部通过的页面；旧合并文件缺行时可从已记录来源链或哈希已验证原始解析重建候选行，不重新运行MinerU。
+
+**检查**：固定manifest、PDF/Image归档哈希、PDF页号/rotation/crop/media、原图与PDF内容映射、候选框/类型/文本来源和外部消费者接口。渲染尺寸以PyMuPDF `Pixmap.irect/width/height`真实像素范围为准，不用`round(point×scale)`猜测；解析器frame若与未旋转MediaBox一致则应用PyMuPDF旋转矩阵，若与已旋转`page.rect`一致则直接映射，CropBox真实不同仍停止。JSONL按真实换行流式读取，不能用会拆Unicode行分隔符的`splitlines()`。通过页数837且异常为0才标记`ready`；异常/中断必须记录stage/type/error并非零退出。不编码、不评分、不训练。首次全量约1小时；有效续跑以需重处理页数决定，实际以`audit.json`为准。
+
 ## route-v2-external-final-review（固定八页最终坐标与真实文本消费者核对）
 
 **命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-final-review`

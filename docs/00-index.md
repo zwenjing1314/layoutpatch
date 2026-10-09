@@ -1,7 +1,7 @@
 # 00-index（全仓导航 SSOT）
 
 > Status: working | Scope: 全仓 | SSOT: 是
-> 2026-10-07：EXP-016归因及外部比较冻结已完成；固定八页叠图视觉检查与官方原图映射均8/8通过，原D图表文本接入仍阻塞；837页全量仍未启动，最新状态见`@docs/handoff.md`，准备记录见`@experiments/2026-10-07-external-preparation.md`。
+> 2026-10-08：SciEGQA全量候选准备已ready；固定1623题/837页/1941题—页单元，837页通过、9746候选，最终审计见`@artifacts/route_v2_external/full_prep_v1/20261008_222512/audit.json`。未编码、评分或计算Oracle；最新状态见`@docs/handoff.md`，完整准备记录见`@experiments/2026-10-07-external-preparation.md`。
 > 新增/修改任何 SSOT 文档，必须同步更新本表状态行。迁移完成前 Status 保持 working。
 
 ## 六类信息去哪找
@@ -18,7 +18,7 @@
 ## 入门（按顺序读）
 
 1. `docs/01-quickstart.md`（working, SSOT）：环境 + 数据准备
-2. `@docs/02-commands.md`（working, SSOT）：命令唯一入口；含外部元数据核验、回执/工具身份检查、固定八页续接、官方原图映射审计及定向测试入口，不含获准外部评分或全量解析任务。
+2. `@docs/02-commands.md`（working, SSOT）：命令唯一入口；含SciEGQA全量候选准备、续跑哈希核验、外部元数据/工具身份、固定八页与定向测试入口；不含向量编码或外部效果评分任务。
 3. `docs/RULES.md`（stable, SSOT）：开发规范十条铁律 + 0.2 实验小白讲解 + 4.4 指令透明后台执行
 
 ## 现行研究
