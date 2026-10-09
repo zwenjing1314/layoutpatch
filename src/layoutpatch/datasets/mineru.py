@@ -23,8 +23,33 @@ def _text(value):
     return ""
 
 
+def _transform_point(point, matrix):
+    x, y = point
+    a, b, c, d, e, f = matrix
+    return a * x + c * y + e, b * x + d * y + f
+
+
+def _map_box(box, width, height, render):
+    matrix = render.get("pdf_to_render_matrix", [1, 0, 0, 1, 0, 0])
+    points = [_transform_point(point, matrix) for point in (
+        (box[0] * width, box[1] * height),
+        (box[2] * width, box[1] * height),
+        (box[0] * width, box[3] * height),
+        (box[2] * width, box[3] * height),
+    )]
+    scale = render.get("render_scale", 2.0)
+    pixel_origin = render.get("pixel_origin", [0, 0])
+    xs = [point[0] * scale - pixel_origin[0] for point in points]
+    ys = [point[1] * scale - pixel_origin[1] for point in points]
+    return [min(xs), min(ys), max(xs), max(ys)]
+
+
+def _same_box(left, right):
+    return len(left) == len(right) and all(math.isclose(a, b, abs_tol=1e-5) for a, b in zip(left, right, strict=True))
+
+
 def export_page(payload, identity, render):
-    """只导出顶层页块，保留原框；越界/空框立即停，不裁剪或使用gold。"""
+    """只导出顶层页块，不裁剪或使用gold；保留PDF到渲染坐标的仿射变换。"""
     if payload.get("schema") != "docvortex.middle" or payload.get("schema_version") != "2.0":
         raise ValueError("unsupported MinerU schema")
     index = identity["pdf_page_index"]
@@ -35,11 +60,21 @@ def export_page(payload, identity, render):
     if geometry["version"] != 1 or len(sizes) != 1:
         raise ValueError("missing unique original page geometry")
     size = [sizes[0]["width_pt"], sizes[0]["height_pt"]]
-    if any(not math.isclose(a, b, abs_tol=1e-5) for a, b in zip(size, render["pdf_size_points"], strict=True)):
+    media_size = render["pdf_size_points"]
+    page_rect = render.get("page_rect", [0, 0, media_size[0], media_size[1]])
+    rotated_size = [page_rect[2] - page_rect[0], page_rect[3] - page_rect[1]]
+    if _same_box(size, media_size):
+        parser_coordinate_frame = "unrotated_media_points"
+        map_render = render
+    elif _same_box(size, rotated_size):
+        parser_coordinate_frame = "rotated_page_points"
+        map_render = {**render, "pdf_to_render_matrix": [1, 0, 0, 1, -page_rect[0], -page_rect[1]]}
+    else:
         raise ValueError("parser/PDF coordinate frame mismatch")
-    if render["rotation"] != 0 or render["cropbox"] != render["mediabox"]:
-        raise ValueError("rotation or crop mapping requires separate verification")
-    width, height = render["page_size"]
+    if not _same_box(render["cropbox"], render["mediabox"]):
+        raise ValueError("CropBox differs from MediaBox; coordinate origin needs verification")
+    width, height = size
+    page_width, page_height = render["page_size"]
     candidates, seen = [], Counter()
     invalid = outside = 0
     for block in payload["pages"][0]["blocks"]:
@@ -54,21 +89,27 @@ def export_page(payload, identity, render):
             continue
         if block.get("type") not in TYPE_MAP or type(block.get("index")) is not int:
             raise ValueError("unresolved candidate type or block identity")
-        mapped = [box[0] * width, box[1] * height, box[2] * width, box[3] * height]
+        mapped = _map_box(box, width, height, map_render)
+        if any(v < -1e-6 for v in mapped[:2]) or mapped[2] > page_width + 1e-6 or mapped[3] > page_height + 1e-6:
+            outside += 1
+            continue
         seen[tuple(box)] += 1
         candidates.append({
             "doc_id": identity["doc_id"], "page_id": identity["page_id"],
             "page_number": identity["page_number"], "pdf_page_index": index,
             "layout_id": block["index"], "candidate_id": f"{identity['page_id']}:block:{block['index']}",
             "type": TYPE_MAP[block["type"]], "parser_type": block["type"],
-            "bbox": mapped, "page_size": [width, height], "parser_bbox_unit": box,
+            "bbox": mapped, "page_size": [page_width, page_height], "parser_bbox_unit": box,
             "text": _text(block), "ocr_text": None, "vlm_text": None,
-            "text_source": "MinerU_basic_auto_native_PDF_or_OCR_per_span_unresolved_no_VLM_description",
+            "text_source": "unknown",
         })
     audit = {"candidate_count": len(candidates), "invalid_boxes": invalid, "out_of_bounds_boxes": outside,
              "duplicate_boxes": sum(n - 1 for n in seen.values()), "no_candidates": not candidates,
              "types": dict(Counter(c["parser_type"] for c in candidates)),
-             "coordinate_contract": "unit_xyxy_top_left_to_render_pixels", "parser_page_size_points": size}
+             "coordinate_contract": "unit_xyxy_parser_frame_to_PyMuPDF_render_pixels",
+             "parser_coordinate_frame": parser_coordinate_frame,
+             "parser_to_render_matrix": map_render["pdf_to_render_matrix"],
+             "parser_page_size_points": size}
     if invalid or outside:
         raise ValueError(f"invalid_boxes={invalid}; out_of_bounds_boxes={outside}; no clipping performed")
     ids = [c["layout_id"] for c in candidates]
@@ -78,7 +119,7 @@ def export_page(payload, identity, render):
 
 
 def check_scoring_structure(candidates, render):
-    """检查现有page_layout/区域指标所需字段，不调用模型、排序或指标函数。"""
+    """检查既有候选接口，不调用模型、排序或指标函数。"""
     from layoutpatch.layout.correspondence import scale_bbox_to_model
     from layoutpatch.layout.schema import TYPE_TO_ID
 

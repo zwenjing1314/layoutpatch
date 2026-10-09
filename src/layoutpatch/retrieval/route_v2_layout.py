@@ -16,6 +16,7 @@ from layoutpatch.retrieval.route_v2_query_cache import file_sha256
 
 TEXT_DIM = 1024
 TEXT_RULE = "mmdocir-official-ocr-by-type-v1"
+EXTERNAL_TEXT_RULE = "external-parser-text-by-type-v1"
 
 
 def node_text(row: dict) -> tuple[str, str]:
@@ -32,6 +33,22 @@ def node_text(row: dict) -> tuple[str, str]:
     if not isinstance(value, str):
         raise ValueError(f"non-string {field}")
     return value.strip(), field
+
+
+def external_node_text(row: dict) -> tuple[str, str]:
+    """读取外部解析器的真实文本；不回退到VLM描述，也不伪称OCR。"""
+    kind = canonical_layout_type(row["type"])
+    if kind not in {"text", "title", "equation", "image", "table"}:
+        raise ValueError(f"unresolved external text provenance for type: {row['type']}")
+    value = row.get("text")
+    if value is None:
+        return "", row.get("text_source", "unknown")
+    if not isinstance(value, str):
+        raise ValueError("non-string external text")
+    source = row.get("text_source", "unknown")
+    if source not in {"unknown", "mixed", "native_PDF", "OCR"}:
+        source = "unknown"
+    return value.strip(), source
 
 
 def page_layout(rows: list[dict], text: torch.Tensor) -> dict[str, torch.Tensor]:
