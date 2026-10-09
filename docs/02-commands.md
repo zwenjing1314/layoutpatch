@@ -165,6 +165,68 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 
 **检查**：源/渲染/候选哈希与页身份一致；固定页原标注像素与0–1000坐标量化一致，不计算候选与gold重叠。不把字段存在等同于完整评分接口通过：图表`ocr_text=null`在冻结消费者中会丢失真实`text`，必须保留阻塞；无训练、评分、Oracle、下载或重复解析，预计数秒。exit0仅表示检查完成，准入以回执状态为准。
 
+## route-v2-external-encoding（外部三类向量缓存，仅编码）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-encoding`
+
+**输入**：`@configs/tools/route_v2_external_encoding_v1.yaml`、最终候选审计 `@artifacts/route_v2_external/full_prep_v1/20261008_222512/audit.json`、候选 `@artifacts/route_v2_external/full_prep_v1/20261008_222512/candidates.jsonl`、固定SciEGQA问题文件，以及本地既有 `vidore/colpali` 和 `BAAI/bge-m3`。逐页图像路径从最终审计回执读取；不读取答案或gold，不加载训练checkpoint。
+
+**输出**：独立 `@artifacts/route_v2_external/encoding_v1/<timestamp>/`，含837页 `[1031,128]` 页面缓存、1623题多token问题缓存、9746候选节点缓存、`manifest.json` 和 `run_info.json`。目录按timestamp新建，输入/模型身份/配置哈希有效时才可复用；失败不写ready。
+
+**检查**：页面前1024行为patch、后7行为提示token；问题仅移除attention padding并保留增广token；节点按候选顺序保留坐标/类型/身份，真实缺失文本置零但保留节点，非空文本使用BGE-M3。检查ID/题—页对应/shape/有限值/归一化/`page_layout`接口、文本缺失/截断、磁盘与GPU峰值；全程不评分、不算Oracle、不训练、不覆盖source缓存。预计首次约数十分钟至数小时，以 `run_info.json` 实测为准；中断留下非ready目录，重新执行会创建新timestamp。
+
+
+
+## route-v2-external-encoding-tests（外部编码定向测试）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-encoding-tests`
+
+**输入**：外部编码入口、ColPali页面token切分、问题去padding/增广token、节点`page_layout`与真实外部文本合成测试；不运行模型。
+
+**输出**：定向Ruff与pytest终端摘要，无缓存或评分产物。
+
+**检查**：页面前1024/后7切分、问题padding与ID规则、节点顺序/空文本/布尔mask/坐标结构；不跑全仓check或旧Ruff。
+
+## route-v2-external-eval-tests（EXP-017 合成统计与执行边界测试）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-eval-tests`
+
+**输入**：外部评测入口、冻结统计实现和小型合成数据；覆盖多页题、多 gold 框、三 seed 聚合、文档聚类 bootstrap（按文档整体重采样的置信区间方法）、Bonferroni 多重比较校正、路径边界和只读复核。不会读取外部效果。
+
+**输出**：定向 Ruff 与 pytest 摘要；pytest 临时文件由测试框架管理，不产生正式评分目录。
+
+**检查**：多页题先题内各页平均再题间宏平均；seed 标准差使用 `ddof=1`；三个主比较生成预定校正区间；preflight、成功 run 复用和 verify 分支不写文件；保存预测复核不得加载问题/页面/节点张量或 checkpoint。预计约数秒至一分钟；失败时只修执行边界或合成夹具，不改变冻结统计规则。
+
+## route-v2-external-eval-preflight（EXP-017 只读准入检查）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-eval-preflight`
+
+**输入**：`@configs/experiments/route_v2_external_eval_v1.yaml`绑定的比较配置、最终编码 manifest、候选、SciEGQA 标注和 12 份既有 `source_val` 最佳 checkpoint。gold 只用于建立评测分母，不进入向量生成、融合或候选排序。
+
+**输出**：仅向终端打印 `ready`、固定分母、manifest/权重哈希和耗时；不创建 timestamp 目录，不写 preflight 文件。
+
+**检查**：837 页缓存 ready 且哈希/shape/有限值正确，前 1024 行图像 patch 与后 7 行提示 token 接口不变；1623 题问题 padding 正确去除；9746 节点全部覆盖，真实缺失文本才为零，非空外部文本按冻结适配规则编码；12 份权重按训练时模型类严格加载。预计数分钟，主要耗时为逐文件哈希和 CPU 读取；任何失败立即停止，不重编码、不改模型、不评分。
+
+## route-v2-external-eval（EXP-017 一次性冻结外部评分）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-eval`
+
+**输入**：通过准入的固定 SciEGQA 缓存、共同候选与分母，以及 A/B/C/C-wide/D/D-no-text 六种冻结方法。A/B 各计算一次；四种训练方法各使用 seed 0/1/2 的既有 `source_val` 最佳权重。任务是给定正确页面后的候选区域定位，不是端到端页面检索。
+
+**输出**：若存在同配置且保存预测复核通过的唯一成功 run，只读复用并打印路径；否则新建 `@runs/retrieval/route_v2_external_eval_v1/<timestamp>/`，保存 `config.json`、`run_info.json`、`metrics.json`、`predictions.parquet`、`summary.md`，以及 `question_scores.parquet`、`preflight.json`、输入/代码身份、代码快照、工作区补丁和 `result_verification.json`。正式 run 不覆盖，失败保留 `failure.json`。
+
+**检查**：主指标为 Top-1 IoU≥0.5，先题内页面平均再按问题宏平均；训练方法报告三 seed 与样本标准差；配对统计先平均三 seed 的逐题分数，再做 2000 次、seed 0 的文档聚类 bootstrap；主比较 D-no-text−A/B/C-wide 同报 95% 和预定 Bonferroni 区间，D-no-text−D/C 只作次要分析；全部辅助指标、随机/Oracle、`M>=2` 子集和分母必须完整。CUDA 显存上限 12 GiB；预计数十分钟，依本机缓存读取和 13 次评分而定。准入或评分失败后保留错误并停止，不自动重试或调参。
+
+## route-v2-external-eval-verify（EXP-017 保存预测只读复核）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-external-eval-verify`
+
+**输入**：同配置下唯一成功 run 的 `predictions.parquet`、`question_scores.parquet`、`metrics.json`，以及冻结候选和 SciEGQA gold。不会加载问题、页面、节点缓存或 checkpoint，也不会重新执行模型评分。
+
+**输出**：仅向终端打印复核状态、预测行数、逐题行数、方法数和耗时；不修改正式 run，不写手工复核文件。
+
+**检查**：逐 unit 候选必须是完整排列，重新计算全部 unit 指标、题内页面平均、题间宏平均、三 seed 聚合和联合文档 bootstrap，并与保存结果以 `1e-12` 绝对误差核对。预计数秒至数分钟；不一致即失败，正式结果不得登记为完成。
+
 ## route-v2-exp3-tests（EXP-016最小归因相关检查）
 
 **命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-exp3-tests`

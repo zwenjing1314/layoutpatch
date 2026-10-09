@@ -1,0 +1,67 @@
+# 外部SciEGQA向量缓存；仅编码，不评分、不训练、不加载比较checkpoint。
+name: route_v2_external_encoding_v1
+status: frozen
+input:
+  dataset: Yuwh07/SciEGQA-Bench
+  revision: 9bdca77be633cc3259d7e3739d35b38ab00bf5d9
+  root: data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9
+  annotations: SciEGQA_Bench.jsonl
+  annotations_sha256: 338b701830495b984acca753e5b5065b35a7566c308f2d5c81f76b8401a3053f
+  fixed_manifest: artifacts/route_v2_external/preparation_v1/20261007_155402/manifest.json
+  fixed_manifest_sha256: 387b2f498ec4bb54abb7aab0a149ef46aa7856c284d2472541d61a7940d0347d
+  final_audit: artifacts/route_v2_external/full_prep_v1/20261008_222512/audit.json
+  final_candidates: artifacts/route_v2_external/full_prep_v1/20261008_222512/candidates.jsonl
+  final_candidates_sha256: 19dbd7257d696bca19859fd1a53e69520e3380590d5fe0445fac61d8d2518263
+  questions: 1623
+  unique_pages: 837
+  question_page_units: 1941
+  candidates: 9746
+  candidate_text_field: text
+  candidate_text_rule: external-parser-text-read-directly; empty-kept-and-zeroed
+models:
+  colpali:
+    model: vidore/colpali
+    dtype: torch.bfloat16
+    device: cuda:0
+    image_size: [448, 448]
+    page_shape: [1031, 128]
+    patch_rows: [0, 1024]
+    prompt_rows: [1024, 1031]
+    process_images: frozen_colpali_processor
+    process_queries: frozen_colpali_processor
+    query_padding: remove_attention_zero_only
+    query_augmentation: preserve_existing_processor_tokens
+    pooling: null
+    max_seq_length: processor_default
+  bge_m3:
+    model: BAAI/bge-m3
+    revision: 5617a9f61b028005a4858fdac845db406aefb181
+    dimension: 1024
+    pooling: CLS
+    normalize_embeddings: true
+    max_seq_length: 512
+    batch_size: 2
+    dtype: torch.float32
+    device: cuda:0
+    rule: external-parser-text-direct
+encoding:
+  page_batch_size: 1
+  query_batch_size: 2
+  node_batch_size: 2
+  seed: 42
+  frozen: true
+  inference_mode: true
+  vram_budget_gib: 12
+output:
+  root: artifacts/route_v2_external/encoding_v1
+  page_cache: pages
+  query_cache: queries.pt
+  node_cache: nodes
+  manifest: manifest.json
+  run_info: run_info.json
+prohibitions:
+  scoring: true
+  oracle: true
+  training: true
+  checkpoint_comparison: true
+  source_cache_overwrite: true

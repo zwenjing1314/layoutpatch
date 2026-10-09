@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-external-status","route-v2-external-tool-status","route-v2-external-contract","route-v2-external-pages","route-v2-external-images","route-v2-external-final-review","route-v2-external-full-prep","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-external-status","route-v2-external-tool-status","route-v2-external-contract","route-v2-external-pages","route-v2-external-images","route-v2-external-final-review","route-v2-external-full-prep","route-v2-external-encoding","route-v2-external-encoding-tests","route-v2-external-eval-tests","route-v2-external-eval-preflight","route-v2-external-eval","route-v2-external-eval-verify","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
   [string]$Task = "help"
 )
 
@@ -108,6 +108,10 @@ switch ($Task) {
     Write-Host "  route-v2-smoke         <=16 source_train questions, <=200 steps; stops if a precondition fails"
     Write-Host "  route-v2-external-pages fixed SciEGQA eight-page MinerU Basic ONNX render/parse audit"
     Write-Host "  route-v2-external-images download/check/extract fixed eight official images and audit PDF mapping"
+    Write-Host "  route-v2-external-eval-tests synthetic statistics and read-only boundary checks"
+    Write-Host "  route-v2-external-eval-preflight read-only frozen SciEGQA scoring admission check"
+    Write-Host "  route-v2-external-eval  EXP-017 frozen given-correct-page localization; reuses a verified run"
+    Write-Host "  route-v2-external-eval-verify read-only recomputation from saved predictions"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -303,6 +307,44 @@ switch ($Task) {
       -Dataset "fixed eight-page identity/coordinate/text contract only" -Output "artifacts/route_v2_external/preparation_v1/<timestamp>_final_review/"
     & uv run --offline --no-sync python scripts/review_route_v2_external_pages.py
     if ($LASTEXITCODE -ne 0) { throw "external final review failed; retain evidence" }
+  }
+  "route-v2-external-encoding" {
+    Assert-UvColpaliCuda
+    Show-ExpHeader -ExpId "EXTERNAL-ENCODING" -Config "configs/tools/route_v2_external_encoding_v1.yaml" `
+      -Dataset "pinned SciEGQA 1623 questions / 837 pages / 9746 candidates; encoding only" -Output "artifacts/route_v2_external/encoding_v1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/cache_route_v2_external.py
+    if ($LASTEXITCODE -ne 0) { throw "external encoding failed; cache is not ready" }
+  }
+  "route-v2-external-encoding-tests" {
+    & uv run --offline --no-sync ruff check scripts/cache_route_v2_external.py src/layoutpatch/retrieval/colpali_layout.py src/layoutpatch/retrieval/route_v2_layout.py src/layoutpatch/retrieval/route_v2_query_cache.py tests/retrieval/test_route_v2_layout.py tests/retrieval/test_route_v2_query_cache.py tests/datasets/test_external_image_review.py
+    if ($LASTEXITCODE -ne 0) { throw "external encoding lint failed" }
+    & uv run --offline --no-sync pytest tests/retrieval/test_route_v2_layout.py tests/retrieval/test_route_v2_query_cache.py tests/datasets/test_external_image_review.py
+    if ($LASTEXITCODE -ne 0) { throw "external encoding tests failed" }
+  }
+  "route-v2-external-eval-tests" {
+    & uv run --offline --no-sync ruff check scripts/run_route_v2_external.py src/layoutpatch/evaluation/external_localization.py tests/retrieval/test_route_v2_external.py
+    if ($LASTEXITCODE -ne 0) { throw "external evaluation lint failed" }
+    & uv run --offline --no-sync pytest tests/retrieval/test_route_v2_external.py
+    if ($LASTEXITCODE -ne 0) { throw "external evaluation synthetic tests failed" }
+  }
+  "route-v2-external-eval-preflight" {
+    Show-ExpHeader -ExpId "EXP-017-PREFLIGHT" -Config "configs/experiments/route_v2_external_eval_v1.yaml" `
+      -Dataset "pinned SciEGQA 1623 questions / 837 correct pages / 1941 units" -Output "stdout only; read-only"
+    & uv run --offline --no-sync python scripts/run_route_v2_external.py preflight
+    if ($LASTEXITCODE -ne 0) { throw "external evaluation preflight failed; do not score" }
+  }
+  "route-v2-external-eval" {
+    Assert-UvColpaliCuda
+    Show-ExpHeader -ExpId "EXP-017" -Config "configs/experiments/route_v2_external_eval_v1.yaml" `
+      -Dataset "pinned SciEGQA given-correct-page localization; 1623 questions / 1941 units" -Output "runs/retrieval/route_v2_external_eval_v1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/run_route_v2_external.py run
+    if ($LASTEXITCODE -ne 0) { throw "EXP-017 failed; preserve failure and do not retry automatically" }
+  }
+  "route-v2-external-eval-verify" {
+    Show-ExpHeader -ExpId "EXP-017-VERIFY" -Config "configs/experiments/route_v2_external_eval_v1.yaml" `
+      -Dataset "saved EXP-017 predictions and frozen gold/candidates only" -Output "stdout only; read-only"
+    & uv run --offline --no-sync python scripts/run_route_v2_external.py verify
+    if ($LASTEXITCODE -ne 0) { throw "EXP-017 saved result verification failed" }
   }
   "route-v2-exp3-tests" {
     & uv run --offline --no-sync ruff check src/layoutpatch/retrieval/route_v2_attribution.py scripts/run_route_v2_exp3.py tests/retrieval/test_route_v2_attribution.py

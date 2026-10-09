@@ -1,0 +1,55 @@
+# EXP-017：一次性冻结 SciEGQA 给定正确页候选区域定位外部评测。
+name: route_v2_external_eval_v1
+status: frozen
+experiment_id: EXP-017
+execution_authorization: user_explicit_2026-10-09_overrides_preparation_only_scoring_prohibition
+comparison_config: configs/experiments/route_v2_external_v1.yaml
+encoding_config: configs/tools/route_v2_external_encoding_v1.yaml
+encoding_manifest: artifacts/route_v2_external/encoding_v1/runs/20261009_141912/manifest.json
+encoding_manifest_sha256: 87386a31e2300093d59f0f0c5bd81ecac7161292ab9df49736581ecf2217aa4f
+weights_manifest: artifacts/route_v2_external/preparation_v1/20261007_152240/weights.json
+weights_manifest_sha256: 5a1bc2a05dfdd5b7287862a6b04928f30b0d90612b6cc2abb77aad7c4bebbe0f
+annotations: data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9/SciEGQA_Bench.jsonl
+annotations_sha256: 338b701830495b984acca753e5b5065b35a7566c308f2d5c81f76b8401a3053f
+candidates: artifacts/route_v2_external/full_prep_v1/20261008_222512/candidates.jsonl
+candidates_sha256: 19dbd7257d696bca19859fd1a53e69520e3380590d5fe0445fac61d8d2518263
+output: runs/retrieval/route_v2_external_eval_v1
+device: cuda:0
+vram_budget_gib: 12
+methods: [A, B, C, C-wide, D, D-no-text]
+trained_methods: [C, C-wide, D, D-no-text]
+seeds: [0, 1, 2]
+denominators:
+  questions: 1623
+  unique_pages: 837
+  question_page_units: 1941
+  candidates: 9746
+scoring:
+  task: given_correct_page_fixed_candidate_localization
+  page_retrieval: false
+  image_patch_rows: [0, 1024]
+  prompt_rows: [1024, 1031]
+  query_padding: remove_attention_zero_only
+  common_candidates_and_denominators: true
+  A_and_B_computed_once: true
+statistics:
+  primary_metric: hit1@0.5
+  aggregation: mean_units_within_question_then_question_macro
+  seed_aggregation: mean_three_seed_question_scores_before_paired_statistics
+  seed_std_ddof: 1
+  primary_comparisons: [D-no-text-A, D-no-text-B, D-no-text-C-wide]
+  secondary_comparisons: [D-no-text-D, D-no-text-C]
+  bootstrap: {iterations: 2000, seed: 0, unit: document, confidence: 0.95}
+  multiple_comparisons:
+    method: Bonferroni_percentile_document_bootstrap_intervals
+    family_size: 3
+    family_alpha: 0.05
+    individual_confidence: 0.9833333333333333
+  external_minimum_difference: null
+prohibitions:
+  training: true
+  tuning: true
+  visual_reencoding: true
+  page_retrieval_claim: true
+  gold_in_scoring_inputs: true
+  automatic_followup: true

@@ -4,7 +4,9 @@
 
 ## [Unreleased]
 
-### Added
+- EXP-017冻结SciEGQA外部定位入口：新增六方法一次性评分配置/脚本、只读准入与保存预测复核、合成统计和路径边界测试，并登记四个统一任务；绑定最终编码manifest、候选/标注和12份既有权重哈希，不训练、不调参、不重编码，也不声称端到端页面检索。
+
+- 外部向量缓存入口：新增`route_v2_external_encoding_v1.yaml`与`cache_route_v2_external.py`，绑定最终候选/审计哈希、ColPali/BGE-M3身份、token与文本规则，独立缓存页面/问题/节点向量；不评分、不训练、不覆盖source缓存。
 
 - 固定SciEGQA图像及最终接口审计：新增图像配置、定点下载/提取、内容映射和逐页最终回执任务。8/8叠图目视及原图内容映射通过，实际D图表消费者会因`ocr_text=null`丢失解析`text`，最终保留接口阻塞；未修改冻结比较或候选，不评分、不处理全量。详情见`@experiments/2026-10-07-external-preparation.md`。
 
