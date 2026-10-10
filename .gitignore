@@ -17,6 +17,7 @@ __pycache__/
 .coverage
 htmlcov/
 .ipynb_checkpoints/
+pytest-of-WenJing/*
 
 # Data, artifacts, runs: reproducible outputs, never in git
 data/
@@ -36,6 +37,7 @@ tmp/
 *.jpg
 *.jpeg
 *.xlsx
+
 
 # Thesis figures are curated small artifacts, tracked explicitly (two-file whitelist)
 !docs/figures/case_A_success.jpg
