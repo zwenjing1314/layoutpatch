@@ -1,0 +1,129 @@
+# frozen：2026-10-10，唯一E；正式训练前固定，不因source_val或外部结果修改。
+experiment_id: EXP-018
+name: route_v2_E_supplement_v1
+status: frozen
+result_role: post-hoc_supplementary
+execution_authorization: user_explicit_2026-10-10_one_E_three_seeds_one_external_comparison
+base_config: configs/experiments/route_v2_exp2_D.yaml
+base_config_sha256: 4ac025e83d6a37ce07de2d1df8d84975cf7b9c788dedc46dff82190ad5f11c51
+training_output: runs/retrieval/route_v2_E_supplement_v1
+external_output: runs/retrieval/route_v2_E_external_supplement_v1
+check_output: artifacts/route_v2_E_supplement_check
+method: E
+purpose: test_whether_frozen_P_direct_candidate_ranking_is_already_sufficient
+claim_limit: near_D_registered_parameter_count_not_effective_capacity_matched_to_D_no_text
+inputs:
+  patches: frozen_original_P
+  query: frozen_ColPali_query_tokens
+  node_text: forbidden
+  gold_at_inference: forbidden
+  candidate_visual: normalize_sum_i_W_raw_ij_P_i_div_sum_i_W_raw_ij
+  query_interaction: x_j_equals_elementwise_max_over_valid_tokens_of_q_t_times_v_j
+  query_interaction_name: elementwise_interaction_feature_not_standard_MaxSim
+  layout: sinusoidal_coords_72_to_Linear72_128_plus_type_embedding_128
+  score: score_E_equals_score_B_plus_MLP_concat_x_v_l
+architecture:
+  dimension: 128
+  coordinate_input_dimension: 6
+  sinusoidal_coordinate_width: 72
+  coordinate_projection: Linear_72_128_with_bias
+  type_ids: {UNK: 0, text: 1, title: 2, table: 3, image: 4, equation: 5}
+  type_embedding: Embedding_6_128
+  layout_combine: coordinate_projection_plus_type_embedding
+  mlp: Linear_384_680_GELU_Linear_680_1
+  final_layer_initialization: all_zero_weight_and_bias
+  trainable_parameters: 272593
+  parameter_formula: 72x128_plus_128_plus_6x128_plus_384x680_plus_680_plus_680_plus_1
+  comparison_D_no_text_registered_parameters: 273410
+  parameter_difference_from_D_no_text: -817
+candidate_rules:
+  W_raw: cover_unnormalized
+  pooling_denominator: sum_over_patches_per_candidate
+  empty_W: zero_v_zero_x_preserve_score_B_exclude_from_training_loss
+  query_tokens: remove_only_all_zero_padding_rows_then_L2_normalize
+  candidate_padding: boolean_mask_before_features_loss_and_ranking
+  tie: score_desc_then_layout_id_ascending_stable
+  finite_rule: stop_on_NaN_or_positive_infinity_or_unexpected_negative_infinity
+supervision:
+  starting_units: original_D_source_train_local_loss_ready_and_not_page_overlap_excluded
+  positive: candidate_IoU_with_any_gold_ge_0.5
+  negative: every_other_nonpadding_nonempty_W_candidate
+  no_positive_or_no_negative: no_parameter_update_keep_for_evaluation
+  annotation_relation: same_source_not_same_label_granularity_or_identical_training_set
+  external_labels_for_training: forbidden
+  expected_original_D_training_units: 1002
+loss:
+  name: multi_positive_candidate_contrastive
+  formula: logsumexp_all_active_minus_logsumexp_all_positive
+  tau: 0.25
+seeds: [0, 1, 2]
+max_epochs: 30
+optimizer:
+  name: AdamW
+  lr: 0.001
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  eps: 0.00000001
+units_per_update: 4
+clip_max_norm: 1.0
+early_stopping:
+  role: source_val
+  metric: hit1@0.5
+  aggregation: question_macro
+  patience: 5
+  improvement: strict
+  tie: earliest
+  initial_best: negative_infinity
+shuffle: persistent_python_random_per_seed_sorted_unit_ids
+checkpoint: each_strict_improvement_immutable_file
+checkpoint_selection: source_val_only
+evaluation:
+  source_dev: forbidden_not_needed_this_round
+  source_val_expected_questions: 374
+  source_val_expected_units: 448
+  external_after_all_three_checkpoints: true
+device: cuda:0
+dtype: float32
+mixed_precision: false
+scheduler: null
+tf32: false
+deterministic_algorithms: true
+vram_budget_gib: 12
+zero_init_score_atol: 0.000001
+external:
+  source_run: runs/retrieval/route_v2_external_eval_v1/20261009_163938
+  source_config: configs/experiments/route_v2_external_eval_v1.yaml
+  source_config_sha256: b41d18fde2f1f6544ba1d6e53591c0a06fbb6fdf3ad7c042b4205944511390e7
+  source_predictions_sha256: 3592077fc46706ad595374b629e13db254d8725fa7a836e44832ce0de41d5306
+  source_metrics_sha256: ca791fcb50909ad9fceb3bc7d2b3f82f4edcb578f1b2f16db063687a04b00c36
+  source_run_info_sha256: 9883f339dc919fdcbbdede999574adb2918aa6b08a7b7daf477868dee34f9ee8
+  source_verification_sha256: fbb512545e375ae1e321e7a0fb43318d82ed9f1fbe5fa5839d7b8616e046ec8b
+  denominators: {questions: 1623, unique_pages: 837, question_page_units: 1941, candidates: 9746}
+  original_methods: [A, B, C, C-wide, D, D-no-text]
+  add_predictions_only_for: E
+  old_model_rescoring: forbidden
+  visual_reencoding: forbidden
+  tuning: forbidden
+  page_retrieval_claim: forbidden
+statistics:
+  primary_supplementary_comparison: D-no-text-E
+  metric: hit1@0.5
+  aggregation: mean_units_within_question_then_question_macro
+  seed_aggregation: mean_each_methods_three_seed_question_scores_before_pairing
+  bootstrap: {iterations: 2000, seed: 0, unit: document, confidence: 0.95}
+  multiple_comparison_correction: none_single_post_hoc_supplementary_comparison
+  numerical_position_only: [E-A, E-B, E-C-wide]
+  no_additional_primary_comparisons: true
+  top5_differences: [cov@5, gold_recall@5@0.5, area_sum@5]
+  seed_std_ddof: 1
+report_costs:
+  - trainable_parameters
+  - epochs
+  - training_seconds
+  - source_val_seconds
+  - external_scoring_seconds
+  - peak_allocated_bytes
+  - peak_reserved_bytes
+stop_after: one_design_three_seeds_one_external_supplementary_evaluation
+additional_variants: forbidden
+auto_followup: false

@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- EXP-018唯一E事后补充对照已完成并停止：冻结原始P/query，以`W_raw`候选视觉表示、逐维query交互和坐标/类型布局向量直接修正B候选分数；272593参数、原D训练unit起点、三seed/source_val选择和一次只新增E的SciEGQA外评均预先冻结。新增定向测试、小训练侧检查、保存预测只读复核及统一任务；外评保存复核后的GBK打印失败通过严格无checkpoint/无重评分恢复发布。D-no-text没有胜过这一具体E；不增加第二变体，不重新训练/评分原六方法，不运行新source_dev评分。
+
 - EXP-017冻结SciEGQA外部定位入口：新增六方法一次性评分配置/脚本、只读准入与保存预测复核、合成统计和路径边界测试，并登记四个统一任务；绑定最终编码manifest、候选/标注和12份既有权重哈希，不训练、不调参、不重编码，也不声称端到端页面检索。
 
 - 外部向量缓存入口：新增`route_v2_external_encoding_v1.yaml`与`cache_route_v2_external.py`，绑定最终候选/审计哈希、ColPali/BGE-M3身份、token与文本规则，独立缓存页面/问题/节点向量；不评分、不训练、不覆盖source缓存。

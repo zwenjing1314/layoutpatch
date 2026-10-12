@@ -12,7 +12,7 @@
 
 param(
   [Parameter(Position=0)]
-  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-external-status","route-v2-external-tool-status","route-v2-external-contract","route-v2-external-pages","route-v2-external-images","route-v2-external-final-review","route-v2-external-full-prep","route-v2-external-encoding","route-v2-external-encoding-tests","route-v2-external-eval-tests","route-v2-external-eval-preflight","route-v2-external-eval","route-v2-external-eval-verify","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
+  [ValidateSet("help","check","mmdocir-prepare","mmdocir-smoke","mmdocir-colpali-full","mmdocir-bge-m3-full","mmdocir-hybrid-full","phase1b-stratify","phase1c-baselines","phase1c-smoke","phase2r-arxivqa","phase2r-dude","phase2r-arxivqa-dude","phase2r-arxivqa-notext","fusion-arxivqa","region-ann-pilot","route-v2-identity","route-v2-data","route-v2-queries","route-v2-external-tests","route-v2-external-audit","route-v2-external-status","route-v2-external-tool-status","route-v2-external-contract","route-v2-external-pages","route-v2-external-images","route-v2-external-final-review","route-v2-external-full-prep","route-v2-external-encoding","route-v2-external-encoding-tests","route-v2-external-eval-tests","route-v2-external-eval-preflight","route-v2-external-eval","route-v2-external-eval-verify","route-v2-e-tests","route-v2-e-check","route-v2-e-train","route-v2-e-external","route-v2-e-verify","route-v2-exp3-tests","route-v2-exp3","route-v2-exp2-result-check","route-v2-exp2-verify","route-v2-d-dev-nodes","route-v2-d-tests","route-v2-d-verify","route-v2-exp2","route-v2-d-nodes","route-v2-d-smoke","route-v2-exp1-verify","route-v2-exp1-result-check","route-v2-exp1-tests","route-v2-exp1","route-v2-cache-tests","route-v2-smoke")]
   [string]$Task = "help"
 )
 
@@ -112,6 +112,11 @@ switch ($Task) {
     Write-Host "  route-v2-external-eval-preflight read-only frozen SciEGQA scoring admission check"
     Write-Host "  route-v2-external-eval  EXP-017 frozen given-correct-page localization; reuses a verified run"
     Write-Host "  route-v2-external-eval-verify read-only recomputation from saved predictions"
+    Write-Host "  route-v2-e-tests       unique E candidate-ranker targeted lint and tests"
+    Write-Host "  route-v2-e-check       one synthetic training-side implementation check"
+    Write-Host "  route-v2-e-train       EXP-018 unique E seed 0/1/2 formal training"
+    Write-Host "  route-v2-e-external    one post-hoc external supplement; score E only"
+    Write-Host "  route-v2-e-verify      read-only recomputation from saved supplement"
     Write-Host "usage: ./tasks.ps1 <task>"
   }
   "check" {
@@ -345,6 +350,38 @@ switch ($Task) {
       -Dataset "saved EXP-017 predictions and frozen gold/candidates only" -Output "stdout only; read-only"
     & uv run --offline --no-sync python scripts/run_route_v2_external.py verify
     if ($LASTEXITCODE -ne 0) { throw "EXP-017 saved result verification failed" }
+  }
+  "route-v2-e-tests" {
+    & uv run --offline --no-sync ruff check src/layoutpatch/retrieval/route_v2_candidate.py scripts/run_route_v2_E_supplement.py tests/retrieval/test_route_v2_candidate.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-018 E targeted lint failed" }
+    & uv run --offline --no-sync pytest tests/retrieval/test_route_v2_candidate.py tests/retrieval/test_route_v2_exp1.py tests/retrieval/test_route_v2_external.py
+    if ($LASTEXITCODE -ne 0) { throw "EXP-018 E targeted tests failed" }
+  }
+  "route-v2-e-check" {
+    Show-ExpHeader -ExpId "EXP-018-CHECK" -Config "configs/experiments/route_v2_E_supplement_v1.yaml" `
+      -Dataset "synthetic candidates only; implementation check, not tuning" -Output "artifacts/route_v2_E_supplement_check/<timestamp>/"
+    & uv run --offline --no-sync python scripts/run_route_v2_E_supplement.py check
+    if ($LASTEXITCODE -ne 0) { throw "EXP-018 E training-side check failed; do not train" }
+  }
+  "route-v2-e-train" {
+    Assert-UvColpaliCuda
+    Show-ExpHeader -ExpId "EXP-018-TRAIN" -Config "configs/experiments/route_v2_E_supplement_v1.yaml" `
+      -Dataset "original D source_train start set; source_val checkpoint selection only" -Output "runs/retrieval/route_v2_E_supplement_v1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/run_route_v2_E_supplement.py train
+    if ($LASTEXITCODE -ne 0) { throw "EXP-018 E training hard stop; no automatic retry" }
+  }
+  "route-v2-e-external" {
+    Assert-UvColpaliCuda
+    Show-ExpHeader -ExpId "EXP-018-EXTERNAL" -Config "configs/experiments/route_v2_E_supplement_v1.yaml" `
+      -Dataset "fixed SciEGQA 1623 questions / 1941 units; reuse old predictions" -Output "runs/retrieval/route_v2_E_external_supplement_v1/<timestamp>/"
+    & uv run --offline --no-sync python scripts/run_route_v2_E_supplement.py external
+    if ($LASTEXITCODE -ne 0) { throw "EXP-018 external supplement hard stop; no retry or tuning" }
+  }
+  "route-v2-e-verify" {
+    Show-ExpHeader -ExpId "EXP-018-VERIFY" -Config "configs/experiments/route_v2_E_supplement_v1.yaml" `
+      -Dataset "saved old plus E predictions and fixed gold/candidates" -Output "stdout only; read-only"
+    & uv run --offline --no-sync python scripts/run_route_v2_E_supplement.py verify
+    if ($LASTEXITCODE -ne 0) { throw "EXP-018 saved supplement verification failed" }
   }
   "route-v2-exp3-tests" {
     & uv run --offline --no-sync ruff check src/layoutpatch/retrieval/route_v2_attribution.py scripts/run_route_v2_exp3.py tests/retrieval/test_route_v2_attribution.py

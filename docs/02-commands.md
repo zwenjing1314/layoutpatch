@@ -227,6 +227,56 @@ uv run --offline --no-sync python scripts/verify_route_v2_candidates.py
 
 **检查**：逐 unit 候选必须是完整排列，重新计算全部 unit 指标、题内页面平均、题间宏平均、三 seed 聚合和联合文档 bootstrap，并与保存结果以 `1e-12` 绝对误差核对。预计数秒至数分钟；不一致即失败，正式结果不得登记为完成。
 
+## route-v2-e-tests（EXP-018 唯一 E 定向测试）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-e-tests`
+
+**输入**：冻结候选排序头 E、正式入口及合成夹具；不读取真实效果、不训练正式数据。
+
+**输出**：定向 Ruff 与 pytest 终端摘要，不创建正式 run。
+
+**检查**：参数量 `272593`；零初始化与 B 分数/稳定排序一致；多正例、无正负例、空 `W_raw`、padding、角色隔离、有限梯度和参数更新。预计数秒至一分钟；失败时只修实现，不改冻结设计或超参。
+
+## route-v2-e-check（EXP-018 一次训练侧小检查）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-e-check`
+
+**输入**：纯合成的冻结 query/P、四个候选、一个 padding 位及多正例；不读取 source_val、source_dev 或外部标签。
+
+**输出**：`@artifacts/route_v2_E_supplement_check/<timestamp>/check.json`，仅作实现回执，不是效果实验。
+
+**检查**：三步 AdamW 中损失、梯度、参数均有限且参数发生更新；零初始化时 E 与 B 相同，padding 为 `-inf`。不据此选择维度、损失、seed 或阈值；预计数秒，失败即停止正式训练。
+
+## route-v2-e-train（EXP-018 唯一 E 三 seed 正式训练）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-e-train`
+
+**输入**：冻结 `@configs/experiments/route_v2_E_supplement_v1.yaml`，以原 D 可训练 `source_train` unit 为起点；候选 IoU≥0.5 为正，其余有效候选为负。只使用原始 P、query、`W_raw`、坐标和类型，不使用节点文本或外部标签。
+
+**输出**：`@runs/retrieval/route_v2_E_supplement_v1/<timestamp>/` 五件套、三 seed checkpoint/逐轮日志、训练过滤审计、source_val 保存预测及身份回执。预计约 5–20 分钟，早停决定实际时长；中断或数值/身份/显存错误保留失败目录且禁止自动重试。
+
+**检查**：唯一结构为 `Linear(72,128)` 坐标投影、六类型 embedding 与 `Linear(384,680)→GELU→Linear(680,1)`，实际参数 `272593`；seed 0/1/2 最多 30 epoch、patience 5，只按 source_val Top-1 严格提高选最早 checkpoint；记录原 D unit、E unit、交集和互斥排除原因。不会评分 source_dev，也不增加第二变体。
+
+## route-v2-e-external（EXP-018 一次事后外部补充比较）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-e-external`
+
+**输入**：三份已选 E checkpoint、固定 SciEGQA 缓存/9746 候选，以及 `@runs/retrieval/route_v2_external_eval_v1/20261009_163938/predictions.parquet` 的原六方法保存预测。不会重新编码或重新评分原六方法。
+
+**输出**：`@runs/retrieval/route_v2_E_external_supplement_v1/<timestamp>/` 独立五件套；新预测文件精确复制原行并只新增三个 E seed，另存逐题分数、准入与结果复核回执。预计数分钟，只执行三次 E 评分；失败即停止，不调参、不改 E、不筛子集。唯一允许的恢复是：模型评分、保存和 `result_verification.json` 已全部完成后，Windows GBK 仅因打印 `U+2212` 失败；入口严格核对该错误与通过回执，从保存预测重算统计并创建新完成目录，不加载 checkpoint、不重复评分，其他失败仍拒绝恢复或自动重试。
+
+**检查**：分母固定 1623题/837页/1941 unit/9746候选；主要补充比较仅 `D-no-text−E` Top-1，三 seed 逐题平均后做 2000 次、seed 0 的文档配对 bootstrap 并报 95% 区间；E 三 seed、均值/样本标准差、全部辅助指标、与 A/B/C-wide 的数值位置及三项 Top-5 差异完整保留。结果一律标 `post-hoc supplementary`。
+
+## route-v2-e-verify（EXP-018 保存预测只读复核）
+
+**命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-e-verify`
+
+**输入**：补充 run 的保存预测/指标、固定候选与 gold，以及原 EXP-017 预测；不加载 checkpoint、页面/query/节点张量。
+
+**输出**：只向终端打印行数、方法数、复核耗时，以及训练/外部 `metrics.json` 中登记所需的结构化原始字段；不修改正式目录。
+
+**检查**：原预测逐行精确复用，E 排名是共同候选完整排列；从保存预测重算全部 unit 指标、题宏平均、三 seed 聚合、`D-no-text−E` bootstrap 与 Top-5 差异。不会加载 checkpoint 或重复模型评分。
+
 ## route-v2-exp3-tests（EXP-016最小归因相关检查）
 
 **命令**：`powershell.exe -NoProfile -File tasks.ps1 route-v2-exp3-tests`
