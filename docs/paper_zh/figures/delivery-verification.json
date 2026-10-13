@@ -1,0 +1,61 @@
+{
+  "docx_bytes": 948627,
+  "tables": 7,
+  "editable_math_objects": 162,
+  "embedded_images": 2,
+  "display_equation_numbers": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21"
+  ],
+  "page_count": 17,
+  "unexpected_body_material": [],
+  "arxiv_identifiers_intact": true,
+  "formula_numbers_complete": true,
+  "citation_keys": [
+    "ColPali2025",
+    "LayoutLMv32022",
+    "MMDocIR2025",
+    "RegionRAG2025",
+    "SciEGQA2026",
+    "Snappy2025"
+  ],
+  "reference_keys": [
+    "ColPali2025",
+    "LayoutLMv32022",
+    "MMDocIR2025",
+    "RegionRAG2025",
+    "SciEGQA2026",
+    "Snappy2025"
+  ],
+  "citations_match": true,
+  "figures": {
+    "figure-1-task.png": [
+      5000,
+      2167
+    ],
+    "figure-2-methods.png": [
+      5333,
+      3533
+    ]
+  },
+  "docx_sha256": "9185ba34cbb0a625f6fe049f449124fe8e2250be55b63a5cb4ab14be850a351a"
+}

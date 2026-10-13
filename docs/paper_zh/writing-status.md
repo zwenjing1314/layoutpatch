@@ -1,14 +1,14 @@
-# 中文小论文写作进度
-更新：2026-10-12；第1轮已完成。
-定位：布局条件适配与直接排序的有限条件实证比较；期刊未定，通用中文 Markdown。
-产物：docs/paper_zh/outline-and-claims.md（逐节提纲、主张—证据—局限表、待核实清单）。
-本状态文件：docs/paper_zh/writing-status.md。
-证据：仅 route-v2-writing-handoff.md 与 route-v2-paper-decision-brief.md；已读取 research-writing-skill。
-核验状态：本轮为二级材料转录与论证规划，未独立查阅代码、协议或原始结果。
-原冻结实验与 E 事后补充已分开；面积基线、Top-5 不利结果与 E seed 波动均保留。
-论断边界：不声称 P′ 优于 E、可靠超过面积或保持页面召回。
-关键缺项1：方法实现与符号细节、监督和过滤口径待核实。
-关键缺项2：原始统计协议、开发消融数值与各方法完整标准差待核实。
-关键缺项3：文献/新颖性、许可与重叠筛查、期刊及导师定位待核实。
-本轮未写正文，未训练、调参、下载数据、重评分或扫描仓库；实验原件未修改。
-下一轮唯一任务：第3节“任务定义与方法”初稿，附符号表和方法流程图草案，按需定点核对最少方法代码。
+# 当前写作状态
+- 日期：2026-10-12；阶段：必要图表与Word导师阅读稿已完成。
+- Word：@C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/docs/paper_zh/paper-advisor-v1.docx
+- 图文稿：@C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/docs/paper_zh/manuscript-illustrated.md
+- 交付检查：@C:/Users/WenJing/Documents/WorkTransfer/layoutpatch/docs/paper_zh/word-delivery-check.md
+- 图1任务与空间对应、图2方法结构均已插入；SVG源与高清PNG保留。
+- 六张原表加数据角色表，共七张原生Word表格；符号表置于附录A。
+- 21组编号公式均使用可编辑Word公式；六个引用键与文末条目对应。
+- 17页经Word原生导出和documents技能渲染流程逐页检查；已修复公式占位与版式问题。
+- 原冻结实验与E事后补充分开；面积、Top-5不利结果及seed波动保留。
+- 修正池化/损失公式交叉引用及E选择分母的稿内矛盾；原Markdown和实验文件保留。
+- 未决：数据许可及部分正式出版状态；解析原版本不可追溯已披露为局限。
+- 未开展新实验、重评分或调参；未发送给导师。
+- 下一步：请导师集中反馈研究定位、结果论证和比较边界，再按意见修订。
