@@ -19,11 +19,12 @@ htmlcov/
 .ipynb_checkpoints/
 pytest-of-WenJing/*
 
-# Data, artifacts, runs: reproducible outputs, never in git
+# Data, artifacts, runs, docs: reproducible outputs, never in git
 data/
 artifacts/
 runs/
 tmp/
+docs/
 
 # Generated binaries and tables
 *.parquet
@@ -45,3 +46,4 @@ tmp/
 
 # Keep placeholder files that mark empty directories
 !.gitkeep
+
