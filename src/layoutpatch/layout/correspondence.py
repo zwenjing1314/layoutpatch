@@ -1,6 +1,6 @@
 """Patch-region correspondence matrix W (M4, new code per PAPER_SPEC section 5.3).
 
-坐标约定（新手向）：
+坐标约定：
 - 原图坐标：页图原始像素 (W,H)，OCR/Layout bbox 与 region_labels 都在这个坐标系；
 - 模型坐标：ColPali 输入 448×448，1024 个 patch 按 32×32 网格排列，每 patch 覆盖 14×14 模型像素；
 - `scale_bbox_to_model`：原图 bbox → 448 模型坐标，公式来自 PAPER_SPEC 5.6 节

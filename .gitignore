@@ -25,6 +25,7 @@ artifacts/
 runs/
 tmp/
 docs/
+figure_scripts/
 
 # Generated binaries and tables
 *.parquet

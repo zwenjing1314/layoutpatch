@@ -1,6 +1,6 @@
 """Dataset preparation adapters (migrated from the old repository in batch M2).
 
-只保留主线需要的两个入口（新手向）：
+只保留主线需要的两个入口：
 - `prepare_demo`：内置 2 文档 / 3 页 / 4 节点 / 3 查询的小样例，用于冒烟验证管线，不需要任何外部数据；
 - `prepare_mmdocir`：把官方 MMDocIR evaluation 原始文件（annotations jsonl + pages/layouts parquet）
   转成四张标准表 documents / pages / nodes / queries，全量应对数 313 / 20395 / 170338 / 1658。
