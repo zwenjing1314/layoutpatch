@@ -679,7 +679,7 @@ def judge(encoder: TextLayoutEncoder, fusion: SparseLocalFusion) -> dict:
             fixed1 += f1
             fixed5 += f5
             gold_boxes = [unjson(g["bbox"]) for g in golds]
-            def top1_iou(order: list[int]) -> float:
+            def top1_iou(order: list[int], boxes=boxes, gold_boxes=gold_boxes) -> float:
                 if not order:
                     return 0.0
                 box = boxes[order[0]]

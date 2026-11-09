@@ -12,7 +12,7 @@ import json
 import re
 import sys
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from PIL import Image
@@ -20,7 +20,7 @@ from PIL import Image
 SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
-from region_ann_workbook import build_workbook
+from region_ann_workbook import build_workbook  # noqa: E402 - local module path initialized above
 
 REPO = Path(__file__).resolve().parents[1]
 PILOT = REPO / "experiments/region_annotation/arxivqa_pilot_manifest.jsonl"
@@ -404,7 +404,7 @@ def main() -> int:
             "images": images,
             "workbook": str(WORKBOOK),
             "human_files_untouched": [str(LABEL_FILES["A"]), str(LABEL_FILES["B"])],
-            "created_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "created_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "test_eval_ids_opened": False,
             "evaluation_gold_used": False,
             "auto_labels_written": False,
@@ -418,7 +418,7 @@ def main() -> int:
     report = check_labels(pilot, labels, args.annotator)
     report["images"] = images
     report["labels_path"] = str(labels_path)
-    report["created_utc"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    report["created_utc"] = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     check_path.parent.mkdir(parents=True, exist_ok=True)
     check_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"mode": "check", "labels": str(labels_path), "report": report}, ensure_ascii=False, indent=2))

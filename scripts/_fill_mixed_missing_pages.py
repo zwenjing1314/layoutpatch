@@ -9,12 +9,12 @@ import io
 import json
 import time
 
+import encode_dude_phase2r as dude
 import pyarrow.parquet as pq
 import torch
+import train_phase2r_arxivqa_dude as mixed
 from PIL import Image
 
-import encode_dude_phase2r as dude
-import train_phase2r_arxivqa_dude as mixed
 from layoutpatch.retrieval.colpali import ColPaliPageRetriever
 from layoutpatch.schemas import PageRecord
 

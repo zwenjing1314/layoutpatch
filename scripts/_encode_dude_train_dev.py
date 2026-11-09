@@ -11,9 +11,8 @@ from __future__ import annotations
 import json
 import time
 
-import pyarrow.parquet as pq
-
 import encode_dude_phase2r as dude
+import pyarrow.parquet as pq
 
 DEV = dude.REPO / "experiments/s2_splits/train_dev_ids.jsonl"
 OUT = dude.REPO / "experiments/s2_splits/dude_train_dev_pages.json"

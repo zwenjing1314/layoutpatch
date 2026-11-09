@@ -28,6 +28,8 @@ docs/
 figure_scripts/
 output/
 .chart-data-*/
+.codex_tmp/
+full_prep_task*.log
 
 # Generated binaries and tables
 *.parquet
@@ -42,10 +44,6 @@ output/
 *.jpeg
 *.xlsx
 
-
-# Thesis figures are curated small artifacts, tracked explicitly (two-file whitelist)
-!docs/figures/case_A_success.jpg
-!docs/figures/case_M_middle.jpg
 
 # Keep placeholder files that mark empty directories
 !.gitkeep

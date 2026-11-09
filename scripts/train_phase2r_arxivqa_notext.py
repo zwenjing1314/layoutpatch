@@ -31,7 +31,6 @@ from layoutpatch.retrieval.rerank.box_ranker import (
     page_pair_loss,
     rank_all,
 )
-from layoutpatch.schemas import QueryRecord
 
 REPO = Path(__file__).resolve().parents[1]
 ANN = REPO / "data/raw/mmdocir_train/hf_hub/annotations_top1_negative/ArxivQA_train.jsonl"
@@ -194,11 +193,6 @@ def precompute(rows: list[dict], queries, cache_path: Path) -> list[tuple[torch.
     print(json.dumps({"precomputed": len(out), "pages": len(cache)}), flush=True)
     torch.save(out, cache_path)
     return out
-    pos_f, _ = feats_of(query_vecs, page_bundle(*row["pos"]))
-    neg_f, _ = feats_of(query_vecs, page_bundle(*row["neg"]))
-    if pos_f.numel() == 0 or neg_f.numel() == 0:
-        return False
-    return float(ranker.score(pos_f).max()) > float(ranker.score(neg_f).max())
 
 
 def train() -> tuple[BoxRanker, int, int]:
@@ -319,7 +313,6 @@ def judge(ranker: BoxRanker) -> dict:
     region_n = 0
     with torch.no_grad():
         for row, vec in zip(rows, qvecs, strict=True):
-            question = row["question"]
             query = by_id[row["query_id"]]
             golds = [g for g in gold.get(query["query_id"], []) if g["source"] == "matched"]
             evidence = set(_unjsonify("evidence_page_ids", query["evidence_page_ids"]) or [])
