@@ -26,6 +26,8 @@ runs/
 tmp/
 docs/
 figure_scripts/
+output/
+.chart-data-*/
 
 # Generated binaries and tables
 *.parquet
