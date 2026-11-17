@@ -1,0 +1,20 @@
+name: parser_candidate_audit_v1
+status: frozen_candidate_audit
+scope: export_and_candidate_reachability_only
+preparation_config: configs/experiments/parser_candidate_study_v1.yaml
+preparation_config_sha256: 93cc933d94285a66b62d89933970b90ed3456aa2d2551ad8106ad013b16bd750
+page_manifest: experiments/parser_candidate_study/v1/sample_pages.jsonl
+page_manifest_sha256: a8930e50677a1a21a992351ecd426d8590cd4a76917f1eaeb5762a9e82de6e40
+unit_manifest: experiments/parser_candidate_study/v1/sample_units.jsonl
+unit_manifest_sha256: 9fff08e97b497001de4c9723a57bf402afed6a4acbf351e1b9f86975274381f2
+protocol: experiments/parser_candidate_study/v1/PROTOCOL.md
+protocol_sha256: dba0c84e21a310980e90a424eff522d2d03183a298be6146377a60855bbf1330
+conditions: [mineru_top_v1, mineru_top_plus_annotations_v1]
+effect_denominators: {pages: 40, documents: 35, questions: 125, units: 126, gold_boxes: 159, old_candidates: 500}
+visual_review: first_sample_order_page_per_stratum_plus_rotation_diagnostics
+diagnostic_pages_not_effect_sample: [2411.16084_p4, 2411.16084_p5]
+new_parser_inference: false
+model_scoring: false
+training: false
+fallback: none
+execution_authorization: user_requested_next_candidate_audit_2026_11_16

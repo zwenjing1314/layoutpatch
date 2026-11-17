@@ -1,0 +1,7 @@
+{
+  "rows": 9705,
+  "expected": 9705,
+  "exact": true,
+  "max_metric_delta": 0.0,
+  "mismatches": []
+}

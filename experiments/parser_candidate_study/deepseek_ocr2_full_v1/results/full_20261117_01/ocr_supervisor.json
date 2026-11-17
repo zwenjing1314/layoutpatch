@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "worker_exit_code": 0,
+  "timeout": null,
+  "elapsed_seconds": 21169.163297563995,
+  "worker_peak_sampled_rss_bytes": 7517470720,
+  "gpu_peak_sampled_total_used_MiB": 11831,
+  "gpu_metric_includes_other_processes": true,
+  "limits_seconds": {
+    "preflight": 1800,
+    "load": 600,
+    "page": 300,
+    "overlay": 60,
+    "review": 900
+  }
+}

@@ -1,0 +1,24 @@
+name: deepseek_ocr2_frozen_scoring_v1
+status: frozen
+conditions: [mineru_top_v1, deepseek_ocr2_grounding_v2]
+methods: [A, B, D-no-text]
+seeds: [0, 1, 2]
+checkpoint_epochs: [1, 1, 5]
+device: cuda:0
+training: false
+new_parser_inference: false
+fallback: none
+bootstrap_iterations: 2000
+bootstrap_seed: 0
+family_size: 3
+candidate_run: runs/parser_candidate_comparison/deepseek_ocr2_candidates_v1/candidate_20261116_02
+candidate_sha256: 664acc76c730a7440771978a16bd14766ac17fca60d21b7ebef3b1221c88f4a0
+export_manifest_sha256: 2881fff267d28206c5c05939555c6cb792b376e2ba12a9f82559f767e5da1113
+candidate_validation: experiments/parser_candidate_study/deepseek_ocr2_candidates_v1/results/final_validation.json
+candidate_validation_sha256: 28baae7e9a70f26924b991e1d9f62c1235b3115fbff6d688285d66cc6af5dbad
+reused_runner_sha256: b70eb2c1c93d5fad783384bf386d0840dab849d661346090b5c8b1ec06d6aae5
+baseline_predictions: runs/parser_candidate_comparison/v1/frozen_scoring/stage3_20261116_04/predictions.jsonl
+baseline_predictions_sha256: 319084f1e0845d4e5049e57e43ce7e27ddac56eb677b58df4585c231eb75dbe2
+protocol: experiments/parser_candidate_study/deepseek_ocr2_scoring_v1/PROTOCOL.md
+hard_timeout_seconds: 1800
+execution_authorization: user_explicit_same40_A_B_D_no_text_three_seeds

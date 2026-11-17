@@ -1,0 +1,133 @@
+# Preparation draft. Not accepted by, or passed to, the frozen EXP-017 entry.
+name: parser_candidate_study_v1
+status: draft_preparation_only
+role: exploratory_sciegqa_supplement
+baseline_commit: 02693ee908aec8a12ef53b3492892f84cf588499
+branch: experiment/parser-candidate-study
+source_root_read_only: 'C:/Users/WenJing/Documents/WorkTransfer/layoutpatch'
+worktree_root: 'C:/Users/WenJing/.codex/worktrees/parser-candidate-study/layoutpatch'
+paths:
+  protocol_root: experiments/parser_candidate_study/v1
+  artifacts_root: artifacts/parser_candidate_comparison/v1
+  runs_root: runs/parser_candidate_comparison/v1
+  source_candidates: artifacts/route_v2_external/full_prep_v1/20261008_222512/candidates.jsonl
+  source_candidates_sha256: 19dbd7257d696bca19859fd1a53e69520e3380590d5fe0445fac61d8d2518263
+  source_receipts: artifacts/route_v2_external/full_prep_v1/20261008_222512
+  source_encoding_manifest: artifacts/route_v2_external/encoding_v1/runs/20261009_141912/manifest.json
+  source_encoding_manifest_sha256: 87386a31e2300093d59f0f0c5bd81ecac7161292ab9df49736581ecf2217aa4f
+  source_weights_manifest: artifacts/route_v2_external/preparation_v1/20261007_152240/weights.json
+  source_weights_manifest_sha256: 5a1bc2a05dfdd5b7287862a6b04928f30b0d90612b6cc2abb77aad7c4bebbe0f
+  source_annotations: data/raw/sciegqa_bench/9bdca77be633cc3259d7e3739d35b38ab00bf5d9/SciEGQA_Bench.jsonl
+  source_annotations_sha256: 338b701830495b984acca753e5b5065b35a7566c308f2d5c81f76b8401a3053f
+entrypoints:
+  preparation_existing: scripts/prepare_parser_candidate_study.ps1
+  candidate_audit_planned_not_implemented: scripts/audit_parser_candidates.py
+  frozen_scoring_planned_not_implemented: scripts/run_parser_candidate_study.py
+  never_relax_or_reuse_as_generic_cli: scripts/run_route_v2_external.py
+sampling:
+  page_manifest: experiments/parser_candidate_study/v1/sample_pages.jsonl
+  unit_manifest_evaluation_only: experiments/parser_candidate_study/v1/sample_units.jsonl
+  salt: 'parser-candidate-v1:20261116:'
+  ordering: sha256_utf8_salt_plus_page_id
+  strata: old_table_image_presence_cross_text_geometry_two_column_proxy
+  allocation: round_robin_sorted_strata_five_each
+  n_pages: 40
+  n_documents: 35
+  n_questions: 125
+  n_units: 126
+  n_gold_boxes: 159
+  old_candidates: 500
+  partial_multi_page_questions: 43
+  query_scope: only_units_on_selected_pages_no_page_expansion
+  gold_or_outcome_used_for_selection: false
+conditions:
+  - id: mineru_top_v1
+    source: existing_candidates_exact_subset
+    reexport_old_boxes: false
+  - id: mineru_top_plus_annotations_v1
+    source: receipt_bound_raw_docvortex_json
+    policy: keep_all_old_top_nodes_then_append_unique_caption_and_footnote_boxes
+    child_types: [image_caption, image_footnote, chart_caption, chart_footnote, table_caption, table_footnote, code_caption, code_footnote]
+    child_canonical_type: text
+    child_order: parent_layout_id_then_content_array_position
+    child_layout_id: append_after_max_old_layout_id
+    parent_geometry_type_text_layout_id_preserved: true
+    candidate_id: condition_namespaced_with_source_candidate_id_link
+    deduplication: exact_parser_bbox_against_top_and_prior_children_record_every_alias
+    body_policy: parent_equal_body_is_alias_not_new_node
+    other_nested_geometry_policy: stop_and_report_unexpected_schema
+    coordinate_policy: replay_receipt_specific_transform_not_latest_exporter_blindly
+    union_or_split_boxes: false
+    no_gold_input: true
+    fallback: none
+deepseek_ocr2_contingency:
+  enabled: false
+  reason: local_raw_route_is_feasible_and_cheaper_but_not_body_text_refinement
+  model_id: deepseek-ai/DeepSeek-OCR-2
+  revision: aaa02f3811945a91062062994c5c4a3f4c0af2b0
+  upstream_code_revision: 2f3699ebbb96fa8af32212e8c170f2cc28730fad
+  prompt: "<image>\n<|grounding|>Convert the document to markdown."
+  base_size: 1024
+  image_size: 768
+  crop_mode: true
+  eval_mode: true
+  save_results: false
+  test_compress: false
+  dtype: bfloat16
+  attention: flash_attention_2
+  raw_output: returned_grounding_string_before_markdown_cleanup
+  coordinate_denominator: 999
+  coordinate_frame: exif_oriented_full_input_image_not_internal_tiles
+  generation_in_pinned_code: {temperature: 0.0, max_new_tokens: 8192, no_repeat_ngram_size: 35}
+  changed_vs_readme_default: eval_mode_true_returns_text_and_uses_ngram_35_instead_of_20
+  standalone_environment_required: true
+  first_smoke_pages: first_two_sample_order_pages_plus_two_rotation_diagnostics_not_effect_sample
+candidate_validation:
+  page_status_required: true
+  raw_output_before_export: true
+  invalid_box_policy: fail_page_no_clipping_no_silent_drop
+  duplicates: explicit_alias_records_no_iou_threshold_dedup
+  failure_policy: empty_candidates_metrics_zero_fixed_unit_denominator
+  unknown_type_policy: preserve_UNK_0_report_and_review_before_scoring
+  timeout_seconds_per_page_suggested: 300
+  automatic_retry: false
+  quality_gate: structural_and_coordinate_not_positive_oracle_delta
+frozen_scoring_later:
+  enabled: false
+  methods: [A, B, D-no-text]
+  seeds: [0, 1, 2]
+  checkpoint_epochs: {0: 1, 1: 1, 2: 5}
+  checkpoint_selection: existing_source_val_only
+  A_B_once_each_per_condition: true
+  text_input: zeros_float32_M_by_1024_no_BGE_M3_call
+  preserve: [node_types, coords, node_mask, spatial_relations]
+  rebuild: [candidate_ids, W_raw, W_attn, cover_mass, patch_iou_matrix, D_no_text_P_prime, candidate_scores]
+  reuse: [original_P, original_Q, fixed_gold, query_page_mapping, selected_checkpoints]
+  cache_key: condition_candidate_hash_page_image_hash_P_hash_checkpoint_hash_code_hash
+metrics:
+  iou_threshold: 0.5
+  candidate_primary: oracle_any_candidate_any_gold
+  candidate_secondary: [independent_gold_reach, all_gold_independent_reachable, greedy_all_candidates_gold_recall]
+  candidate_order_for_greedy_all: layout_id_ascending
+  scoring_primary: hit1@0.5
+  scoring_secondary: [cov@5, gold_recall@5@0.5]
+  gold_recall_matching: existing_IoU_descending_one_to_one_greedy
+  aggregation: mean_selected_units_within_question_then_question_macro
+  seed_aggregation: mean_three_seed_question_scores_before_pairing
+  seed_std_ddof: 1
+  paired_direction: new_minus_old_same_method
+  paired_bootstrap: {unit: document, iterations: 2000, seed: 0, confidence: 0.95}
+  primary_family: [new_A_minus_old_A, new_B_minus_old_B, new_D_no_text_minus_old_D_no_text]
+  adjusted_confidence: 0.9833333333333333
+  interpretation: exploratory_stratified_sample_not_unseen_confirmation
+prohibitions:
+  training: true
+  external_seed_selection: true
+  encoder_replacement: true
+  source_write_or_delete: true
+  source_environment_changes: true
+  reuse_old_P_prime_or_candidate_scores: true
+  gold_driven_split_merge_filter: true
+  best_parser_or_threshold_selection: true
+  automatic_expansion: true
+  push_merge_or_tag_changes: true

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "pages": 837,
+  "config_sha256": "2d346517c09a774dbda460e5dd1c11502c85fa818e7de0065bb098a0d0bf91f5",
+  "export_sha256": "81dc1050691c4f1fdd2908b38e7cc05c984e7000f092a608a21d19f7eee1f984",
+  "metrics_sha256": "46dd30eb629ad64074163f20055c37a5626fb45a2d9eeb1ba8dc6e5d83bce0ed",
+  "review_sha256": "c6ec056a500ccc87bb417bf651a9e87bd28f8f58f72477e21524337b2b0e11b0",
+  "failure_policy": "fixed_denominator_empty_candidates"
+}

@@ -1,0 +1,13 @@
+{
+  "pages": 837,
+  "eos_pages": 837,
+  "truncated_pages": 0,
+  "multiple_calls": 0,
+  "max_new_tokens": 3583.0,
+  "total_new_tokens_including_reused": 834049.0,
+  "newly_inferred": 797,
+  "reused": 40,
+  "new_page_seconds_sum": 20966.446918804955,
+  "max_torch_allocated_bytes": 8164223488.0,
+  "max_torch_reserved_bytes": 8954839040.0
+}

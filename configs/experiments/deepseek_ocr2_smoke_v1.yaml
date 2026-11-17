@@ -1,0 +1,70 @@
+name: deepseek_ocr2_smoke_v1
+status: preparation_only_not_executable
+execution_enabled: false
+authorized_this_turn: read_only_resource_config_acceptance_preparation
+model_download: false
+environment_install: false
+inference: false
+training: false
+page_manifest: experiments/parser_candidate_study/deepseek_ocr2_smoke_v1/pages.jsonl
+page_manifest_sha256: 356d3876e428956b923eaa6406213d3b31955c741dabd4269842ade0f07a8279
+model:
+  id: deepseek-ai/DeepSeek-OCR-2
+  revision: aaa02f3811945a91062062994c5c4a3f4c0af2b0
+  upstream_github_revision: 2f3699ebbb96fa8af32212e8c170f2cc28730fad
+  local_files_only_after_download: true
+  trust_remote_code_after_source_hash_verification: true
+  dtype: bfloat16
+  attention: flash_attention_2
+  eval: true
+  batch_size: 1
+infer:
+  prompt: "<image>\n<|grounding|>Convert the document to markdown."
+  base_size: 1024
+  image_size: 768
+  crop_mode: true
+  eval_mode: true
+  save_results: false
+  test_compress: false
+upstream_generation_branch:
+  temperature: 0.0
+  max_new_tokens: 8192
+  no_repeat_ngram_size: 35
+  note: record_actual_generate_arguments_and_tokens_without_changing_generation
+coordinates:
+  raw_frame: exif_oriented_full_input_image
+  denominator: 999
+  evaluation_frame: existing_fixed_render_pixels
+  require_source_render_mapping_receipt: true
+  internal_tiles_or_padding_are_not_output_frame: true
+  second_pdf_rotation: forbidden
+export_draft:
+  one_candidate_per_det_bbox: true
+  text: reference_span_shared_by_boxes_with_explicit_shared_text_group
+  deduplication: exact_raw_coordinate_tuple_with_alias_provenance
+  no_ref_det_markdown: no_candidate_no_grounding_status
+  invalid_bbox: fail_page_no_clamp
+  unknown_label: UNK_0_with_raw_label_and_review
+  gold_driven_filter_split_merge: forbidden
+  fallback: none
+limits_proposed:
+  pages: 4
+  page_timeout_seconds_excluding_model_load: 300
+  model_load_timeout_seconds: 600
+  max_attempts_per_page: 1
+  oom_or_truncation: record_and_stop_no_parameter_changes
+  automatic_expansion_to_40: false
+paths_proposed_not_created:
+  environment: tools/deepseek_ocr2_smoke_v1
+  model_snapshot: artifacts/parser_candidate_comparison/deepseek_ocr2_smoke_v1/model
+  raw_and_candidates: artifacts/parser_candidate_comparison/deepseek_ocr2_smoke_v1/raw/<run_id>/<page_id>
+  results: runs/parser_candidate_comparison/deepseek_ocr2_smoke_v1/<run_id>
+  read_only_source_mount: /source
+  isolated_output_mount: /study
+required_before_run:
+  - independent_linux_cuda_image_digest_and_environment_lock
+  - container_gpu_probe_passed
+  - pinned_model_snapshot_complete_and_hashed
+  - tested_page_only_worker_and_grounding_exporter
+  - generated_token_and_eos_receipt_without_altering_decoding
+  - frozen_source_hash_and_new_run_identity

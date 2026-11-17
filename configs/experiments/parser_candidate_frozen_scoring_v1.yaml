@@ -1,0 +1,17 @@
+name: parser_candidate_frozen_scoring_v1
+status: frozen
+scope: same_40_pages_A_B_D_no_text
+candidate_run: stage2_20261116_02
+candidate_export_sha256: f69ce9586c4643d7e105e7a89dd4d7a6d611c1376f1a58175b0aeb95df106103
+methods: [A, B, D-no-text]
+seeds: [0, 1, 2]
+checkpoint_epochs: [1, 1, 5]
+device: cuda:0
+training: false
+new_parser_inference: false
+fallback: none
+bootstrap_iterations: 2000
+bootstrap_seed: 0
+family_size: 3
+execution_authorization: user_explicit_frozen_scoring_2026_11_16
+

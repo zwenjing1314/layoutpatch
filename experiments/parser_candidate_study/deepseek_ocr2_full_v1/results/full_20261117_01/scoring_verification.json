@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "prediction_rows_exact": 19410,
+  "derived_files_exact": 6696,
+  "fresh_P_prime_exact": 5022,
+  "historical_baseline": {
+    "rows": 9705,
+    "expected": 9705,
+    "exact": true,
+    "max_metric_delta": 0.0,
+    "mismatches": []
+  },
+  "oracle_audit_matches": true,
+  "training": false
+}

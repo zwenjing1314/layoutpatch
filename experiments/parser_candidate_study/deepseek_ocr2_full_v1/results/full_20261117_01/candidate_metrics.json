@@ -1,0 +1,277 @@
+{
+  "denominators": {
+    "pages": 837,
+    "documents": 80,
+    "questions": 1623,
+    "units": 1941,
+    "gold_boxes": 2497
+  },
+  "metrics": {
+    "mineru_top_v1": {
+      "oracle@0.5": 0.6959334565619224,
+      "independent_gold_reach@0.5": 0.6386321626617375,
+      "all_gold_reachable_independent@0.5": 0.5813308687615527,
+      "greedy_all_candidates_gold_recall@0.5": 0.6386321626617375
+    },
+    "deepseek_ocr2_grounding_v2": {
+      "oracle@0.5": 0.6993222427603204,
+      "independent_gold_reach@0.5": 0.6429451632778804,
+      "all_gold_reachable_independent@0.5": 0.5865680837954406,
+      "greedy_all_candidates_gold_recall@0.5": 0.6429451632778804
+    }
+  },
+  "paired_new_minus_old": {
+    "oracle@0.5": {
+      "mean_diff": 0.0033887861983980284,
+      "ci95_low": -0.0077255871446229914,
+      "ci95_high": 0.015124016938898971,
+      "documents": 80.0,
+      "queries": 1623.0,
+      "improved": 34,
+      "worsened": 30,
+      "unchanged": 1559
+    },
+    "independent_gold_reach@0.5": {
+      "mean_diff": 0.004313000616142945,
+      "ci95_low": -0.006678809957498482,
+      "ci95_high": 0.0160024154589372,
+      "documents": 80.0,
+      "queries": 1623.0,
+      "improved": 45,
+      "worsened": 35,
+      "unchanged": 1543
+    },
+    "all_gold_reachable_independent@0.5": {
+      "mean_diff": 0.005237215033887862,
+      "ci95_low": -0.007007921998781231,
+      "ci95_high": 0.017780502759043533,
+      "documents": 80.0,
+      "queries": 1623.0,
+      "improved": 38,
+      "worsened": 31,
+      "unchanged": 1554
+    },
+    "greedy_all_candidates_gold_recall@0.5": {
+      "mean_diff": 0.004313000616142945,
+      "ci95_low": -0.006678809957498482,
+      "ci95_high": 0.0160024154589372,
+      "documents": 80.0,
+      "queries": 1623.0,
+      "improved": 45,
+      "worsened": 35,
+      "unchanged": 1543
+    }
+  },
+  "distributions": {
+    "mineru_top_v1": {
+      "candidate_count": 9746,
+      "counts_per_page": {
+        "min": 1,
+        "p25": 7.0,
+        "p50": 11.0,
+        "p75": 15.0,
+        "p95": 24.0,
+        "max": 45
+      },
+      "area_fraction": {
+        "min": 9.000000000000064e-05,
+        "p25": 0.00588199999999999,
+        "p50": 0.02174699999999996,
+        "p75": 0.04987500000000002,
+        "p95": 0.13979975,
+        "max": 0.6220407979211792
+      },
+      "types": {
+        "title": 941,
+        "text": 6813,
+        "image": 543,
+        "table": 189,
+        "equation": 1260
+      }
+    },
+    "deepseek_ocr2_grounding_v2": {
+      "candidate_count": 9222,
+      "counts_per_page": {
+        "min": 0,
+        "p25": 6.0,
+        "p50": 10.0,
+        "p75": 15.0,
+        "p95": 24.0,
+        "max": 43
+      },
+      "area_fraction": {
+        "min": 0.0001503004506007509,
+        "p25": 0.008024040056072114,
+        "p50": 0.023885747609471313,
+        "p75": 0.052995938881824786,
+        "p95": 0.1425394864333799,
+        "max": 0.6286677067457849
+      },
+      "types": {
+        "title": 934,
+        "text": 6241,
+        "image": 523,
+        "table": 175,
+        "equation": 1239,
+        "UNK": 110
+      }
+    }
+  },
+  "strata": {
+    "both:other_layout": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.7777777777777778,
+        "independent_gold_reach@0.5": 0.7380952380952381,
+        "all_gold_reachable_independent@0.5": 0.6984126984126984,
+        "greedy_all_candidates_gold_recall@0.5": 0.7380952380952381
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.7619047619047619,
+        "independent_gold_reach@0.5": 0.7222222222222222,
+        "all_gold_reachable_independent@0.5": 0.6825396825396826,
+        "greedy_all_candidates_gold_recall@0.5": 0.7222222222222222
+      }
+    },
+    "both:two_column_proxy": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.8777777777777778,
+        "independent_gold_reach@0.5": 0.8444444444444444,
+        "all_gold_reachable_independent@0.5": 0.8111111111111111,
+        "greedy_all_candidates_gold_recall@0.5": 0.8444444444444444
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.9222222222222223,
+        "independent_gold_reach@0.5": 0.9,
+        "all_gold_reachable_independent@0.5": 0.8777777777777778,
+        "greedy_all_candidates_gold_recall@0.5": 0.9
+      }
+    },
+    "image:other_layout": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.745260663507109,
+        "independent_gold_reach@0.5": 0.693127962085308,
+        "all_gold_reachable_independent@0.5": 0.6409952606635071,
+        "greedy_all_candidates_gold_recall@0.5": 0.693127962085308
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.7511848341232228,
+        "independent_gold_reach@0.5": 0.7002369668246445,
+        "all_gold_reachable_independent@0.5": 0.6492890995260664,
+        "greedy_all_candidates_gold_recall@0.5": 0.7002369668246445
+      }
+    },
+    "image:two_column_proxy": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.736318407960199,
+        "independent_gold_reach@0.5": 0.6965174129353234,
+        "all_gold_reachable_independent@0.5": 0.6567164179104478,
+        "greedy_all_candidates_gold_recall@0.5": 0.6965174129353234
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.7487562189054726,
+        "independent_gold_reach@0.5": 0.6990049751243781,
+        "all_gold_reachable_independent@0.5": 0.6492537313432836,
+        "greedy_all_candidates_gold_recall@0.5": 0.6990049751243781
+      }
+    },
+    "table:other_layout": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.8589108910891089,
+        "independent_gold_reach@0.5": 0.8044554455445545,
+        "all_gold_reachable_independent@0.5": 0.75,
+        "greedy_all_candidates_gold_recall@0.5": 0.8044554455445545
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.8589108910891089,
+        "independent_gold_reach@0.5": 0.8094059405940595,
+        "all_gold_reachable_independent@0.5": 0.7599009900990099,
+        "greedy_all_candidates_gold_recall@0.5": 0.8094059405940595
+      }
+    },
+    "table:two_column_proxy": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.8275862068965517,
+        "independent_gold_reach@0.5": 0.7931034482758621,
+        "all_gold_reachable_independent@0.5": 0.7586206896551724,
+        "greedy_all_candidates_gold_recall@0.5": 0.7931034482758621
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.8275862068965517,
+        "independent_gold_reach@0.5": 0.7931034482758621,
+        "all_gold_reachable_independent@0.5": 0.7586206896551724,
+        "greedy_all_candidates_gold_recall@0.5": 0.7931034482758621
+      }
+    },
+    "text_other:other_layout": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.5748829953198128,
+        "independent_gold_reach@0.5": 0.5101404056162246,
+        "all_gold_reachable_independent@0.5": 0.4453978159126365,
+        "greedy_all_candidates_gold_recall@0.5": 0.5101404056162246
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.5709828393135725,
+        "independent_gold_reach@0.5": 0.5078003120124805,
+        "all_gold_reachable_independent@0.5": 0.44461778471138846,
+        "greedy_all_candidates_gold_recall@0.5": 0.5078003120124805
+      }
+    },
+    "text_other:two_column_proxy": {
+      "mineru_top_v1": {
+        "oracle@0.5": 0.6622807017543859,
+        "independent_gold_reach@0.5": 0.6271929824561403,
+        "all_gold_reachable_independent@0.5": 0.5921052631578947,
+        "greedy_all_candidates_gold_recall@0.5": 0.6271929824561403
+      },
+      "deepseek_ocr2_grounding_v2": {
+        "oracle@0.5": 0.6622807017543859,
+        "independent_gold_reach@0.5": 0.6271929824561403,
+        "all_gold_reachable_independent@0.5": 0.5921052631578947,
+        "greedy_all_candidates_gold_recall@0.5": 0.6271929824561403
+      }
+    }
+  },
+  "failed_pages": [
+    {
+      "page_id": "2411.19857_p9",
+      "status": "failed",
+      "candidate_count": 0,
+      "duplicate_aliases": 0,
+      "raw_reused": false,
+      "error": "empty or out-of-bounds box",
+      "error_type": "ValueError"
+    },
+    {
+      "page_id": "2412.10649_p6",
+      "status": "failed",
+      "candidate_count": 0,
+      "duplicate_aliases": 0,
+      "raw_reused": false,
+      "error": "Expecting ',' delimiter: line 1 column 8 (char 7)",
+      "error_type": "JSONDecodeError"
+    },
+    {
+      "page_id": "2412.11897_p16",
+      "status": "failed",
+      "candidate_count": 0,
+      "duplicate_aliases": 0,
+      "raw_reused": false,
+      "error": "malformed grounding markers",
+      "error_type": "ValueError"
+    },
+    {
+      "page_id": "2412.12319_p30",
+      "status": "failed",
+      "candidate_count": 0,
+      "duplicate_aliases": 0,
+      "raw_reused": false,
+      "error": "malformed grounding markers",
+      "error_type": "ValueError"
+    }
+  ],
+  "failure_rate": 0.0047789725209080045,
+  "matching": "IoU_desc_one_to_one_greedy",
+  "aggregation": "all_units_within_question_then_question_macro",
+  "exploratory": true,
+  "score_models_run": false
+}
